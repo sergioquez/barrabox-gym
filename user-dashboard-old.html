@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Dashboard - Barrabox</title>
+    <link rel="stylesheet" href="css/style.css?v=2.0">
+    <link rel="stylesheet" href="css/dashboard-fixed.css?v=2.0">
+    <link rel="stylesheet" href="css/booking-flow.css?v=2.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+        <div class="dashboard-nav">
+            <div class="dashboard-logo">
+                <a href="index.html">
+                    <span class="logo-text">BARRA<span class="logo-accent">BOX</span></span>
+                    <span class="logo-tagline">Mi Dashboard</span>
+                </a>
+            </div>
+            
+            <div class="dashboard-user">
+                <div class="user-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <div class="user-info">
+                    <span class="user-name" id="currentUserName">Juan Pérez</span>
+                    <span class="user-plan" id="currentUserPlan">Plan Premium</span>
+                </div>
+                <div class="user-menu">
+                    <button class="menu-toggle" id="userMenuToggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="menu-dropdown" id="userMenuDropdown">
+                        <a href="#profile"><i class="fas fa-user"></i> Mi Perfil</a>
+                        <a href="#settings"><i class="fas fa-cog"></i> Configuración</a>
+                        <a href="index.html" class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="dashboard-tabs">
+            <a href="#overview" class="tab-btn active" data-tab="overview">
+                <i class="fas fa-home"></i> Inicio
+            </a>
+            <a href="#classes" class="tab-btn" data-tab="classes">
+                <i class="fas fa-dumbbell"></i> Mis Clases
+            </a>
+            <a href="#calendar" class="tab-btn" data-tab="calendar">
+                <i class="fas fa-calendar-alt"></i> Calendario
+            </a>
+            <a href="#plan" class="tab-btn" data-tab="plan">
+                <i class="fas fa-credit-card"></i> Mi Plan
+            </a>
+            <a href="#payments" class="tab-btn" data-tab="payments">
+                <i class="fas fa-receipt"></i> Pagos
+            </a>
+        </nav>
+    </header>
+
+    <!-- Dashboard Main Content -->
+    <main class="dashboard-main">
+        <div class="dashboard-container">
+            <!-- Overview Tab (Default) -->
+            <div class="tab-content active" id="overviewTab">
+                <div class="dashboard-welcome">
+                    <h1>¡Bienvenido de vuelta, <span id="welcomeUserName">Juan</span>!</h1>
+                    <p>Tu próximo entrenamiento es hoy a las 18:00 - Crossfit Intenso</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(255, 107, 53, 0.1);">
+                            <i class="fas fa-fire" style="color: var(--primary);"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Clases este mes</h3>
+                            <p class="stat-number" id="classesThisMonth">8</p>
+                            <p class="stat-detail">de 12 disponibles</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(0, 168, 168, 0.1);">
+                            <i class="fas fa-calendar-check" style="color: var(--accent);"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Próxima clase</h3>
+                            <p class="stat-number">Hoy 18:00</p>
+                            <p class="stat-detail">Crossfit Intenso</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(45, 48, 71, 0.1);">
+                            <i class="fas fa-weight-hanging" style="color: var(--secondary);"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Días consecutivos</h3>
+                            <p class="stat-number" id="consecutiveDays">5</p>
+                            <p class="stat-detail">¡Sigue así!</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background-color: rgba(40, 167, 69, 0.1);">
+                            <i class="fas fa-trophy" style="color: #28a745;"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Logros</h3>
+                            <p class="stat-number">3</p>
+                            <p class="stat-detail">Desbloqueados</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Booking Banner -->
+                <div class="quick-booking-banner">
+                    <div class="banner-content">
+                        <h2><i class="fas fa-bolt"></i> Reserva Rápida</h2>
+                        <p>Encuentra y reserva tu próxima clase en segundos</p>
+                        <div class="banner-actions">
+                            <button class="btn btn-primary" id="quickBookBtn">
+                                <i class="fas fa-search"></i> Buscar Clases Disponibles
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-calendar-alt"></i> Ver Mi Calendario
+                            </button>
+                        </div>
+                    </div>
+                    <div class="banner-stats">
+                        <div class="banner-stat">
+                            <div class="stat-number">15+</div>
+                            <div class="stat-label">Clases Diarias</div>
+                        </div>
+                        <div class="banner-stat">
+                            <div class="stat-number">85%</div>
+                            <div class="stat-label">Ocupación</div>
+                        </div>
+                        <div class="banner-stat">
+                            <div class="stat-number">4.8★</div>
+                            <div class="stat-label">Rating Coach</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upcoming Classes with Improved Flow -->
+                <div class="dashboard-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-calendar-alt"></i> Próximas Clases Disponibles</h2>
+                        <div class="classes-filter">
+                            <button class="filter-btn active" data-filter="all">Todas</button>
+                            <button class="filter-btn" data-filter="crossfit">CrossFit</button>
+                            <button class="filter-btn" data-filter="halterofilia">Halterofilia</button>
+                            <button class="filter-btn" data-filter="gap">GAP</button>
+                            <button class="filter-btn highlight" data-filter="available">
+                                <i class="fas fa-check-circle"></i> Con Cupos
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="classes-grid" id="classesGrid">
+                        <!-- Classes will be loaded dynamically -->
+                    </div>
+                    
+                    <div class="load-more">
+                        <button class="btn btn-outline" id="loadMoreBtn">
+                            <i class="fas fa-sync-alt"></i> Cargar Más Clases
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Booking Steps Guide -->
+                <div class="booking-guide">
+                    <h2><i class="fas fa-map-signs"></i> Cómo Reservar en 3 Pasos</h2>
+                    <div class="guide-steps">
+                        <div class="guide-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h3>Encuentra tu Clase</h3>
+                                <p>Filtra por tipo, horario o coach. Las clases con cupos disponibles tienen el botón verde.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h3>Revisa los Detalles</h3>
+                                <p>Verifica el coach, sala, duración y requisitos antes de reservar.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h3>Confirma tu Reserva</h3>
+                                <p>Haz clic en "Reservar" y recibirás confirmación inmediata por email.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Classes Tab -->
+            <div class="tab-content" id="classesTab">
+                <div class="dashboard-section">
+                    <h2><i class="fas fa-dumbbell"></i> Mis Clases</h2>
+                    <div class="classes-filter">
+                        <button class="filter-btn active" data-filter="all">Todas</button>
+                        <button class="filter-btn" data-filter="upcoming">Próximas</button>
+                        <button class="filter-btn" data-filter="past">Pasadas</button>
+                        <button class="filter-btn" data-filter="crossfit">Crossfit</button>
+                        <button class="filter-btn" data-filter="halterofilia">Halterofilia</button>
+                        <button class="filter-btn" data-filter="gap">GAP</button>
+                    </div>
+                    
+                    <div class="classes-list">
+                        <!-- Clases se cargarán dinámicamente -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calendar Tab -->
+            <div class="tab-content" id="calendarTab">
+                <div class="dashboard-section">
+                    <h2><i class="fas fa-calendar-alt"></i> Calendario</h2>
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <button class="calendar-nav" id="prevWeek">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <h3 id="currentWeek">Semana 15-21 Abril</h3>
+                            <button class="calendar-nav" id="nextWeek">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="calendar-week">
+                            <!-- Días se generarán dinámicamente -->
+                        </div>
+                        <div class="calendar-legend">
+                            <div class="legend-item">
+                                <span class="legend-color crossfit"></span>
+                                <span>Crossfit</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color halterofilia"></span>
+                                <span>Halterofilia</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color gap"></span>
+                                <span>GAP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Plan Tab -->
+            <div class="tab-content" id="planTab">
+                <div class="dashboard-section">
+                    <h2><i class="fas fa-credit-card"></i> Mi Plan</h2>
+                    <div class="plan-current">
+                        <div class="plan-card premium">
+                            <div class="plan-header">
+                                <h3>Plan Premium</h3>
+                                <span class="plan-badge">Activo</span>
+                            </div>
+                            <div class="plan-features">
+                                <p><i class="fas fa-check"></i> 12 clases/mes</p>
+                                <p><i class="fas fa-check"></i> Acceso a todas las disciplinas</p>
+                                <p><i class="fas fa-check"></i> Coaching personalizado</p>
+                                <p><i class="fas fa-check"></i> Lockers premium</p>
+                            </div>
+                            <div class="plan-price">
+                                <span class="price">$49.990</span>
+                                <span class="period">/mes</span>
+                            </div>
+                            <div class="plan-renewal">
+                                <p><i class="fas fa-calendar"></i> Renovación: 13 Mayo 2026</p>
+                                <div class="plan-actions">
+                                    <button class="btn-primary" id="renewPlan">Renovar Ahora</button>
+                                    <button class="btn-secondary" id="changePlan">Cambiar Plan</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-options">
+                        <h3>Otros Planes Disponibles</h3>
+                        <div class="plans-grid">
+                            <div class="plan-option">
+                                <h4>Básico</h4>
+                                <p><i class="fas fa-check"></i> 4 clases/mes</p>
+                                <p><i class="fas fa-check"></i> 1 disciplina</p>
+                                <p><i class="fas fa-times"></i> Sin coaching</p>
+                                <div class="option-price">$24.990<span>/mes</span></div>
+                                <button class="btn-secondary btn-small">Seleccionar</button>
+                            </div>
+                            
+                            <div class="plan-option">
+                                <h4>Competidor</h4>
+                                <p><i class="fas fa-check"></i> Clases ilimitadas</p>
+                                <p><i class="fas fa-check"></i> Todas las disciplinas</p>
+                                <p><i class="fas fa-check"></i> Coaching avanzado</p>
+                                <div class="option-price">$79.990<span>/mes</span></div>
+                                <button class="btn-secondary btn-small">Seleccionar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payments Tab -->
+            <div class="tab-content" id="paymentsTab">
+                <div class="dashboard-section">
+                    <h2><i class="fas fa-receipt"></i> Mis Pagos</h2>
+                    
+                    <div class="payments-summary">
+                        <div class="summary-card">
+                            <h3>Próximo pago</h3>
+                            <p class="summary-amount">$49.990</p>
+                            <p class="summary-date">Vence: 13 Mayo 2026</p>
+                        </div>
+                        <div class="summary-card">
+                            <h3>Total pagado</h3>
+                            <p class="summary-amount">$149.970</p>
+                            <p class="summary-date">Últimos 3 meses</p>
+                        </div>
+                    </div>
+                    
+                    <div class="payments-list">
+                        <h3>Historial de Pagos</h3>
+                        <table class="payments-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Descripción</th>
+                                    <th>Monto</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Pagos se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="payment-methods">
+                        <h3>Métodos de Pago</h3>
+                        <div class="methods-list">
+                            <div class="method-card">
+                                <div class="method-info">
+                                    <i class="fab fa-cc-visa"></i>
+                                    <div>
+                                        <p>Visa •••• 4321</p>
+                                        <small>Expira 12/2026</small>
+                                    </div>
+                                </div>
+                                <button class="btn-secondary btn-small">Editar</button>
+                            </div>
+                            <button class="btn-primary" id="addPaymentMethod">
+                                <i class="fas fa-plus"></i> Agregar método de pago
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Booking Modal -->
+    <div class="booking-modal" id="bookingModal">
+        <div class="booking-modal-content">
+            <div class="booking-modal-header">
+                <h2><i class="fas fa-calendar-check"></i> Reservar Clase</h2>
+                <button class="close-booking-modal">&times;</button>
+            </div>
+            
+            <div class="booking-modal-body">
+                <!-- Booking Summary -->
+                <div class="booking-summary">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+                
+                <!-- Booking Steps -->
+                <div class="booking-steps">
+                    <div class="booking-step active" data-step="1">
+                        <div class="step-circle">1</div>
+                        <div class="booking-step-label">Confirmar</div>
+                    </div>
+                    <div class="booking-step" data-step="2">
+                        <div class="step-circle">2</div>
+                        <div class="booking-step-label">Detalles</div>
+                    </div>
+                    <div class="booking-step" data-step="3">
+                        <div class="step-circle">3</div>
+                        <div class="booking-step-label">Finalizar</div>
+                    </div>
+                </div>
+                
+                <!-- Step 1: Confirm Class -->
+                <div class="booking-form-step active" id="step1">
+                    <h3>Confirmar Selección</h3>
+                    <p>Por favor revisa los detalles de la clase antes de continuar.</p>
+                    <div class="booking-form-group">
+                        <label for="confirmTerms">
+                            <input type="checkbox" id="confirmTerms">
+                            Confirmo que he leído y acepto las políticas de cancelación
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Additional Details -->
+                <div class="booking-form-step" id="step2">
+                    <h3>Información Adicional</h3>
+                    <div class="booking-form-group">
+                        <label for="specialRequests">Solicitudes Especiales (opcional)</label>
+                        <textarea id="specialRequests" rows="3" placeholder="Ej: Lesión en rodilla, preferencia de equipo, etc."></textarea>
+                    </div>
+                    <div class="booking-form-group">
+                        <label for="reminderPreference">Recordatorio</label>
+                        <select id="reminderPreference">
+                            <option value="none">Sin recordatorio</option>
+                            <option value="1h">1 hora antes</option>
+                            <option value="2h">2 horas antes</option>
+                            <option value="1d">1 día antes</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Confirmation -->
+                <div class="booking-form-step" id="step3">
+                    <div class="booking-confirmation">
+                        <!-- Dynamic confirmation content will be inserted here -->
+                    </div>
+                </div>
+                
+                <!-- Navigation Buttons -->
+                <div class="booking-form-actions">
+                    <!-- Dynamic buttons will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Custom Modal Container -->
+    <div id="customModalContainer"></div>
+
+    <!-- Footer -->
+    <footer class="dashboard-footer">
+        <div class="container">
+            <p>&copy; 2026 Barrabox. Dashboard de Usuario - Iteración 2/4</p>
+            <p class="footer-links">
+                <a href="index.html">Volver al Inicio</a> | 
+                <a href="#help">Ayuda</a> | 
+                <a href="#contact">Contacto</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/dashboard.js?v=2.0"></script>
+    <script src="js/booking-flow.js?v=2.0"></script>
+    <script src="js/booking-flow-complete.js?v=2.0"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
