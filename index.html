@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barrabox - Crossfit, Halterofilia & GAP</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                <span class="logo-text">BARRA<span class="logo-accent">BOX</span></span>
+                <span class="logo-tagline">Crossfit • Halterofilia • GAP</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Inicio</a></li>
+                <li><a href="#classes">Clases</a></li>
+                <li><a href="#pricing">Planes</a></li>
+                <li><a href="#about">Nosotros</a></li>
+                <li><a href="#contact">Contacto</a></li>
+                <li class="nav-cta"><a href="#login" class="btn-login">Iniciar Sesión</a></li>
+            </ul>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">TRANSFORMA TU CUERPO, <span class="hero-highlight">SUPERA TUS LÍMITES</span></h1>
+            <p class="hero-subtitle">El gimnasio más completo para Crossfit, Halterofilia y GAP. Entrenamiento profesional, comunidad activa y resultados garantizados.</p>
+            <div class="hero-buttons">
+                <a href="#pricing" class="btn-primary">ÚNETE AHORA</a>
+                <a href="#classes" class="btn-secondary">VER CLASES</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="image-placeholder">
+                <i class="fas fa-dumbbell"></i>
+                <p>Imagen: Atletas entrenando Crossfit</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">¿POR QUÉ BARRA<span class="logo-accent">BOX</span>?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3>Crossfit Intenso</h3>
+                    <p>WODs diarios, coaching certificado, equipos de competición.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-weight-hanging"></i>
+                    </div>
+                    <h3>Halterofilia Profesional</h3>
+                    <p>Técnica perfecta, plataformas olímpicas, entrenadores especializados.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>GAP Dinámico</h3>
+                    <p>Glúteos, Abdomen, Piernas. Clases grupales con música energética.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Comunidad Activa</h3>
+                    <p>Eventos, competencias, apoyo mutuo. Más que un gimnasio, una familia.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Login Simulation Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Acceso Barra<span class="logo-accent">BOX</span></h2>
+            <div class="login-tabs">
+                <button class="tab-btn active" data-tab="user">Usuario</button>
+                <button class="tab-btn" data-tab="admin">Administrador</button>
+            </div>
+            
+            <div class="tab-content active" id="userTab">
+                <form id="userLoginForm">
+                    <div class="form-group">
+                        <label for="userEmail">Email</label>
+                        <input type="email" id="userEmail" placeholder="tu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPassword">Contraseña</label>
+                        <input type="password" id="userPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Ingresar como Usuario</button>
+                    <p class="form-note">Demo: Usa cualquier email y contraseña para simular acceso</p>
+                </form>
+            </div>
+            
+            <div class="tab-content" id="adminTab">
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="adminEmail">Email Administrador</label>
+                        <input type="email" id="adminEmail" placeholder="admin@barrabox.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPassword">Contraseña</label>
+                        <input type="password" id="adminPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-admin">Ingresar como Admin</button>
+                    <p class="form-note">Demo: Acceso simulado al panel de administración</p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">BARRA<span class="logo-accent">BOX</span></span>
+                    <p>Crossfit • Halterofilia • GAP</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Enlaces</h4>
+                    <a href="#classes">Clases</a>
+                    <a href="#pricing">Planes</a>
+                    <a href="#about">Nosotros</a>
+                    <a href="#contact">Contacto</a>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Av. Fitness 123, Santiago</p>
+                    <p><i class="fas fa-phone"></i> +56 9 1234 5678</p>
+                    <p><i class="fas fa-envelope"></i> info@barrabox.cl</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Barrabox. Todos los derechos reservados. | Demo para GitHub Pages</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
