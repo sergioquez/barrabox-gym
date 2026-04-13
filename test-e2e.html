@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing E2E - Barrabox Gym</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2D3047 0%, #1a1c2f 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        
+        .logo .accent {
+            color: #FF6B35;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+        
+        .test-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .panel-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #FF6B35;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .panel-title i {
+            font-size: 1.2rem;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .test-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .test-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            border-color: rgba(255, 107, 53, 0.3);
+        }
+        
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .test-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .test-status {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        
+        .status-pending {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+        }
+        
+        .status-running {
+            background: rgba(0, 123, 255, 0.2);
+            color: #007BFF;
+        }
+        
+        .status-passed {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28A745;
+        }
+        
+        .status-failed {
+            background: rgba(220, 53, 69, 0.2);
+            color: #DC3545;
+        }
+        
+        .test-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+        
+        .test-details {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .test-details.show {
+            display: block;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #FF6B35;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-success {
+            background: #28A745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-danger {
+            background: #DC3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .results-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .results-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #FF6B35;
+        }
+        
+        .results-stats {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .stat-passed .stat-number {
+            color: #28A745;
+        }
+        
+        .stat-failed .stat-number {
+            color: #DC3545;
+        }
+        
+        .stat-total .stat-number {
+            color: #FF6B35;
+        }
+        
+        .console-output {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #00FF00;
+            height: 300px;
+            overflow-y: auto;
+            margin-top: 1rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .console-line {
+            margin-bottom: 0.3rem;
+            line-height: 1.4;
+        }
+        
+        .console-line.success {
+            color: #28A745;
+        }
+        
+        .console-line.error {
+            color: #DC3545;
+        }
+        
+        .console-line.info {
+            color: #17A2B8;
+        }
+        
+        .console-line.warning {
+            color: #FFC107;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: #FF6B35;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .results-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                BARRA<span class="accent">BOX</span> TESTING
+            </div>
+            <div class="subtitle">
+                Testing E2E Automatizado - Validación completa del sistema
+            </div>
+        </header>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn btn-primary" id="runAllTests">
+                <i class="fas fa-play"></i>
+                Ejecutar Todos los Tests
+            </button>
+            <button class="btn btn-secondary" id="runUnitTests">
+                <i class="fas fa-vial"></i>
+                Tests Unitarios
+            </button>
+            <button class="btn btn-secondary" id="runIntegrationTests">
+                <i class="fas fa-project-diagram"></i>
+                Tests de Integración
+            </button>
+            <button class="btn btn-danger" id="clearConsole">
+                <i class="fas fa-trash"></i>
+                Limpiar Consola
+            </button>
+            <button class="btn btn-success" id="exportResults">
+                <i class="fas fa-download"></i>
+                Exportar Resultados
+            </button>
+        </div>
+
+        <!-- Test Panel -->
+        <div class="test-panel">
+            <h2 class="panel-title">
+                <i class="fas fa-list-check"></i>
+                Suite de Tests E2E
+            </h2>
+            
+            <div class="test-grid" id="testGrid">
+                <!-- Tests se cargarán dinámicamente -->
+            </div>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="results-panel">
+            <div class="results-header">
+                <h3 class="results-title">Resultados del Testing</h3>
+                <div class="results-stats">
+                    <div class="stat stat-total">
+                        <div class="stat-number" id="totalTests">0</div>
+                        <div class="stat-label">Total Tests</div>
+                    </div>
+                    <div class="stat stat-passed">
+                        <div class="stat-number" id="passedTests">0</div>
+                        <div class="stat-label">Pasados</div>
+                    </div>
+                    <div class="stat stat-failed">
+                        <div class="stat-number" id="failedTests">0</div>
+                        <div class="stat-label">Fallidos</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="console-output" id="consoleOutput">
+                <div class="console-line info">🚀 Consola de Testing E2E lista</div>
+                <div class="console-line info">Presiona "Ejecutar Todos los Tests" para comenzar</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Barrabox Gym - Testing E2E Automatizado v1.0.0</p>
+            <div class="footer-links">
+                <a href="index.html">Volver al Sitio</a>
+                <a href="user-dashboard.html">Dashboard Usuario</a>
+                <a href="admin-dashboard.html">Dashboard Admin</a>
+                <a href="profile.html">Perfil</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/data-manager.js?v=5.0"></script>
+    <script src="js/auth.js?v=5.0"></script>
+    <script src="js/e2e-test.js"></script>
+    <script>
+        // Test Manager UI
+        class TestManagerUI {
+            constructor() {
+                this.testRunner = new BarraboxE2ETest();
+                this.consoleOutput = document.getElementById('consoleOutput');
+                this.testGrid = document.getElementById('testGrid');
+                this.totalTestsEl = document.getElementById('totalTests');
+                this.passedTestsEl = document.getElementById('passedTests');
+                this.failedTestsEl = document.getElementById('failedTests');
+                this.tests = [];
+                this.results = [];
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.loadTestDefinitions();
+                this.updateStats();
+            }
+            
+            setupEventListeners() {
+                document.getElementById('runAllTests').addEventListener('click', () => this.runAllTests());
+                document.getElementById('runUnitTests').addEventListener('click', () => this.runUnitTests());
+                document.getElementById('runIntegrationTests').addEventListener('click', () => this.runIntegrationTests());
+                document.getElementById('clearConsole').addEventListener('click', () => this.clearConsole());
+                document.getElementById('exportResults').addEventListener('click', () => this.exportResults());
+            }
+            
+            loadTestDefinitions() {
+                // Definir tests para la UI
+                this.tests = [
+                    {
+                        id: 'data-manager-init',
+                        name: 'Data Manager - Inicialización',
+                        description: 'Verifica que Data Manager esté disponible y tenga métodos básicos',
+                        category: 'unit',
+                        status: 'pending'
+                    },
+                    {
+                        id: 'auth-system-init',
+                        name: 'Auth System - Inicialización',
+                        description: 'Verifica que Auth System esté disponible y tenga métodos básicos',
+                        category: 'unit',
+                        status: 'pending'
+                    },
+                    {
+                        id: 'user-login',
+                        name: 'Auth System - Login usuario',
+                        description: 'Prueba login de usuario normal con credenciales de demo',
+                        category: 'integration',
+                        status: 'pending'
+                    },
+                    {
+                        id: 'user-logout',
+                        name: 'Auth System - Logout',
+                        description: 'Prueba logout y verificación de estado de sesión',
+                        category: 'integration',
+                        status: 'pending'
+                    },
+                    {
+                        id: 'admin-login',
+                        name: 'Auth System - Login admin',
+                        description: 'Prueba login de administrador con credenciales de demo',
+                        category: 'integration',
+                        status: 'pending'
+                    },
+                    {
+                        id: 'user-crud',
+                        name: 'Data Manager - CRUD usuarios',
+                        description: 'Prueba creación, lectura, actualización y eliminación de usuarios',
+                        category: 'unit',
+                        status: 'pending'
+                    },
+                    {
+                        id: 'class-crud',
+                        name: 'Data Manager - CRUD clases',
+                        description: 'Prueba gestión completa de clases (CRUD operations)',
+                        category: 'unit',
+                        status: 'pending'
+                    },
+                    {
+                        id: 'booking-system',
+                        name: 'Data Manager - Sistema de reservas',
+                        description: 'Prueba creación, consulta y cancelación de reservas',
+                        category: 'integration',
+                        status: 'pending'
+                    },
+                    {
+                        id: 'notifications',
+                        name: 'Data Manager - Sistema de notificaciones',
+                        description: 'Prueba creación y gestión de notificaciones',
+                        category: 'unit',
+                        status: 'pending'
+                    },
+                    {
+                        id: 'data-export',
+                        name: 'Data Manager - Exportación/Importación',
+                        description: 'Prueba exportación e importación de datos en formato JSON',
+                        category: 'unit',
+                        status: 'pending'
+                    },
+                    {
+                        id: 'profile-management',
+                        name: 'Auth System - Gestión de perfil',
+                        description: 'Prueba actualización de perfil y cambio de contraseña',
+                        category: 'integration',
+                        status: 'pending'
+                    },
+                    {
+                        id: 'ui-integration',
+                        name: 'UI - Elementos de autenticación',
+                        description: 'Verifica que elementos de UI con data-* estén presentes',
+                        category: 'e2e',
+                        status: 'pending'
+                    }
+                ];
+                
+                this.renderTests();
+            }
+            
+            renderTests() {
+                this.testGrid.innerHTML = '';
+                
+                this.tests.forEach(test => {
+                    const testCard = document.createElement('div');
+                    testCard.className = 'test-card';
+                    testCard.id = `test-${test.id}`;
+                    testCard.innerHTML = `
+                        <div class="test-header">
+                            <div class="test-name">${test.name}</div>
+                            <div class="test-status status-${test.status}">${this.getStatusText(test.status)}</div>
+                        </div>
+                        <div class="test-description">${test.description}</div>
+                        <div class="test-details" id="details-${test.id}"></div>
+                    `;
+                    
+                    this.testGrid.appendChild(testCard);
+                });
+                
+                this.totalTestsEl.textContent = this.t
