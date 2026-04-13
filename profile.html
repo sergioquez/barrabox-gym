@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Barrabox Gym</title>
+    <link rel="stylesheet" href="css/style.css?v=5.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2D3047;
+            --secondary: #FF6B35;
+            --accent: #00A8A8;
+            --light: #F8F9FA;
+            --gray: #6C757D;
+        }
+        
+        body {
+            background: #f0f2f5;
+            font-family: 'Open Sans', sans-serif;
+            color: #333;
+            margin: 0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Header */
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1a1c2f 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .logo h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0;
+        }
+        
+        .logo .accent {
+            color: var(--secondary);
+        }
+        
+        .user-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .btn-back {
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-back:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        /* Profile Content */
+        .profile-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Profile Sidebar */
+        .profile-sidebar {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .profile-name {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-email {
+            text-align: center;
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 8px;
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Profile Main */
+        .profile-main {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .section-title i {
+            color: var(--secondary);
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+        }
+        
+        .form-help {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-top: 0.3rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        @media (max-width: 576px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #e55a2b;
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background: white;
+            color: var(--secondary);
+            border: 2px solid var(--secondary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #DC3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--light);
+        }
+        
+        /* Plan Card */
+        .plan-card {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .plan-card.active {
+            border-color: var(--secondary);
+            background: rgba(255,107,53,0.05);
+        }
+        
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .plan-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .plan-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        
+        .badge-premium {
+            background: rgba(255,107,53,0.1);
+            color: var(--secondary);
+        }
+        
+        .badge-basic {
+            background: rgba(108,117,125,0.1);
+            color: var(--gray);
+        }
+        
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem 0;
+        }
+        
+        .plan-features li {
+            padding: 0.5rem 0;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .plan-features li i {
+            color: var(--secondary);
+        }
+        
+        /* Danger Zone */
+        .danger-zone {
+            background: rgba(220,53,69,0.05);
+            border: 1px solid rgba(220,53,69,0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .danger-title {
+            color: #DC3545;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        
+        .danger-text {
+            color: #6C757D;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        
+        /* Footer */
+        .profile-footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid #e9ecef;
+            margin-top: 3rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .footer-links a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="profile-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>BARRA<span class="accent">BOX</span></h1>
+                </div>
+                <div class="user-actions">
+                    <a href="user-dashboard.html" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                        Volver al Dashboard
+                    </a>
+                    <button class="btn btn-danger" data-logout>
+                        <i class="fas fa-sign-out-alt"></i>
+                        Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="profile-content">
+            <!-- Sidebar -->
+            <aside class="profile-sidebar">
+                <div class="profile-avatar" data-user-avatar>
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 class="profile-name" data-user-name>Juan Pérez</h2>
+                <p class="profile-email" data-user-email>juan.perez@ejemplo.com</p>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="statClasses">8</div>
+                        <div class="stat-label">Clases este mes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="statBookings">2</div>
+                        <div class="stat-label">Próximas reservas</div>
+                    </div>
+                </div>
+                
+                <div class="current-plan">
+                    <h3 class="section-title">
+                        <i class="fas fa-crown"></i>
+                        Plan Actual
+                    </h3>
+                    <div class="plan-card active">
+                        <div class="plan-header">
+                            <div class="plan-name" data-user-plan>Plan Premium</div>
+                            <span class="plan-badge badge-premium">ACTIVO</span>
+                        </div>
+                        <ul class="plan-features">
+                            <li><i class="fas fa-check"></i> Acceso ilimitado a clases</li>
+                            <li><i class="fas fa-check"></i> Reservas prioritarias</li>
+                            <li><i class="fas fa-check"></i> Entrenador personal</li>
+                            <li><i class="fas fa-check"></i> Sin contratos</li>
+                        </ul>
+                        <button class="btn btn-outline" style="width: 100%;" disabled>
+                            <i class="fas fa-sync-alt"></i>
+                            Cambiar Plan
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="profile-main">
+                <!-- Personal Information -->
+                <section class="profile-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-user-edit"></i>
+                        Información Personal
+                    </h2>
+                    
+                    <form id="profileForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="profileName">Nombre Completo</label>
+                                <input type="text" id="profileName" name="profileName" class="form-control" required>
+                                <div class="form-help">Tu nombre como aparece en el sistema</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="profileEmail">Email</label>
+                                <input type="email" id="profileEmail" name="profileEmail" class="form-control" required readonly>
+                                <div class="form-help">El email no se puede cambiar</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="profilePhone">Teléfono</label>
+                            <input type="tel" id="profilePhone" name="profilePhone" class="form-control">
+                            <div class="form-help">Opcional - para notificaciones importantes</div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Guardar Cambios
+                            </button>
+                            <button type="reset" class="btn btn-outline">
+                                <i class="fas fa-times"></i>
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Change Password -->
+                <section class="profile-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-key"></i>
+                        Cambiar Contraseña
+                    </h2>
+                    
+                    <form id="passwordForm">
+                        <div class="form-group">
+                            <label class="form-label" for="currentPassword">Contraseña Actual</label>
+                            <input type="password" id="currentPassword" name="currentPassword" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="newPassword">Nueva Contraseña</label>
+                                <input type="password" id="newPassword" name="newPassword" class="form-control" required>
+                                <div class="form-help">Mínimo 6 caracteres</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label" for="confirmPassword">Confirmar Nueva Contraseña</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-key"></i>
+                                Cambiar Contraseña
+                            </button>
+                            <button type="reset" class="btn btn-outline">
+                                <i class="fas fa-times"></i>
+                                Limpiar
+                            </button>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Danger Zone -->
+                <section class="danger-zone">
+                    <h3 class="danger-title">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Zona de Peligro
+                    </h3>
+                    
+                    <p class="danger-text">
+                        Estas acciones son irreversibles. Por favor, procede con cuidado.
+                    </p>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn</button>
+                        <button type="button" class="btn btn-outline" id="requestDataBtn">
+                            <i class="fas fa-download"></i>
+                            Solicitar Mis Datos
+                        </button>
+                        
+                        <button type="button" class="btn btn-danger" id="deleteAccountBtn">
+                            <i class="fas fa-trash-alt"></i>
+                            Eliminar Mi Cuenta
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="profile-footer">
+        <div class="container">
+            <p>&copy; 2026 Barrabox Gym. Todos los derechos reservados.</p>
+            <div class="footer-links">
+                <a href="index.html">Inicio</a>
+                <a href="clases.html">Clases</a>
+                <a href="contacto.html">Contacto</a>
+                <a href="user-dashboard.html">Dashboard</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/data-manager.js?v=5.0"></script>
+    <script src="js/auth.js?v=5.0"></script>
+    <script src="js/profile.js?v=5.0"></script>
+</body>
+</html>

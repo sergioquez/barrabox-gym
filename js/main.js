@@ -1,4 +1,4 @@
-// Barrabox - Main JavaScript
+// Barrabox - Main JavaScript (Actualizado con Auth System)
 document.addEventListener('DOMContentLoaded', function() {
     // Mobile Navigation Toggle
     const hamburger = document.querySelector('.hamburger');
@@ -32,16 +32,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Close Modal
     if (closeModal) {
         closeModal.addEventListener('click', function() {
-            loginModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            closeLoginModal();
         });
     }
     
     // Close modal when clicking outside
     window.addEventListener('click', function(e) {
         if (e.target === loginModal) {
-            loginModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            closeLoginModal();
         }
     });
     
@@ -73,103 +71,185 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // User Login Form
+    // ==================== AUTH SYSTEM INTEGRATION ====================
+    
+    // Inicializar Auth System si está disponible
+    let authSystem = null;
+    if (window.barraboxAuth) {
+        authSystem = window.barraboxAuth;
+        console.log('✅ Auth System disponible');
+    } else {
+        console.log('⚠️ Auth System no disponible - cargando módulos...');
+        // Los módulos se cargarán automáticamente
+    }
+    
+    // User Login Form - Actualizado con Auth System
     const userLoginForm = document.getElementById('userLoginForm');
     if (userLoginForm) {
-        userLoginForm.addEventListener('submit', function(e) {
+        userLoginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Formulario usuario enviado');
+            
             const email = document.getElementById('userEmail').value;
             const password = document.getElementById('userPassword').value;
+            const rememberMe = document.getElementById('rememberMe')?.checked || false;
             
-            // Simulate login - In production this would be an API call
-            simulateUserLogin(email, password);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Ingresando...';
+                
+                // Usar Auth System si está disponible
+                if (authSystem) {
+                    const result = await authSystem.login(email, password, rememberMe);
+                    
+                    // Mostrar mensaje de éxito
+                    showNotification(`¡Bienvenido ${result.user.name}!`, 'success');
+                    
+                    // Cerrar modal y redirigir
+                    closeLoginModal();
+                    
+                    setTimeout(() => {
+                        window.location.href = result.redirectTo;
+                    }, 1000);
+                    
+                } else {
+                    // Fallback al sistema antiguo
+                    simulateUserLogin(email, password);
+                }
+                
+            } catch (error) {
+                showNotification(error.message, 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+            
             return false;
         });
     }
     
-    // Admin Login Form
+    // Admin Login Form - Actualizado con Auth System
     const adminLoginForm = document.getElementById('adminLoginForm');
     if (adminLoginForm) {
-        adminLoginForm.addEventListener('submit', function(e) {
+        adminLoginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('Formulario admin enviado');
+            
             const email = document.getElementById('adminEmail').value;
             const password = document.getElementById('adminPassword').value;
             
-            // Simulate admin login
-            simulateAdminLogin(email, password);
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Ingresando...';
+                
+                // Usar Auth System si está disponible
+                if (authSystem) {
+                    const result = await authSystem.login(email, password, false);
+                    
+                    // Verificar que sea admin
+                    if (!result.user.role === 'admin') {
+                        throw new Error('Acceso denegado: se requieren permisos de administrador');
+                    }
+                    
+                    // Mostrar mensaje de éxito
+                    showNotification(`¡Bienvenido Administrador ${result.user.name}!`, 'admin');
+                    
+                    // Cerrar modal y redirigir
+                    closeLoginModal();
+                    
+                    setTimeout(() => {
+                        window.location.href = result.redirectTo;
+                    }, 1000);
+                    
+                } else {
+                    // Fallback al sistema antiguo
+                    simulateAdminLogin(email, password);
+                }
+                
+            } catch (error) {
+                showNotification(error.message, 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+            
             return false;
         });
     }
     
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const href = this.getAttribute('href');
-            if (href === '#login') return; // Skip login as it's handled by modal
-            
+    // Register Form - Nuevo con Auth System
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const targetId = href.substring(1);
-            const targetElement = document.getElementById(targetId);
+            e.stopPropagation();
             
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80,
-                    behavior: 'smooth'
-                });
+            const formData = {
+                email: document.getElementById('registerEmail').value,
+                name: document.getElementById('registerName').value,
+                phone: document.getElementById('registerPhone')?.value || '',
+                password: document.getElementById('registerPassword').value,
+                confirmPassword: document.getElementById('registerConfirmPassword').value
+            };
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            try {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Registrando...';
                 
-                // Close mobile menu if open
-                if (navMenu.classList.contains('active')) {
-                    navMenu.classList.remove('active');
-                    hamburger.innerHTML = '<i class="fas fa-bars"></i>';
+                if (authSystem) {
+                    const result = await authSystem.register(formData);
+                    
+                    // Mostrar mensaje de éxito
+                    showNotification(`¡Bienvenido ${result.user.name}! Tu cuenta ha sido creada.`, 'success');
+                    
+                    // Cerrar modal y redirigir
+                    closeLoginModal();
+                    
+                    setTimeout(() => {
+                        window.location.href = result.redirectTo;
+                    }, 1500);
+                    
+                } else {
+                    throw new Error('Sistema de registro no disponible');
                 }
+                
+            } catch (error) {
+                showNotification(error.message, 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
             }
+            
+            return false;
         });
-    });
+    }
     
-    // Demo data for simulation
-    const demoUsers = [
-        { email: 'cliente@barrabox.cl', name: 'Juan Pérez', plan: 'Premium', classes: 8 },
-        { email: 'atleta@barrabox.cl', name: 'María González', plan: 'Competidor', classes: 12 }
-    ];
+    // ==================== FUNCIONES DE AYUDA ====================
     
-    const demoAdmin = {
-        email: 'admin@barrabox.cl',
-        name: 'Administrador Barrabox'
-    };
-    
-    // Simulate User Login
+    // Simulate User Login (fallback)
     function simulateUserLogin(email, password) {
-        // Show loading state
         const submitBtn = userLoginForm.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
         submitBtn.textContent = 'Ingresando...';
         submitBtn.disabled = true;
         
-        // Simulate API delay
         setTimeout(() => {
-            // For demo purposes, any email/password works
-            const user = demoUsers.find(u => u.email === email) || {
-                name: email.split('@')[0],
-                plan: 'Básico',
-                classes: 4
-            };
-            
             // Close modal
             closeLoginModal();
             
-            // Show welcome message
-            showNotification(`¡Bienvenido ${user.name}! Redirigiendo al dashboard...`, 'success');
+            // Show success message
+            showNotification(`¡Bienvenido! Redirigiendo al dashboard...`, 'success');
             
-            // Redirect to user dashboard immediately
-            console.log('Login exitoso, redirigiendo a dashboard...');
+            // Redirect to user dashboard
             setTimeout(() => {
-                console.log('Redirigiendo a user-dashboard.html');
                 window.location.href = 'user-dashboard.html';
-            }, 500);
+            }, 1000);
             
             // Reset form
             submitBtn.textContent = originalText;
@@ -178,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1000);
     }
     
-    // Simulate Admin Login
+    // Simulate Admin Login (fallback)
     function simulateAdminLogin(email, password) {
         const submitBtn = adminLoginForm.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
@@ -192,12 +272,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show admin message
             showNotification(`Panel de Administración activo. Redirigiendo...`, 'admin');
             
-            // Redirect to ADMIN dashboard (not user dashboard)
-            console.log('Login admin exitoso, redirigiendo a ADMIN dashboard...');
-            setTimeout(() => {
-                console.log('Redirigiendo a admin-dashboard.html');
-                window.location.href = 'admin-dashboard.html';
-            }, 500);
+            // Redirect to admin dashboard immediately
+            window.location.href = 'admin-dashboard.html';
             
             // Reset form
             submitBtn.textContent = originalText;
@@ -219,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <button class="notification-close">&times;</button>
         `;
         
-        // Add styles if not already present
+        // Add styles if they don't exist
         if (!document.querySelector('#notification-styles')) {
             const styles = document.createElement('style');
             styles.id = 'notification-styles';
@@ -237,14 +313,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     min-width: 300px;
                     max-width: 500px;
                     z-index: 3000;
-                    animation: slideIn 0.3s ease;
+                    animation: slideIn 0.3s ease, slideOut 0.3s ease 3s forwards;
                     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
                 }
                 @keyframes slideIn {
                     from { transform: translateX(100%); opacity: 0; }
                     to { transform: translateX(0); opacity: 1; }
                 }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
                 .notification-success { background-color: #28a745; }
+                .notification-info { background-color: #17a2b8; }
+                .notification-warning { background-color: #ffc107; color: #212529; }
+                .notification-error { background-color: #dc3545; }
                 .notification-admin { background-color: #2D3047; }
                 .notification-content {
                     display: flex;
@@ -255,59 +338,209 @@ document.addEventListener('DOMContentLoaded', function() {
                     background: none;
                     border: none;
                     color: white;
-                    font-size: 1.5rem;
+                    font-size: 1.2rem;
                     cursor: pointer;
-                    padding: 0 0.5rem;
+                    opacity: 0.7;
+                    transition: opacity 0.3s ease;
+                }
+                .notification-close:hover {
+                    opacity: 1;
+                }
+                .notification-warning .notification-close {
+                    color: #212529;
                 }
             `;
             document.head.appendChild(styles);
         }
         
-        // Add to page
+        // Add to document
         document.body.appendChild(notification);
+        
+        // Setup close button
+        const closeBtn = notification.querySelector('.notification-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                notification.remove();
+            });
+        }
         
         // Auto-remove after 5 seconds
         setTimeout(() => {
-            notification.style.animation = 'slideOut 0.3s ease';
-            setTimeout(() => notification.remove(), 300);
+            if (notification.parentNode) {
+                notification.remove();
+            }
         }, 5000);
-        
-        // Close button
-        notification.querySelector('.notification-close').addEventListener('click', function() {
-            notification.remove();
-        });
     }
     
     function getNotificationIcon(type) {
-        switch(type) {
-            case 'success': return 'fa-check-circle';
-            case 'admin': return 'fa-user-shield';
-            default: return 'fa-info-circle';
+        const icons = {
+            success: 'fa-check-circle',
+            info: 'fa-info-circle',
+            warning: 'fa-exclamation-triangle',
+            error: 'fa-times-circle',
+            admin: 'fa-user-shield'
+        };
+        return icons[type] || 'fa-info-circle';
+    }
+    
+    // ==================== INITIALIZATION ====================
+    
+    // Verificar autenticación al cargar la página
+    function checkAuthStatus() {
+        if (authSystem && authSystem.isLoggedIn()) {
+            const user = authSystem.getCurrentUser();
+            console.log('✅ Usuario autenticado:', user.email);
+            
+            // Actualizar UI si hay elementos de autenticación
+            updateAuthUI(user);
+        } else {
+            console.log('🔐 No hay usuario autenticado');
         }
     }
     
-    // Add slideOut animation
-    const slideOutStyle = document.createElement('style');
-    slideOutStyle.textContent = `
-        @keyframes slideOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
-        }
-    `;
-    document.head.appendChild(slideOutStyle);
-    
-    // Demo: Auto-open login modal after 3 seconds on first visit
-    if (!sessionStorage.getItem('barraboxVisited')) {
-        setTimeout(() => {
-            if (loginBtn && !loginModal.style.display || loginModal.style.display === 'none') {
-                loginBtn.click();
+    function updateAuthUI(user) {
+        // Actualizar elementos con data-user
+        const userElements = document.querySelectorAll('[data-user]');
+        userElements.forEach(el => {
+            const attr = el.getAttribute('data-user');
+            if (attr === 'name') el.textContent = user.name;
+            if (attr === 'email') el.textContent = user.email;
+            if (attr === 'plan') el.textContent = user.plan === 'premium' ? 'Plan Premium' : 'Plan Básico';
+        });
+        
+        // Mostrar/ocultar elementos basados en autenticación
+        const authElements = document.querySelectorAll('[data-auth]');
+        authElements.forEach(el => {
+            const authState = el.getAttribute('data-auth');
+            const isLoggedIn = authSystem.isLoggedIn();
+            const isAdmin = authSystem.isUserAdmin();
+            
+            switch(authState) {
+                case 'show-when-logged-in':
+                    el.style.display = isLoggedIn ? '' : 'none';
+                    break;
+                case 'show-when-logged-out':
+                    el.style.display = isLoggedIn ? 'none' : '';
+                    break;
+                case 'show-when-admin':
+                    el.style.display = isAdmin ? '' : 'none';
+                    break;
+                case 'show-when-member':
+                    el.style.display = (isLoggedIn && !isAdmin) ? '' : 'none';
+                    break;
             }
-        }, 3000);
-        sessionStorage.setItem('barraboxVisited', 'true');
+        });
     }
     
-    // Console welcome message
-    console.log('%c🏋️‍♂️ Barrabox - Crossfit, Halterofilia & GAP', 'color: #FF6B35; font-size: 16px; font-weight: bold;');
-    console.log('%cDemo interactivo - Iteración 1: Landing Page & Login Simulation', 'color: #2D3047;');
-    console.log('Próximas iteraciones: Dashboard Admin/Usuario, Calendario, Sistema de Pagos');
+    // Configurar logout buttons
+    function setupLogoutButtons() {
+        const logoutButtons = document.querySelectorAll('[data-logout]');
+        logoutButtons.forEach(btn => {
+            btn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                    if (authSystem) {
+                        const result = await authSystem.logout();
+                        
+                        if (result.success) {
+                            showNotification('Sesión cerrada exitosamente', 'info');
+                            
+                            setTimeout(() => {
+                                window.location.href = result.redirectTo;
+                            }, 1000);
+                        }
+                    } else {
+                        // Fallback simple
+                        showNotification('Sesión cerrada', 'info');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1000);
+                    }
+                }
+            });
+        });
+    }
+    
+    // Inicializar cuando Auth System esté listo
+    function initializeAuth() {
+        if (window.barraboxAuth) {
+            authSystem = window.barraboxAuth;
+            checkAuthStatus();
+            setupLogoutButtons();
+            
+            // Escuchar eventos de autenticación
+            authSystem.on('loginSuccess', (user) => {
+                console.log('Evento: loginSuccess', user.email);
+                updateAuthUI(user);
+            });
+            
+            authSystem.on('logoutSuccess', () => {
+                console.log('Evento: logoutSuccess');
+                updateAuthUI(null);
+            });
+            
+            authSystem.on('sessionRestored', (user) => {
+                console.log('Evento: sessionRestored', user.email);
+                updateAuthUI(user);
+            });
+        } else {
+            // Reintentar después de un delay
+            setTimeout(initializeAuth, 500);
+        }
+    }
+    
+    // Iniciar verificación de auth
+    setTimeout(initializeAuth, 1000);
+    
+    // ==================== OTHER FUNCTIONALITY ====================
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Plan selection
+    const planCards = document.querySelectorAll('.plan-card');
+    planCards.forEach(card => {
+        card.addEventListener('click', function() {
+            planCards.forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+        });
+    });
+    
+    // Contact form
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Enviando...';
+            submitBtn.disabled = true;
+            
+            // Simulate form submission
+            setTimeout(() => {
+                showNotification('¡Mensaje enviado! Te contactaremos pronto.', 'success');
+                contactForm.reset();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }, 1500);
+        });
+    }
+    
+    console.log('✅ Barrabox Main JS cargado con Auth System');
 });
