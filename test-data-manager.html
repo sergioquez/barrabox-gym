@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Data Manager - Barrabox Gym</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2D3047;
+            border-bottom: 3px solid #FF6B35;
+            padding-bottom: 10px;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        
+        .test-section h2 {
+            color: #2D3047;
+            margin-top: 0;
+        }
+        
+        button {
+            background: #FF6B35;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #e55a2b;
+        }
+        
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .success {
+            color: #28a745;
+        }
+        
+        .error {
+            color: #dc3545;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2D3047;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Data Manager - Barrabox Gym</h1>
+        <p>Prueba del sistema de persistencia en localStorage</p>
+        
+        <!-- Stats Section -->
+        <div id="statsSection" class="test-section">
+            <h2>📊 Estadísticas del Sistema</h2>
+            <div id="statsGrid" class="stats-grid">
+                <!-- Las estadísticas se cargarán aquí -->
+            </div>
+            <button onclick="loadStats()">Actualizar Estadísticas</button>
+        </div>
+        
+        <!-- Test Users -->
+        <div class="test-section">
+            <h2>👥 Usuarios</h2>
+            <button onclick="testGetUsers()">Obtener Usuarios</button>
+            <button onclick="testGetUserByEmail()">Buscar Usuario por Email</button>
+            <button onclick="testCreateUser()">Crear Usuario Nuevo</button>
+            <div id="usersResult" class="result"></div>
+        </div>
+        
+        <!-- Test Classes -->
+        <div class="test-section">
+            <h2>🏋️ Clases</h2>
+            <button onclick="testGetClasses()">Obtener Todas las Clases</button>
+            <button onclick="testGetClassesByDay()">Clases del Lunes</button>
+            <button onclick="testGetAvailableClasses()">Clases Disponibles Hoy</button>
+            <div id="classesResult" class="result"></div>
+        </div>
+        
+        <!-- Test Bookings -->
+        <div class="test-section">
+            <h2>📅 Reservas</h2>
+            <button onclick="testCreateBooking()">Crear Reserva (Demo)</button>
+            <button onclick="testGetUserBookings()">Reservas de Usuario 001</button>
+            <button onclick="testCancelBooking()">Cancelar Reserva (Demo)</button>
+            <div id="bookingsResult" class="result"></div>
+        </div>
+        
+        <!-- Test Waitlists -->
+        <div class="test-section">
+            <h2>⏳ Waitlists</h2>
+            <button onclick="testJoinWaitlist()">Unirse a Waitlist (Demo)</button>
+            <button onclick="testGetWaitlists()">Obtener Waitlists</button>
+            <div id="waitlistsResult" class="result"></div>
+        </div>
+        
+        <!-- Test Notifications -->
+        <div class="test-section">
+            <h2>🔔 Notificaciones</h2>
+            <button onclick="testGetNotifications()">Obtener Notificaciones</button>
+            <button onclick="testCreateNotification()">Crear Notificación (Demo)</button>
+            <div id="notificationsResult" class="result"></div>
+        </div>
+        
+        <!-- System Operations -->
+        <div class="test-section">
+            <h2>⚙️ Operaciones del Sistema</h2>
+            <button onclick="testExportData()">Exportar Datos (Backup)</button>
+            <button onclick="testValidateData()">Validar Datos</button>
+            <button onclick="testResetData()" style="background: #dc3545;">Resetear Datos</button>
+            <div id="systemResult" class="result"></div>
+        </div>
+        
+        <!-- Debug Console -->
+        <div class="test-section">
+            <h2>📝 Consola de Debug</h2>
+            <button onclick="testDebugSummary()">Mostrar Resumen en Consola</button>
+            <button onclick="testCleanupOldData()">Limpiar Datos Antiguos</button>
+            <div id="debugResult" class="result"></div>
+        </div>
+    </div>
+
+    <script src="js/data-manager.js?v=5.0"></script>
+    <script>
+        let dataManager = null;
+        
+        // Inicializar Data Manager cuando se carga la página
+        document.addEventListener('DOMContentLoaded', function() {
+            dataManager = new DataManager();
+            loadStats();
+            console.log('✅ Data Manager inicializado para testing');
+        });
+        
+        // ==================== FUNCIONES DE TEST ====================
+        
+        function loadStats() {
+            if (!dataManager) return;
+            
+            const stats = dataManager.getStats();
+            const statsGrid = document.getElementById('statsGrid');
+            
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${stats.totalUsers}</div>
+                    <div class="stat-label">Usuarios</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.totalClasses}</div>
+                    <div class="stat-label">Clases</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.totalBookings}</div>
+                    <div class="stat-label">Reservas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.totalWaitlists}</div>
+                    <div class="stat-label">Waitlists</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.totalNotifications}</div>
+                    <div class="stat-label">Notificaciones</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.storageSize} B</div>
+                    <div class="stat-label">Tamaño</div>
+                </div>
+            `;
+            
+            showResult('statsSection', `<span class="success">✅ Estadísticas cargadas</span><br>Última actualización: ${stats.lastUpdated}`);
+        }
+        
+        function testGetUsers() {
+            const users = dataManager.getUsers();
+            showResult('usersResult', formatJSON(users));
+        }
+        
+        function testGetUserByEmail() {
+            const user = dataManager.getUserByEmail('juan.perez@ejemplo.com');
+            showResult('usersResult', user ? formatJSON(user) : '<span class="error">❌ Usuario no encontrado</span>');
+        }
+        
+        function testCreateUser() {
+            const newUser = {
+                email: 'test.user@ejemplo.com',
+                name: 'Usuario de Prueba',
+                role: 'member',
+                plan: 'basic',
+                status: 'active',
+                joinDate: new Date().toISOString().split('T')[0]
+            };
+            
+            const success = dataManager.saveUser(newUser);
+            showResult('usersResult', success ? 
+                '<span class="success">✅ Usuario creado exitosamente</span>' : 
+                '<span class="error">❌ Error al crear usuario</span>');
+            
+            loadStats(); // Actualizar estadísticas
+        }
+        
+        function testGetClasses() {
+            const classes = dataManager.getClasses();
+            showResult('classesResult', `<strong>Total: ${classes.length} clases</strong><br>` + formatJSON(classes.slice(0, 3)) + '<br>... (mostrando 3 de ' + classes.length + ')');
+        }
+        
+        function testGetClassesByDay() {
+            const mondayClasses = dataManager.getClassesByDay('monday');
+            showResult('classesResult', `<strong>Clases del lunes: ${mondayClasses.length}</strong><br>` + formatJSON(mondayClasses));
+        }
+        
+        function testGetAvailableClasses() {
+            const today = new Date().toISOString().split('T')[0];
+            const availableClasses = dataManager.getAvailableClasses(today);
+            showResult('classesResult', `<strong>Clases disponibles hoy (${today}): ${availableClasses.length}</strong><br>` + formatJSON(availableClasses.slice(0, 3)));
+        }
+        
+        function testCreateBooking() {
+            try {
+                const booking = dataManager.createBooking('user_001', 'class_001', '2026-04-16', '19:00');
+                showResult('bookingsResult', `<span class="success">✅ Reserva creada exitosamente</span><br>` + formatJSON(booking));
+                loadStats();
+            } catch (error) {
+                showResult('bookingsResult', `<span class="error">❌ Error: ${error.message}</span>`);
+            }
+        }
+        
+        function testGetUserBookings() {
+            const userBookings = dataManager.getUserBookings('user_001');
+            showResult('bookingsResult', `<strong>Reservas de user_001: ${userBookings.length}</strong><br>` + formatJSON(userBookings));
+        }
+        
+        function testCancelBooking() {
+            // Primero crear una reserva para luego cancelarla
+            try {
+                const booking = dataManager.createBooking('user_002', 'class_002', '2026-04-16', '08:00');
+                if (booking) {
+                    const success = dataManager.cancelBooking(booking.id);
+                    showResult('bookingsResult', success ? 
+                        `<span class="success">✅ Reserva creada y cancelada exitosamente</span><br>ID: ${booking.id}` : 
+                        '<span class="error">❌ Error al cancelar reserva</span>');
+                    loadStats();
+                }
+            } catch (error) {
+                showResult('bookingsResult', `<span class="error">❌ Error: ${error.message}</span>`);
+            }
+        }
+        
+        function testJoinWaitlist() {
+            try {
+                const waitlist = dataManager.joinWaitlist('user_003', 'class_003', '2026-04-16');
+                showResult('waitlistsResult', `<span class="success">✅ Agregado a waitlist exitosamente</span><br>` + formatJSON(waitlist));
+                loadStats();
+            } catch (error) {
+                showResult('waitlistsResult', `<span class="error">❌ Error: ${error.message}</span>`);
+            }
+        }
+        
+        function testGetWaitlists() {
+            const waitlists = dataManager.getWaitlists();
+            showResult('waitlistsResult', `<strong>Total waitlists: ${waitlists.length}</strong><br>` + formatJSON(waitlists));
+        }
+        
+        function testGetNotifications() {
+            const notifications = dataManager.getUserNotifications('user_001');
+            showResult('notificationsResult', `<strong>Notificaciones de user_001: ${notifications.length}</strong><br>` + formatJSON(notifications.slice(0, 3)));
+        }
+        
+        function testCreateNotification() {
+            const notification = dataManager.createNotification(
+                'user_001',
+                'test_notification',
+                'Notificación de Prueba',
+                'Esta es una notificación de prueba del sistema.'
+            );
+            
+            showResult('notificationsResult', notification ? 
+                `<span class="success">✅ Notificación creada exitosamente</span><br>` + formatJSON(notification) : 
+                '<span class="error">❌ Error al crear notificación</span>');
+            
+            loadStats();
+        }
+        
+        function testExportData() {
+            const exportData = dataManager.exportData();
+            showResult('systemResult', `<strong>Datos exportados (${exportData.length} bytes):</strong><br><textarea style="width:100%; height:100px; font-family:monospace; font-size:10px;">${exportData}</textarea>`);
+        }
+        
+        function testValidateData() {
+            const isValid = dataManager.validateData();
+            showResult('systemResult', isValid ? 
+                '<span class="success">✅ Validación de datos: OK</span>' : 
+                '<span class="error">❌ Validación de datos: ERROR</span>');
+        }
+        
+        function testResetData() {
+            if (confirm('¿Estás seguro de que quieres resetear todos los datos? Se perderá toda la información.')) {
+                const success = dataManager.resetData();
+                showResult('systemResult', success ? 
+                    '<span class="success">✅ Datos reseteados exitosamente</span>' : 
+                    '<span class="error">❌ Error al resetear datos</span>');
+                loadStats();
+            }
+        }
+        
+        function testDebugSummary() {
+            dataManager.debugSummary();
+            showResult('debugResult', '<span class="success">✅ Resumen mostrado en consola del navegador</span>');
+        }
+        
+        function testCleanupOldData() {
+            const cleaned = dataManager.cleanupOldData();
+            showResult('debugResult', cleaned ? 
+                '<span class="success">✅ Datos antiguos limpiados</span>' : 
+                '<span class="success">✅ No había datos antiguos para limpiar</span>');
+            loadStats();
+        }
+        
+        // ==================== FUNCIONES AUXILIARES ====================
+        
+        function showResult(elementId, content) {
+            document.getElementById(elementId).innerHTML = content;
+        }
+        
+        function formatJSON(obj) {
+            return '<pre>' + JSON.stringify(obj, null, 2) + '</pre>';
+        }
+    </script>
+</body>
+</html>
