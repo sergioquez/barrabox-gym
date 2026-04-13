@@ -192,11 +192,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show admin message
             showNotification(`Panel de Administración activo. Redirigiendo...`, 'admin');
             
-            // Redirect to admin dashboard immediately
-            console.log('Login admin exitoso, redirigiendo a dashboard...');
+            // Redirect to ADMIN dashboard (not user dashboard)
+            console.log('Login admin exitoso, redirigiendo a ADMIN dashboard...');
             setTimeout(() => {
-                console.log('Redirigiendo a user-dashboard.html (admin)');
-                window.location.href = 'user-dashboard.html';
+                console.log('Redirigiendo a admin-dashboard.html');
+                window.location.href = 'admin-dashboard.html';
             }, 500);
             
             // Reset form

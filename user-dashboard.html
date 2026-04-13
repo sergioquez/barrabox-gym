@@ -6,6 +6,7 @@
     <title>Mi Dashboard - Barrabox</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dashboard-fixed.css">
+    <link rel="stylesheet" href="css/booking-flow.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
@@ -118,40 +119,86 @@
                     </div>
                 </div>
                 
+                <!-- Quick Booking Banner -->
+                <div class="quick-booking-banner">
+                    <div class="banner-content">
+                        <h2><i class="fas fa-bolt"></i> Reserva Rápida</h2>
+                        <p>Encuentra y reserva tu próxima clase en segundos</p>
+                        <div class="banner-actions">
+                            <button class="btn btn-primary" id="quickBookBtn">
+                                <i class="fas fa-search"></i> Buscar Clases Disponibles
+                            </button>
+                            <button class="btn btn-outline">
+                                <i class="fas fa-calendar-alt"></i> Ver Mi Calendario
+                            </button>
+                        </div>
+                    </div>
+                    <div class="banner-stats">
+                        <div class="banner-stat">
+                            <div class="stat-number">15+</div>
+                            <div class="stat-label">Clases Diarias</div>
+                        </div>
+                        <div class="banner-stat">
+                            <div class="stat-number">85%</div>
+                            <div class="stat-label">Ocupación</div>
+                        </div>
+                        <div class="banner-stat">
+                            <div class="stat-number">4.8★</div>
+                            <div class="stat-label">Rating Coach</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Upcoming Classes with Improved Flow -->
                 <div class="dashboard-section">
-                    <h2><i class="fas fa-bolt"></i> Clases Recomendadas</h2>
-                    <div class="classes-grid">
-                        <div class="class-card">
-                            <div class="class-header">
-                                <span class="class-type crossfit">Crossfit</span>
-                                <span class="class-time">18:00 - 19:00</span>
-                            </div>
-                            <h3>WOD Intenso</h3>
-                            <p class="class-coach"><i class="fas fa-user"></i> Coach: Ana Rodríguez</p>
-                            <p class="class-spots"><i class="fas fa-users"></i> 4 spots disponibles</p>
-                            <button class="btn-primary btn-small">Reservar</button>
+                    <div class="section-header">
+                        <h2><i class="fas fa-calendar-alt"></i> Próximas Clases Disponibles</h2>
+                        <div class="classes-filter">
+                            <button class="filter-btn active" data-filter="all">Todas</button>
+                            <button class="filter-btn" data-filter="crossfit">CrossFit</button>
+                            <button class="filter-btn" data-filter="halterofilia">Halterofilia</button>
+                            <button class="filter-btn" data-filter="gap">GAP</button>
+                            <button class="filter-btn highlight" data-filter="available">
+                                <i class="fas fa-check-circle"></i> Con Cupos
+                            </button>
                         </div>
-                        
-                        <div class="class-card">
-                            <div class="class-header">
-                                <span class="class-type halterofilia">Halterofilia</span>
-                                <span class="class-time">19:30 - 20:30</span>
+                    </div>
+                    
+                    <div class="classes-grid" id="classesGrid">
+                        <!-- Classes will be loaded dynamically -->
+                    </div>
+                    
+                    <div class="load-more">
+                        <button class="btn btn-outline" id="loadMoreBtn">
+                            <i class="fas fa-sync-alt"></i> Cargar Más Clases
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Booking Steps Guide -->
+                <div class="booking-guide">
+                    <h2><i class="fas fa-map-signs"></i> Cómo Reservar en 3 Pasos</h2>
+                    <div class="guide-steps">
+                        <div class="guide-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h3>Encuentra tu Clase</h3>
+                                <p>Filtra por tipo, horario o coach. Las clases con cupos disponibles tienen el botón verde.</p>
                             </div>
-                            <h3>Técnica Clean & Jerk</h3>
-                            <p class="class-coach"><i class="fas fa-user"></i> Coach: Carlos Méndez</p>
-                            <p class="class-spots"><i class="fas fa-users"></i> 6 spots disponibles</p>
-                            <button class="btn-primary btn-small">Reservar</button>
                         </div>
-                        
-                        <div class="class-card">
-                            <div class="class-header">
-                                <span class="class-type gap">GAP</span>
-                                <span class="class-time">20:00 - 21:00</span>
+                        <div class="guide-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h3>Revisa los Detalles</h3>
+                                <p>Verifica el coach, sala, duración y requisitos antes de reservar.</p>
                             </div>
-                            <h3>GAP con Música</h3>
-                            <p class="class-coach"><i class="fas fa-user"></i> Coach: María López</p>
-                            <p class="class-spots"><i class="fas fa-users"></i> 8 spots disponibles</p>
-                            <button class="btn-primary btn-small">Reservar</button>
+                        </div>
+                        <div class="guide-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h3>Confirma tu Reserva</h3>
+                                <p>Haz clic en "Reservar" y recibirás confirmación inmediata por email.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -324,6 +371,84 @@
         </div>
     </main>
 
+    <!-- Booking Modal -->
+    <div class="booking-modal" id="bookingModal">
+        <div class="booking-modal-content">
+            <div class="booking-modal-header">
+                <h2><i class="fas fa-calendar-check"></i> Reservar Clase</h2>
+                <button class="close-booking-modal">&times;</button>
+            </div>
+            
+            <div class="booking-modal-body">
+                <!-- Booking Summary -->
+                <div class="booking-summary">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+                
+                <!-- Booking Steps -->
+                <div class="booking-steps">
+                    <div class="booking-step active" data-step="1">
+                        <div class="step-circle">1</div>
+                        <div class="booking-step-label">Confirmar</div>
+                    </div>
+                    <div class="booking-step" data-step="2">
+                        <div class="step-circle">2</div>
+                        <div class="booking-step-label">Detalles</div>
+                    </div>
+                    <div class="booking-step" data-step="3">
+                        <div class="step-circle">3</div>
+                        <div class="booking-step-label">Finalizar</div>
+                    </div>
+                </div>
+                
+                <!-- Step 1: Confirm Class -->
+                <div class="booking-form-step active" id="step1">
+                    <h3>Confirmar Selección</h3>
+                    <p>Por favor revisa los detalles de la clase antes de continuar.</p>
+                    <div class="booking-form-group">
+                        <label for="confirmTerms">
+                            <input type="checkbox" id="confirmTerms">
+                            Confirmo que he leído y acepto las políticas de cancelación
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Additional Details -->
+                <div class="booking-form-step" id="step2">
+                    <h3>Información Adicional</h3>
+                    <div class="booking-form-group">
+                        <label for="specialRequests">Solicitudes Especiales (opcional)</label>
+                        <textarea id="specialRequests" rows="3" placeholder="Ej: Lesión en rodilla, preferencia de equipo, etc."></textarea>
+                    </div>
+                    <div class="booking-form-group">
+                        <label for="reminderPreference">Recordatorio</label>
+                        <select id="reminderPreference">
+                            <option value="none">Sin recordatorio</option>
+                            <option value="1h">1 hora antes</option>
+                            <option value="2h">2 horas antes</option>
+                            <option value="1d">1 día antes</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Confirmation -->
+                <div class="booking-form-step" id="step3">
+                    <div class="booking-confirmation">
+                        <!-- Dynamic confirmation content will be inserted here -->
+                    </div>
+                </div>
+                
+                <!-- Navigation Buttons -->
+                <div class="booking-form-actions">
+                    <!-- Dynamic buttons will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Custom Modal Container -->
+    <div id="customModalContainer"></div>
+
     <!-- Footer -->
     <footer class="dashboard-footer">
         <div class="container">
@@ -338,6 +463,8 @@
 
     <!-- JavaScript -->
     <script src="js/dashboard.js"></script>
+    <script src="js/booking-flow.js"></script>
+    <script src="js/booking-flow-complete.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

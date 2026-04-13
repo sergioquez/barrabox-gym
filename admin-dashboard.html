@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Barrabox Gym</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin-dashboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-container">
+            <div class="admin-nav">
+                <div class="admin-logo">
+                    <a href="index.html">
+                        <h1 class="logo-text">Barra<span class="logo-accent">BOX</span> <span class="logo-tagline">Admin</span></h1>
+                    </a>
+                </div>
+                
+                <div class="admin-user">
+                    <div class="admin-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="admin-info">
+                        <div class="admin-name">Administrador Barrabox</div>
+                        <div class="admin-role">Super Admin</div>
+                    </div>
+                    <button class="admin-menu-toggle" id="adminMenuToggle">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    
+                    <div class="admin-menu-dropdown" id="adminMenuDropdown">
+                        <a href="index.html"><i class="fas fa-home"></i> Volver al Sitio</a>
+                        <a href="#"><i class="fas fa-cog"></i> Configuración</a>
+                        <a href="#"><i class="fas fa-users"></i> Gestión de Usuarios</a>
+                        <a href="#" class="logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Admin Quick Stats -->
+            <div class="admin-quick-stats">
+                <div class="quick-stat">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Usuarios Activos</h3>
+                        <div class="stat-number">142</div>
+                        <div class="stat-change positive">+12 esta semana</div>
+                    </div>
+                </div>
+                
+                <div class="quick-stat">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Reservas Hoy</h3>
+                        <div class="stat-number">67</div>
+                        <div class="stat-change positive">85% ocupación</div>
+                    </div>
+                </div>
+                
+                <div class="quick-stat">
+                    <div class="stat-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Ingresos Mes</h3>
+                        <div class="stat-number">$4.2M</div>
+                        <div class="stat-change positive">+8% vs mes pasado</div>
+                    </div>
+                </div>
+                
+                <div class="quick-stat">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Alertas</h3>
+                        <div class="stat-number">3</div>
+                        <div class="stat-change negative">Requieren atención</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Main Content -->
+    <main class="admin-main">
+        <div class="admin-container">
+            <!-- Admin Tabs -->
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </button>
+                <button class="admin-tab-btn" data-tab="reservations">
+                    <i class="fas fa-calendar-alt"></i> Reservas
+                </button>
+                <button class="admin-tab-btn" data-tab="classes">
+                    <i class="fas fa-dumbbell"></i> Clases
+                </button>
+                <button class="admin-tab-btn" data-tab="members">
+                    <i class="fas fa-user-friends"></i> Miembros
+                </button>
+                <button class="admin-tab-btn" data-tab="payments">
+                    <i class="fas fa-credit-card"></i> Pagos
+                </button>
+                <button class="admin-tab-btn" data-tab="reports">
+                    <i class="fas fa-chart-bar"></i> Reportes
+                </button>
+            </div>
+            
+            <!-- Tab Contents -->
+            <div class="admin-content">
+                <!-- Dashboard Tab -->
+                <div class="admin-tab-content active" id="dashboardTab">
+                    <div class="admin-grid">
+                        <!-- Left Column -->
+                        <div class="admin-col-wide">
+                            <!-- Today's Schedule -->
+                            <div class="admin-card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-calendar-day"></i> Agenda de Hoy</h2>
+                                    <button class="btn-small btn-primary">Ver Todo</button>
+                                </div>
+                                <div class="schedule-timeline">
+                                    <div class="timeline-item">
+                                        <div class="timeline-time">06:00 - 07:00</div>
+                                        <div class="timeline-content">
+                                            <div class="class-info">
+                                                <span class="class-type crossfit">CrossFit</span>
+                                                <h4>CrossFit AM - Nivel Avanzado</h4>
+                                                <div class="class-stats">
+                                                    <span><i class="fas fa-user"></i> 12/15</span>
+                                                    <span><i class="fas fa-user-tie"></i> Coach: Carlos</span>
+                                                </div>
+                                            </div>
+                                            <button class="btn-small btn-outline">Ver Detalles</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="timeline-item">
+                                        <div class="timeline-time">08:00 - 09:00</div>
+                                        <div class="timeline-content">
+                                            <div class="class-info">
+                                                <span class="class-type halterofilia">Halterofilia</span>
+                                                <h4>Técnica de Arranque</h4>
+                                                <div class="class-stats">
+                                                    <span><i class="fas fa-user"></i> 8/10</span>
+                                                    <span><i class="fas fa-user-tie"></i> Coach: Ana</span>
+                                                </div>
+                                            </div>
+                                            <button class="btn-small btn-outline">Ver Detalles</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="timeline-item highlight">
+                                        <div class="timeline-time">10:00 - 11:30</div>
+                                        <div class="timeline-content">
+                                            <div class="class-info">
+                                                <span class="class-type crossfit">CrossFit</span>
+                                                <h4>WOD Especial - Competidores</h4>
+                                                <div class="class-stats">
+                                                    <span><i class="fas fa-user"></i> 15/15 <span class="badge full">LLENO</span></span>
+                                                    <span><i class="fas fa-user-tie"></i> Coach: Marco</span>
+                                                </div>
+                                            </div>
+                                            <button class="btn-small btn-primary">Gestionar Lista</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="timeline-item">
+                                        <div class="timeline-time">17:00 - 18:00</div>
+                                        <div class="timeline-content">
+                                            <div class="class-info">
+                                                <span class="class-type gap">GAP</span>
+                                                <h4>Glúteos, Abdomen, Piernas</h4>
+                                                <div class="class-stats">
+                                                    <span><i class="fas fa-user"></i> 10/12</span>
+                                                    <span><i class="fas fa-user-tie"></i> Coach: Sofia</span>
+                                                </div>
+                                            </div>
+                                            <button class="btn-small btn-outline">Ver Detalles</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Recent Members -->
+                            <div class="admin-card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-user-plus"></i> Nuevos Miembros</h2>
+                                    <button class="btn-small btn-outline">Ver Todos</button>
+                                </div>
+                                <div class="members-list">
+                                    <div class="member-item">
+                                        <div class="member-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="member-info">
+                                            <h4>Martín Rodríguez</h4>
+                                            <p>Plan: Competidor • Ingresó: Hoy</p>
+                                        </div>
+                                        <button class="btn-small btn-outline">Perfil</button>
+                                    </div>
+                                    
+                                    <div class="member-item">
+                                        <div class="member-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="member-info">
+                                            <h4>Camila Vargas</h4>
+                                            <p>Plan: Premium • Ingresó: Ayer</p>
+                                        </div>
+                                        <button class="btn-small btn-outline">Perfil</button>
+                                    </div>
+                                    
+                                    <div class="member-item">
+                                        <div class="member-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <div class="member-info">
+                                            <h4>Javier Soto</h4>
+                                            <p>Plan: Básico • Ingresó: 2 días</p>
+                                        </div>
+                                        <button class="btn-small btn-outline">Perfil</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div class="admin-col-narrow">
+                            <!-- Quick Actions -->
+                            <div class="admin-card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-bolt"></i> Acciones Rápidas</h2>
+                                </div>
+                                <div class="quick-actions">
+                                    <button class="action-btn">
+                                        <i class="fas fa-plus-circle"></i>
+                                        <span>Nueva Clase</span>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="fas fa-user-plus"></i>
+                                        <span>Agregar Miembro</span>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="fas fa-calendar-plus"></i>
+                                        <span>Programar Horario</span>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="fas fa-file-invoice-dollar"></i>
+                                        <span>Registrar Pago</span>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="fas fa-bullhorn"></i>
+                                        <span>Enviar Anuncio</span>
+                                    </button>
+                                    <button class="action-btn">
+                                        <i class="fas fa-chart-line"></i>
+                                        <span>Ver Reportes</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Alerts -->
+                            <div class="admin-card alert-card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-exclamation-circle"></i> Alertas</h2>
+                                </div>
+                                <div class="alerts-list">
+                                    <div class="alert-item warning">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <div class="alert-content">
+                                            <h4>Clase Llena</h4>
+                                            <p>WOD Competidores (10:00) está al 100%</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="alert-item info">
+                                        <i class="fas fa-info-circle"></i>
+                                        <div class="alert-content">
+                                            <h4>Pago Pendiente</h4>
+                                            <p>3 miembros con pago vencido</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="alert-item success">
+                                        <i class="fas fa-check-circle"></i>
+                                        <div class="alert-content">
+                                            <h4>Meta Alcanzada</h4>
+                                            <p>85% ocupación semanal superada</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Occupancy Stats -->
+                            <div class="admin-card">
+                                <div class="card-header">
+                                    <h2><i class="fas fa-chart-pie"></i> Ocupación</h2>
+                                </div>
+                                <div class="occupancy-stats">
+                                    <div class="occupancy-item">
+                                        <div class="occupancy-label">Hoy</div>
+                                        <div class="occupancy-bar">
+                                            <div class="occupancy-fill" style="width: 85%"></div>
+                                        </div>
+                                        <div class="occupancy-value">85%</div>
+                                    </div>
+                                    
+                                    <div class="occupancy-item">
+                                        <div class="occupancy-label">Esta Semana</div>
+                                        <div class="occupancy-bar">
+                                            <div class="occupancy-fill" style="width: 78%"></div>
+                                        </div>
+                                        <div class="occupancy-value">78%</div>
+                                    </div>
+                                    
+                                    <div class="occupancy-item">
+                                        <div class="occupancy-label">Este Mes</div>
+                                        <div class="occupancy-bar">
+                                            <div class="occupancy-fill" style="width: 82%"></div>
+                                        </div>
+                                        <div class="occupancy-value">82%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reservations Tab -->
+                <div class="admin-tab-content" id="reservationsTab">
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-calendar-alt"></i> Gestión de Reservas</h2>
+                            <div class="header-actions">
+                                <button class="btn-small btn-primary">
+                                    <i class="fas fa-plus"></i> Nueva Reserva
+                                </button>
+                                <button class="btn-small btn-outline">
+                                    <i class="fas fa-download"></i> Exportar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="reservations-controls">
+                            <div class="date-filter">
+                                <button class="btn-small"><i class="fas fa-chevron-left"></i></button>
+                                <span class="current-date">Lunes 13 Abril 2026</span>
+                                <button class="btn-small"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                            
+                            <div class="filter-options">
+                                <select class="filter-select">
+                                    <option>Todas las Clases</option>
+                                    <option>CrossFit</option>
+                                    <option>Halterofilia</option>
+                                    <option>GAP</option>
+                                </select>
+                                <select class="filter-select">
+                                    <option>Todos los Coaches</option>
+                                    <option>Carlos</option>
+                                    <option>Ana</option>
+                                    <option>Marco</option>
+                                    <option>Sofia</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="reservations-grid">
+                            <!-- Reservations will be loaded here -->
+                            <div class="no-reservations">
+                                <i class="fas fa-calendar-times"></i>
+                                <h3>Selecciona una fecha para ver las reservas</h3>
+                                <p>Usa los controles de fecha para navegar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Classes Tab -->
+                <div class="admin-tab-content" id="classesTab">
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-dumbbell"></i> Gestión de Clases</h2>
+                            <button class="btn-small btn-primary">
+                                <i class="fas fa-plus"></i> Crear Clase
+                            </button>
+                        </div>
+                        
+                        <div class="classes-management">
+                            <!-- Class management interface -->
+                            <p>Interfaz de gestión de clases en desarrollo...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Members Tab -->
+                <div class="admin-tab-content" id="membersTab">
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-user-friends"></i> Gestión de Miembros</h2>
+                            <button class="btn-small btn-primary">
+                                <i class="fas fa-user-plus"></i> Agregar Miembro
+                            </button>
+                        </div>
+                        
+                        <div class="members-management">
+                            <!-- Members management interface -->
+                            <p>Interfaz de gestión de miembros en desarrollo...</p
