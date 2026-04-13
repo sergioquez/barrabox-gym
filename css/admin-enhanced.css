@@ -1,0 +1,1009 @@
+/* Admin Enhanced CSS - Estilos mejorados para el Admin Dashboard */
+
+/* ==================== MODALES ==================== */
+.admin-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.admin-modal .modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideUp 0.3s ease;
+}
+
+.admin-modal .modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.admin-modal .modal-header h3 {
+    margin: 0;
+    color: #2D3047;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-modal .close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.admin-modal .close-modal:hover {
+    background: #f8f9fa;
+    color: #2D3047;
+}
+
+.admin-modal .modal-body {
+    padding: 1.5rem;
+}
+
+.admin-modal .modal-actions {
+    padding: 1.5rem;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+}
+
+/* ==================== TABLAS ==================== */
+.members-table,
+.classes-table,
+.bookings-table {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-header {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+    color: #2D3047;
+    font-size: 0.9rem;
+}
+
+.table-body {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr;
+    padding: 1rem;
+    border-bottom: 1px solid #f1f3f5;
+    transition: background 0.2s;
+}
+
+.table-row:hover {
+    background: #f8f9fa;
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+/* Columnas específicas */
+.col-name {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.member-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FF6B35, #FF8E53);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1rem;
+}
+
+.member-info .member-name {
+    font-weight: 600;
+    color: #2D3047;
+}
+
+.member-info .member-phone {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.col-email {
+    display: flex;
+    align-items: center;
+    color: #495057;
+}
+
+.col-role,
+.col-plan,
+.col-status {
+    display: flex;
+    align-items: center;
+}
+
+.col-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.btn-view {
+    background: #e7f5ff;
+    color: #228be6;
+}
+
+.btn-view:hover {
+    background: #d0ebff;
+}
+
+.btn-edit {
+    background: #fff3bf;
+    color: #f08c00;
+}
+
+.btn-edit:hover {
+    background: #ffec99;
+}
+
+.btn-delete {
+    background: #ffe3e3;
+    color: #e03131;
+}
+
+.btn-delete:hover {
+    background: #ffc9c9;
+}
+
+.btn-cancel {
+    background: #fff3bf;
+    color: #f08c00;
+}
+
+.btn-cancel:hover {
+    background: #ffec99;
+}
+
+/* ==================== BADGES ==================== */
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-admin {
+    background: #e7f5ff;
+    color: #228be6;
+}
+
+.badge-member {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.plan-premium {
+    background: linear-gradient(135deg, #ffd43b, #f08c00);
+    color: #2D3047;
+}
+
+.plan-basic {
+    background: #f8f9fa;
+    color: #495057;
+}
+
+.status-active {
+    background: #d3f9d8;
+    color: #2b8a3e;
+}
+
+.status-inactive {
+    background: #ffe3e3;
+    color: #c92a2a;
+}
+
+.status-confirmed {
+    background: #d3f9d8;
+    color: #2b8a3e;
+}
+
+.status-cancelled {
+    background: #ffe3e3;
+    color: #c92a2a;
+}
+
+.badge-type-crossfit {
+    background: linear-gradient(135deg, #FF6B35, #FF8E53);
+    color: white;
+}
+
+.badge-type-yoga {
+    background: linear-gradient(135deg, #00A8A8, #00cccc);
+    color: white;
+}
+
+.badge-type-hiit {
+    background: linear-gradient(135deg, #e03131, #ff6b6b);
+    color: white;
+}
+
+.badge-type-spinning {
+    background: linear-gradient(135deg, #5c7cfa, #748ffc);
+    color: white;
+}
+
+.badge-type-boxing {
+    background: linear-gradient(135deg, #495057, #868e96);
+    color: white;
+}
+
+.badge-type-halterofilia {
+    background: linear-gradient(135deg, #f08c00, #ffc078);
+    color: white;
+}
+
+.badge-type-gap {
+    background: linear-gradient(135deg, #cc5de8, #e599f7);
+    color: white;
+}
+
+/* ==================== BARRAS DE CAPACIDAD ==================== */
+.capacity-bar {
+    width: 100%;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+}
+
+.capacity-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.occupancy-low {
+    background: #51cf66;
+}
+
+.occupancy-medium {
+    background: #ffd43b;
+}
+
+.occupancy-high {
+    background: #ff6b6b;
+}
+
+.capacity-text {
+    font-size: 0.85rem;
+    color: #495057;
+    text-align: center;
+}
+
+/* ==================== REPORTES ==================== */
+.reports-dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.stats-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #FF6B35, #FF8E53);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2D3047;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.stat-sub {
+    font-size: 0.85rem;
+    color: #adb5bd;
+}
+
+.report-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.report-section h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #2D3047;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Distribución por tipo de clase */
+.class-types-distribution {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.type-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.type-name {
+    width: 120px;
+    font-weight: 600;
+    color: #2D3047;
+    text-transform: capitalize;
+}
+
+.type-bar {
+    flex: 1;
+    height: 20px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.type-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #FF6B35, #FF8E53);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.type-count {
+    width: 100px;
+    text-align: right;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Gráfico de ocupación */
+.occupancy-chart {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    height: 200px;
+    padding: 1rem 0;
+}
+
+.day-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.day-header {
+    text-align: center;
+}
+
+.day-name {
+    font-size: 0.85rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.day-number {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2D3047;
+}
+
+.day-occupancy {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.occupancy-bar {
+    width: 30px;
+    height: 150px;
+    background: #e9ecef;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+}
+
+.occupancy-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, #FF6B35, #FF8E53);
+    border-radius: 15px;
+    transition: height 0.5s ease;
+}
+
+.occupancy-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2D3047;
+}
+
+.day-stats {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.day-stats .stat {
+    margin-bottom: 0.25rem;
+}
+
+/* Distribución por plan */
+.plans-distribution {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.plan-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.plan-name {
+    width: 100px;
+    font-weight: 600;
+    color: #2D3047;
+    text-transform: capitalize;
+}
+
+.plan-bar {
+    flex: 1;
+    height: 20px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.plan-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.plan-fill.basic {
+    background: linear-gradient(135deg, #adb5bd, #ced4da);
+}
+
+.plan-fill.premium {
+    background: linear-gradient(135deg, #ffd43b, #f08c00);
+}
+
+.plan-count {
+    width: 120px;
+    text-align: right;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* Acciones de exportación */
+.report-actions {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.export-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.export-buttons .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ==================== FORMULARIOS ==================== */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #2D3047;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #FF6B35;
+    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.form-group .form-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* ==================== ESTADOS ==================== */
+.empty-state,
+.error-state {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-state i,
+.error-state i {
+    font-size: 3rem;
+    color: #adb5bd;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3,
+.error-state h3 {
+    margin: 0 0 0.5rem 0;
+    color: #2D3047;
+}
+
+.empty-state p,
+.error-state p {
+    color: #6c757d;
+    margin: 0;
+}
+
+.error-state i {
+    color: #ff6b6b;
+}
+
+/* ==================== ANIMACIONES ==================== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 1200px) {
+    .table-header,
+    .table-row {
+        grid-template-columns: 2fr 2fr 1fr 1fr 1fr 80px;
+    }
+}
+
+@media (max-width: 992px) {
+    .table-header,
+    .table-row {
+        grid-template-columns: 2fr/* Continuación de admin-enhanced.css */
+
+@media (max-width: 992px) {
+    .table-header,
+    .table-row {
+        grid-template-columns: 2fr 2fr 1fr 1fr 1fr 80px;
+    }
+    
+    .stats-cards {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .table-header {
+        display: none;
+    }
+    
+    .table-body {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .table-row {
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        gap: 0.75rem;
+    }
+    
+    .col-name,
+    .col-email,
+    .col-role,
+    .col-plan,
+    .col-status,
+    .col-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #f1f3f5;
+    }
+    
+    .col-name::before {
+        content: "Nombre:";
+        font-weight: 600;
+        color: #2D3047;
+    }
+    
+    .col-email::before {
+        content: "Email:";
+        font-weight: 600;
+        color: #2D3047;
+    }
+    
+    .col-role::before {
+        content: "Rol:";
+        font-weight: 600;
+        color: #2D3047;
+    }
+    
+    .col-plan::before {
+        content: "Plan:";
+        font-weight: 600;
+        color: #2D3047;
+    }
+    
+    .col-status::before {
+        content: "Estado:";
+        font-weight: 600;
+        color: #2D3047;
+    }
+    
+    .col-actions::before {
+        content: "Acciones:";
+        font-weight: 600;
+        color: #2D3047;
+    }
+    
+    .col-actions {
+        border-bottom: none;
+        justify-content: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .stats-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .occupancy-chart {
+        flex-wrap: wrap;
+        height: auto;
+    }
+    
+    .day-column {
+        width: calc(50% - 0.5rem);
+    }
+    
+    .export-buttons {
+        flex-direction: column;
+    }
+    
+    .export-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-modal .modal-content {
+        width: 95%;
+        margin: 1rem;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    .modal-actions .btn {
+        width: 100%;
+    }
+    
+    .day-column {
+        width: 100%;
+    }
+}
+
+/* ==================== UTILIDADES ==================== */
+.loading {
+    position: relative;
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #FF6B35;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ==================== DETALLES ==================== */
+.detail-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.detail-section h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #2D3047;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.detail-row .label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.detail-row .value {
+    color: #2D3047;
+    text-align: right;
+}
+
+.occupancy-bar-small {
+    width: 60px;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+/* ==================== NOTIFICACIONES ==================== */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #e03131;
+    color: white;
+    font-size: 0.7rem;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+/* ==================== MEJORAS DE ACCESIBILIDAD ==================== */
+@media (prefers-reduced-motion: reduce) {
+    .admin-modal,
+    .stat-card,
+    .btn-action,
+    .capacity-fill,
+    .type-fill,
+    .plan-fill,
+    .occupancy-fill {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* Focus styles para accesibilidad */
+.btn-action:focus,
+.btn:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 2px solid #FF6B35;
+    outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .admin-modal .modal-content {
+        border: 2px solid #2D3047;
+    }
+    
+    .table-row {
+        border: 1px solid #2D3047;
+    }
+    
+    .btn-action {
+        border: 1px solid currentColor;
+    }
+}
+
+/* Print styles */
+@media print {
+    .admin-modal,
+    .btn-action,
+    .modal-actions,
+    .export-buttons {
+        display: none !important;
+    }
+    
+    .table-body {
+        max-height: none;
+        overflow: visible;
+    }
+    
+    .stat-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #dee2e6;
+    }
+    
+    .report-section {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #dee2e6;
+    }
+}
