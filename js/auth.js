@@ -573,13 +573,6 @@ class AuthSystem {
             this.currentUser.id,
             'profile_updated',
             'Perfil Actualizado',
-            'Tu perfil ha// Auth System - Continuación
-
-        // Crear notificación
-        this.dataManager.createNotification(
-            this.currentUser.id,
-            'profile_updated',
-            'Perfil Actualizado',
             'Tu perfil ha sido actualizado exitosamente.'
         );
         
@@ -978,19 +971,19 @@ class AuthSystem {
             }
         }, 5000);
     }
-    
-    // ==================== GLOBAL EXPORT ====================
-    
-    // Hacer disponible globalmente
-    window.AuthSystem = AuthSystem;
-    
-    // Crear instancia global
-    document.addEventListener('DOMContentLoaded', () => {
-        if (!window.barraboxAuth) {
-            window.barraboxAuth = new AuthSystem();
-        }
-    });
 }
+
+// ==================== GLOBAL EXPORT ====================
+
+// Hacer disponible globalmente
+window.AuthSystem = AuthSystem;
+
+// Crear instancia global
+document.addEventListener('DOMContentLoaded', () => {
+    if (!window.barraboxAuth) {
+        window.barraboxAuth = new AuthSystem();
+    }
+});
 
 // Exportar para Node.js (si es necesario)
 if (typeof module !== 'undefined' && module.exports) {

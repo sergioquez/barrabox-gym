@@ -505,12 +505,6 @@ class DataManager {
         const data = this.getAllData();
         const notificationIndex = data.notifications.findIndex(n => n.id === notificationId);
         
-// Data Manager - Continuación
-
-    markNotificationAsRead(notificationId) {
-        const data = this.getAllData();
-        const notificationIndex = data.notifications.findIndex(n => n.id === notificationId);
-        
         if (notificationIndex >= 0) {
             data.notifications[notificationIndex].read = true;
             data.notifications[notificationIndex].readAt = new Date().toISOString();

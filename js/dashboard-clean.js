@@ -1,508 +1,392 @@
-// Dashboard Clean JavaScript - Simple y funcional
-
+// Barrabox Dashboard JavaScript - Iteración 2
 document.addEventListener('DOMContentLoaded', function() {
-    // Elementos del DOM
-    const bookClassBtn = document.getElementById('bookClassBtn');
-    const bookingModal = document.getElementById('bookingModal');
-    const closeModalBtn = document.querySelector('.close-modal');
-    const closeModalBtn2 = document.querySelector('.close-modal-btn');
-    const confirmBookingBtn = document.querySelector('.confirm-booking');
-    const prevWeekBtn = document.getElementById('prevWeek');
-    const nextWeekBtn = document.getElementById('nextWeek');
-    const currentWeekElement = document.getElementById('currentWeek');
-    const bookButtons = document.querySelectorAll('.btn-book');
+    console.log('Barrabox Dashboard cargado');
     
-    // Variables de estado
-    let currentWeek = 0; // 0 = semana actual
-    
-    // Fechas de ejemplo para las semanas
-    const weekDates = [
-        { start: '14', end: '20', month: 'Abril', year: '2026' },
-        { start: '21', end: '27', month: 'Abril', year: '2026' },
-        { start: '28', month: 'Abril', end: '4', monthEnd: 'Mayo', year: '2026' }
-    ];
-    
+    // Datos de ejemplo
+    const dashboardData = {
+        user: { name: "Juan Pérez", plan: "Premium", avatar: "👤" },
+        stats: { classesThisMonth: 12, hoursTrained: 18, caloriesBurned: 4200, streakDays: 7 },
+        classes: [
+            { id: 1, type: "crossfit", name: "Crossfit AMRAP", time: "08:00 - 09:00", coach: "María González", spots: 5, maxSpots: 12, booked: false },
+            { id: 2, type: "halterofilia", name: "Halterofilia Técnica", time: "10:00 - 11:30", coach: "Carlos Rodríguez", spots: 3, maxSpots: 8, booked: true },
+            { id: 3, type: "gap", name: "GAP Intensivo", time: "17:00 - 18:00", coach: "Ana Martínez", spots: 8, maxSpots: 15, booked: false },
+            { id: 4, type: "crossfit", name: "Crossfit WOD", time: "19:00 - 20:00", coach: "Pedro Sánchez", spots: 2, maxSpots: 12, booked: false },
+            { id: 5, type: "halterofilia", name: "Powerlifting", time: "20:30 - 22:00", coach: "Carlos Rodríguez", spots: 0, maxSpots: 6, booked: false }
+        ],
+        calendarWeek: [
+            { day: "Lun", date: 14, classes: ["Crossfit 08:00", "GAP 17:00"] },
+            { day: "Mar", date: 15, classes: ["Halterofilia 10:00", "Crossfit 19:00"] },
+            { day: "Mié", date: 16, classes: ["Crossfit 08:00", "GAP 17:00"] },
+            { day: "Jue", date: 17, classes: ["Halterofilia 10:00", "Powerlifting 20:30"] },
+            { day: "Vie", date: 18, classes: ["Crossfit 08:00", "GAP 17:00"] },
+            { day: "Sáb", date: 19, classes: ["Open Box 09:00-13:00"] },
+            { day: "Dom", date: 20, classes: ["Descanso"] }
+        ],
+        payments: [
+            { id: "PAY-001", date: "2026-04-01", amount: 45000, method: "Tarjeta ****1234", status: "paid" },
+            { id: "PAY-002", date: "2026-03-01", amount: 45000, method: "Tarjeta ****1234", status: "paid" },
+            { id: "PAY-003", date: "2026-02-01", amount: 45000, method: "Transferencia", status: "paid" },
+            { id: "PAY-004", date: "2026-01-01", amount: 42000, method: "Tarjeta ****1234", status: "paid" }
+        ],
+        paymentMethods: [
+            { type: "credit-card", last4: "1234", expiry: "12/27", default: true },
+            { type: "bank", bank: "Banco Estado", account: "****5678" }
+        ]
+    };
+
     // Inicializar
-    initDashboard();
+    initUserMenu();
+    initTabs();
+    initClassesFilter();
+    initCalendar();
+    initPlanActions();
+    initPaymentActions();
+    loadDashboardData();
     
-    function initDashboard() {
-        // Configurar botón de reservar clase
-        if (bookClassBtn) {
-            bookClassBtn.addEventListener('click', function() {
-                // Scroll a la primera clase disponible
-                const firstAvailable = document.querySelector('.class-slot.available');
-                if (firstAvailable) {
-                    firstAvailable.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'center' 
-                    });
-                    
-                    // Destacar la clase
-                    firstAvailable.style.animation = 'pulse 2s infinite';
-                    setTimeout(() => {
-                        firstAvailable.style.animation = '';
-                    }, 2000);
-                }
-            });
-        }
+    function loadDashboardData() {
+        document.querySelector('.user-name').textContent = dashboardData.user.name;
+        document.querySelector('.user-plan').textContent = `Plan ${dashboardData.user.plan}`;
+        document.querySelector('.user-avatar').textContent = dashboardData.user.avatar;
         
-        // Configurar modal de reserva
-        if (bookingModal && closeModalBtn) {
-            closeModalBtn.addEventListener('click', closeBookingModal);
-            if (closeModalBtn2) {
-                closeModalBtn2.addEventListener('click', closeBookingModal);
-            }
+        document.getElementById('stat-classes').textContent = dashboardData.stats.classesThisMonth;
+        document.getElementById('stat-hours').textContent = dashboardData.stats.hoursTrained;
+        document.getElementById('stat-calories').textContent = dashboardData.stats.caloriesBurned.toLocaleString();
+        document.getElementById('stat-streak').textContent = dashboardData.stats.streakDays;
+        
+        renderClasses(dashboardData.classes);
+        renderCalendar(dashboardData.calendarWeek);
+        renderPayments(dashboardData.payments);
+        renderPaymentMethods(dashboardData.paymentMethods);
+    }
+    
+    function initUserMenu() {
+        const menuToggle = document.getElementById('userMenuToggle');
+        const menuDropdown = document.getElementById('userMenuDropdown');
+        
+        if (menuToggle && menuDropdown) {
+            menuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                menuDropdown.classList.toggle('show');
+            });
             
-            bookingModal.addEventListener('click', function(e) {
-                if (e.target === bookingModal) {
-                    closeBookingModal();
-                }
+            document.addEventListener('click', function() {
+                menuDropdown.classList.remove('show');
             });
-        }
-        
-        // Configurar botón de confirmar reserva
-        if (confirmBookingBtn) {
-            confirmBookingBtn.addEventListener('click', confirmBooking);
-        }
-        
-        // Configurar navegación de semanas
-        if (prevWeekBtn && nextWeekBtn) {
-            prevWeekBtn.addEventListener('click', goToPrevWeek);
-            nextWeekBtn.addEventListener('click', goToNextWeek);
-        }
-        
-        // Configurar botones de reserva en las clases
-        bookButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const classSlot = this.closest('.class-slot');
-                openBookingModal(classSlot);
+            
+            menuDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
             });
-        });
-        
-        // Configurar botones de cancelar reserva
-        const cancelButtons = document.querySelectorAll('.btn-danger');
-        cancelButtons.forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const reservationCard = this.closest('.reservation-card');
-                if (reservationCard && confirm('¿Estás seguro de que quieres cancelar esta reserva?')) {
-                    cancelReservation(reservationCard);
-                }
-            });
-        });
-        
-        // Configurar botones de detalles
-        const detailButtons = document.querySelectorAll('.btn-outline');
-        detailButtons.forEach(btn => {
-            if (btn.textContent.includes('Detalles')) {
-                btn.addEventListener('click', function() {
-                    const card = this.closest('.reservation-card') || this.closest('.class-slot');
-                    showClassDetails(card);
+            
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                        showNotification('Sesión cerrada correctamente', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 1500);
+                    }
                 });
             }
+        }
+    }
+    
+    function initTabs() {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                tabContents.forEach(content => content.classList.remove('active'));
+                const tabId = this.getAttribute('data-tab');
+                const tabContent = document.getElementById(tabId);
+                if (tabContent) tabContent.classList.add('active');
+            });
         });
         
-        // Actualizar semana actual
-        updateWeekDisplay();
+        if (tabButtons.length > 0) tabButtons[0].click();
     }
     
-    function openBookingModal(classSlot) {
-        if (!classSlot || !bookingModal) return;
+    function initClassesFilter() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                const filterType = this.getAttribute('data-filter');
+                filterClasses(filterType);
+            });
+        });
+    }
+    
+    function filterClasses(type) {
+        let filteredClasses = type === 'all' ? dashboardData.classes : dashboardData.classes.filter(cls => cls.type === type);
+        renderClasses(filteredClasses);
+    }
+    
+    function renderClasses(classes) {
+        const classesContainer = document.getElementById('classes-list');
+        if (!classesContainer) return;
         
-        // Obtener información de la clase
-        const classTime = classSlot.querySelector('.class-time')?.textContent || '--:--';
-        const classType = classSlot.querySelector('.class-type')?.textContent || 'Clase';
-        const classTitle = classSlot.querySelector('.class-title')?.textContent || 'Sin título';
-        const classCoach = classSlot.querySelector('.class-coach')?.textContent || 'Coach: --';
+        classesContainer.innerHTML = '';
         
-        // Actualizar contenido del modal
-        const modalTitle = bookingModal.querySelector('h4');
-        const modalDetails = bookingModal.querySelector('.booking-details');
-        
-        if (modalTitle) {
-            modalTitle.textContent = classTitle;
-        }
-        
-        if (modalDetails) {
-            // Obtener día de la clase
-            const dayColumn = classSlot.closest('.day-column');
-            const dayName = dayColumn?.querySelector('.day-name')?.textContent || 'Lun';
-            const dayDate = dayColumn?.querySelector('.day-date')?.textContent || '14';
-            
-            modalDetails.innerHTML = `
-                <div class="detail">
-                    <i class="fas fa-clock"></i>
-                    <span>${dayName} ${dayDate} Abril, ${classTime}</span>
+        classes.forEach(cls => {
+            const classCard = document.createElement('div');
+            classCard.className = 'class-card';
+            classCard.innerHTML = `
+                <div class="class-header">
+                    <span class="class-type ${cls.type}">${getClassTypeName(cls.type)}</span>
+                    <span class="class-time">${cls.time}</span>
                 </div>
-                <div class="detail">
-                    <i class="fas fa-user-tie"></i>
-                    <span>${classCoach}</span>
-                </div>
-                <div class="detail">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>Sala Principal</span>
-                </div>
-                <div class="detail">
-                    <i class="fas fa-clock"></i>
-                    <span>60 minutos</span>
-                </div>
+                <h3>${cls.name}</h3>
+                <div class="class-coach"><i class="fas fa-user"></i><span>Coach: ${cls.coach}</span></div>
+                <div class="class-spots"><i class="fas fa-users"></i><span>Disponibles: ${cls.spots}/${cls.maxSpots}</span></div>
+                <button class="btn btn-primary btn-small ${cls.booked ? 'booked' : ''} ${cls.spots === 0 ? 'disabled' : ''}" 
+                        data-class-id="${cls.id}" ${cls.spots === 0 ? 'disabled' : ''}>
+                    ${cls.booked ? 'Cancelar Reserva' : (cls.spots === 0 ? 'Completo' : 'Reservar')}
+                </button>
             `;
+            classesContainer.appendChild(classCard);
+        });
+        
+        document.querySelectorAll('#classes-list .btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const classId = parseInt(this.getAttribute('data-class-id'));
+                const classData = dashboardData.classes.find(c => c.id === classId);
+                if (classData) {
+                    if (classData.booked) cancelBooking(classId);
+                    else bookClass(classId);
+                }
+            });
+        });
+    }
+    
+    function getClassTypeName(type) {
+        const names = { 'crossfit': 'Crossfit', 'halterofilia': 'Halterofilia', 'gap': 'GAP' };
+        return names[type] || type;
+    }
+    
+    function initCalendar() {
+        const prevBtn = document.getElementById('calendarPrev');
+        const nextBtn = document.getElementById('calendarNext');
+        const currentWeek = document.getElementById('currentWeek');
+        
+        if (prevBtn) prevBtn.addEventListener('click', () => showNotification('Semana anterior', 'info'));
+        if (nextBtn) nextBtn.addEventListener('click', () => showNotification('Próxima semana', 'info'));
+        
+        if (currentWeek) {
+            const today = new Date();
+            const startOfWeek = new Date(today);
+            startOfWeek.setDate(today.getDate() - today.getDay() + 1);
+            const endOfWeek = new Date(startOfWeek);
+            endOfWeek.setDate(startOfWeek.getDate() + 6);
+            const options = { day: 'numeric', month: 'short' };
+            currentWeek.textContent = `${startOfWeek.toLocaleDateString('es-ES', options)} - ${endOfWeek.toLocaleDateString('es-ES', options)}`;
         }
-        
-        // Mostrar modal
-        bookingModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
     }
     
-    function closeBookingModal() {
-        if (bookingModal) {
-            bookingModal.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-    }
-    
-    function confirmBooking() {
-        // Simular reserva exitosa
-        closeBookingModal();
+    function renderCalendar(weekData) {
+        const calendarContainer = document.getElementById('calendar-week');
+        if (!calendarContainer) return;
         
-        // Mostrar notificación
-        showNotification('¡Reserva confirmada! Recibirás un email de confirmación.', 'success');
+        calendarContainer.innerHTML = '';
+        const today = new Date().getDate();
         
-        // Actualizar interfaz después de 1 segundo
-        setTimeout(() => {
-            // En un sistema real, aquí se actualizaría la base de datos
-            // Por ahora, solo mostramos un mensaje
-            alert('Reserva confirmada exitosamente. Tu clase ha sido agregada a "Tus Próximas Reservas".');
-        }, 500);
-    }
-    
-    function cancelReservation(reservationCard) {
-        // Simular cancelación
-        reservationCard.style.opacity = '0.5';
-        reservationCard.style.transform = 'scale(0.95)';
-        
-        setTimeout(() => {
-            // En un sistema real, aquí se eliminaría de la base de datos
-            // Por ahora, solo eliminamos el elemento visualmente
-            reservationCard.innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
-                    <i class="fas fa-check-circle" style="color: #28a745; font-size: 2rem; margin-bottom: 1rem;"></i>
-                    <h4 style="color: #28a745;">Reserva Cancelada</h4>
-                    <p style="color: #6c757d;">Esta reserva ha sido cancelada exitosamente.</p>
-                </div>
+        weekData.forEach(day => {
+            const dayElement = document.createElement('div');
+            dayElement.className = `calendar-day ${day.date === today ? 'current' : ''}`;
+            dayElement.innerHTML = `
+                <div class="day-header">${day.day}</div>
+                <div class="day-number">${day.date}</div>
+                <div class="day-classes">${day.classes.join('<br>')}</div>
             `;
-            
-            // Mostrar notificación
-            showNotification('Reserva cancelada exitosamente.', 'info');
-        }, 500);
+            calendarContainer.appendChild(dayElement);
+        });
     }
     
-    function showClassDetails(card) {
-        if (!card) return;
+    function initPlanActions() {
+        const renewBtn = document.getElementById('renewPlanBtn');
+        const cancelAutoBtn = document.getElementById('cancelAutoRenewal');
+        const upgradeBtns = document.querySelectorAll('.upgrade-plan');
         
-        // Obtener información de la clase/reserva
-        const classType = card.querySelector('.class-type')?.textContent || 'Clase';
-        const classTitle = card.querySelector('h3')?.textContent || card.querySelector('.class-title')?.textContent || 'Sin título';
-        const classTime = card.querySelector('.class-time')?.textContent || card.querySelector('.reservation-date')?.textContent || '--:--';
-        const classCoach = card.querySelector('.class-coach')?.textContent || 'Coach: --';
-        
-        // Crear modal de detalles
-        const modalHTML = `
-            <div class="class-details-modal">
-                <h3>${classTitle}</h3>
-                <div class="details-grid">
-                    <div class="detail-item">
-                        <i class="fas fa-tag"></i>
-                        <div>
-                            <strong>Tipo:</strong>
-                            <p>${classType}</p>
-                        </div>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-clock"></i>
-                        <div>
-                            <strong>Horario:</strong>
-                            <p>${classTime}</p>
-                        </div>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-user-tie"></i>
-                        <div>
-                            <strong>Coach:</strong>
-                            <p>${classCoach}</p>
-                        </div>
-                    </div>
-                    <div class="detail-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <div>
-                            <strong>Ubicación:</strong>
-                            <p>Sala Principal</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="description">
-                    <h4>Descripción:</h4>
-                    <p>Clase de ${classType.toLowerCase()} diseñada para mejorar tu técnica y condición física. Nivel adecuado para todos los participantes.</p>
-                </div>
-                <div class="modal-actions">
-                    <button class="btn btn-outline close-details">Cerrar</button>
-                </div>
-            </div>
-        `;
-        
-        // Mostrar modal
-        showCustomModal('Detalles de la Clase', modalHTML);
-        
-        // Configurar botón de cerrar
-        setTimeout(() => {
-            const closeBtn = document.querySelector('.close-details');
-            if (closeBtn) {
-                closeBtn.addEventListener('click', closeCustomModal);
+        if (renewBtn) renewBtn.addEventListener('click', () => {
+            if (confirm('¿Renovar plan Premium por $45.000?')) {
+                showNotification('Plan renovado exitosamente', 'success');
+                setTimeout(() => showNotification('Pago procesado. Próxima renovación: 13/05/2026', 'success'), 1000);
             }
-        }, 100);
-    }
-    
-    function goToPrevWeek() {
-        if (currentWeek > 0) {
-            currentWeek--;
-            updateWeekDisplay();
-            showNotification('Semana anterior cargada', 'info');
-        } else {
-            showNotification('Ya estás en la primera semana disponible', 'warning');
-        }
-    }
-    
-    function goToNextWeek() {
-        if (currentWeek < weekDates.length - 1) {
-            currentWeek++;
-            updateWeekDisplay();
-            showNotification('Próxima semana cargada', 'info');
-        } else {
-            showNotification('No hay más semanas disponibles', 'warning');
-        }
-    }
-    
-    function updateWeekDisplay() {
-        if (!currentWeekElement) return;
+        });
         
-        const week = weekDates[currentWeek];
-        if (week.monthEnd) {
-            currentWeekElement.textContent = `Semana ${week.start} ${week.month} - ${week.end} ${week.monthEnd} ${week.year}`;
-        } else {
-            currentWeekElement.textContent = `Semana ${week.start}-${week.end} ${week.month} ${week.year}`;
+        if (cancelAutoBtn) cancelAutoBtn.addEventListener('click', () => {
+            if (confirm('¿Cancelar renovación automática? Deberás renovar manualmente cada mes.')) {
+                showNotification('Renovación automática cancelada', 'warning');
+            }
+        });
+        
+        upgradeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const plan = this.getAttribute('data-plan');
+                const price = this.getAttribute('data-price');
+                if (confirm(`¿Cambiar a plan ${plan} por $${price}?`)) {
+                    showNotification(`Plan cambiado a ${plan}`, 'success');
+                }
+            });
+        });
+    }
+    
+    function initPaymentActions() {
+        const addPaymentBtn = document.getElementById('addPaymentMethod');
+        if (addPaymentBtn) addPaymentBtn.addEventListener('click', () => {
+            showNotification('Funcionalidad de añadir método de pago en desarrollo', 'info');
+        });
+        
+        document.querySelectorAll('.remove-method').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const methodId = this.getAttribute('data-method-id');
+                if (confirm('¿Eliminar este método de pago?')) {
+                    showNotification('Método de pago eliminado', 'success');
+                }
+            });
+        });
+    }
+    
+    function renderPayments(payments) {
+        const paymentsBody = document.getElementById('payments-body');
+        if (!paymentsBody) return;
+        
+        paymentsBody.innerHTML = '';
+        payments.forEach(payment => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${payment.id}</td>
+                <td>${formatDate(payment.date)}</td>
+                <td>$${payment.amount.toLocaleString()}</td>
+                <td>${payment.method}</td>
+                <td><span class="payment-status status-${payment.status}">${getStatusText(payment.status)}</span></td>
+            `;
+            paymentsBody.appendChild(row);
+        });
+    }
+    
+    function renderPaymentMethods(methods) {
+        const methodsList = document.getElementById('payment-methods-list');
+        if (!methodsList) return;
+        
+        methodsList.innerHTML = '';
+        methods.forEach(method => {
+            const methodCard = document.createElement('div');
+            methodCard.className = 'method-card';
+            methodCard.innerHTML = `
+                <div class="method-info">
+                    <i class="fas fa-${method.type === 'credit-card' ? 'credit-card' : 'university'}"></i>
+                    <div>
+                        <p>${getMethodName(method)}</p>
+                        <small>${getMethodDetails(method)}</small>
+                    </div>
+                </div>
+                ${method.default ? '<span class="badge badge-primary">Predeterminado</span>' : 
+                  '<button class="btn btn-outline-danger btn-small remove-method" data-method-id="${method.type}">Eliminar</button>'}
+            `;
+            methodsList.appendChild(methodCard);
+        });
+    }
+    
+    function getMethodName(method) {
+        return method.type === 'credit-card' ? 'Tarjeta de Crédito' : 
+               method.type === 'bank' ? 'Transferencia Bancaria' : 'Método de Pago';
+    }
+    
+    function getMethodDetails(method) {
+        return method.type === 'credit-card' ? `Terminada en ${method.last4} · Expira ${method.expiry}` :
+               method.type === 'bank' ? `${method.bank} · Cuenta ${method.account}` : '';
+    }
+    
+    // Funciones de reserva
+    function bookClass(classId) {
+        const classData = dashboardData.classes.find(c => c.id === classId);
+        if (!classData) return;
+        
+        if (classData.spots === 0) {
+            showNotification('Lo sentimos, esta clase está completa', 'error');
+            return;
         }
+        
+        classData.booked = true;
+        classData.spots -= 1;
+        dashboardData.stats.classesThisMonth += 1;
+        dashboardData.stats.hoursTrained += 1.5;
+        dashboardData.stats.caloriesBurned += 350;
+        
+        showNotification(`Clase "${classData.name}" reservada exitosamente`, 'success');
+        renderClasses(dashboardData.classes);
+        loadDashboardData();
+    }
+    
+    function cancelBooking(classId) {
+        const classData = dashboardData.classes.find(c => c.id === classId);
+        if (!classData) return;
+        
+        if (confirm(`¿Cancelar reserva de "${classData.name}"?`)) {
+            classData.booked = false;
+            classData.spots += 1;
+            dashboardData.stats.classesThisMonth -= 1;
+            dashboardData.stats.hoursTrained -= 1.5;
+            dashboardData.stats.caloriesBurned -= 350;
+            
+            showNotification(`Reserva de "${classData.name}" cancelada`, 'warning');
+            renderClasses(dashboardData.classes);
+            loadDashboardData();
+        }
+    }
+    
+    // Funciones auxiliares
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+    
+    function getStatusText(status) {
+        const statusMap = { paid: 'Pagado', pending: 'Pendiente', failed: 'Fallido' };
+        return statusMap[status] || status;
     }
     
     function showNotification(message, type = 'info') {
-        // Crear elemento de notificación
+        // Crear notificación
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
         notification.innerHTML = `
             <div class="notification-content">
-                <i class="fas ${getNotificationIcon(type)}"></i>
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
                 <span>${message}</span>
             </div>
-            <button class="notification-close">&times;</button>
+            <button class="notification-close"><i class="fas fa-times"></i></button>
         `;
         
-        // Agregar estilos si no existen
-        if (!document.querySelector('#notification-styles')) {
-            const styles = document.createElement('style');
-            styles.id = 'notification-styles';
-            styles.textContent = `
-                .notification {
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    padding: 1rem 1.5rem;
-                    border-radius: 8px;
-                    color: white;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    min-width: 300px;
-                    max-width: 500px;
-                    z-index: 3000;
-                    animation: slideIn 0.3s ease, slideOut 0.3s ease 3s forwards;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                }
-                @keyframes slideIn {
-                    from { transform: translateX(100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-                @keyframes slideOut {
-                    from { transform: translateX(0); opacity: 1; }
-                    to { transform: translateX(100%); opacity: 0; }
-                }
-                .notification-success { background-color: #28a745; }
-                .notification-info { background-color: #17a2b8; }
-                .notification-warning { background-color: #ffc107; color: #212529; }
-                .notification-content {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.8rem;
-                }
-                .notification-close {
-                    background: none;
-                    border: none;
-                    color: white;
-                    font-size: 1.2rem;
-                    cursor: pointer;
-                    opacity: 0.7;
-                    transition: opacity 0.3s ease;
-                }
-                .notification-close:hover {
-                    opacity: 1;
-                }
-                .notification-warning .notification-close {
-                    color: #212529;
-                }
-            `;
-            document.head.appendChild(styles);
-        }
+        // Añadir al DOM
+        const container = document.getElementById('notifications-container') || createNotificationContainer();
+        container.appendChild(notification);
         
-        // Agregar al documento
-        document.body.appendChild(notification);
-        
-        // Configurar botón de cerrar
-        const closeBtn = notification.querySelector('.notification-close');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
-                notification.remove();
-            });
-        }
-        
-        // Auto-eliminar después de 5 segundos
+        // Auto-remover después de 5 segundos
         setTimeout(() => {
-            if (notification.parentNode) {
-                notification.remove();
-            }
+            notification.classList.add('fade-out');
+            setTimeout(() => notification.remove(), 300);
         }, 5000);
-    }
-    
-    function getNotificationIcon(type) {
-        const icons = {
-            success: 'fa-check-circle',
-            info: 'fa-info-circle',
-            warning: 'fa-exclamation-triangle',
-            error: 'fa-times-circle'
-        };
-        return icons[type] || 'fa-info-circle';
-    }
-    
-    function showCustomModal(title, content) {
-        const modalContainer = document.createElement('div');
-        modalContainer.className = 'custom-modal-overlay';
-        modalContainer.innerHTML = `
-            <div class="custom-modal">
-                <div class="custom-modal-header">
-                    <h3>${title}</h3>
-                    <button class="close-custom-modal">&times;</button>
-                </div>
-                <div class="custom-modal-body">
-                    ${content}
-                </div>
-            </div>
-        `;
         
-        // Agregar estilos si no existen
-        if (!document.querySelector('#customModalStyles')) {
-            const styles = document.createElement('style');
-            styles.id = 'customModalStyles';
-            styles.textContent = `
-                .custom-modal-overlay {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0,0,0,0.5);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 2000;
-                    padding: 1rem;
-                }
-                .custom-modal {
-                    background: white;
-                    border-radius: 16px;
-                    width: 100%;
-                    max-width: 500px;
-                    max-height: 80vh;
-                    overflow-y: auto;
-                    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-                    animation: slideUp 0.3s ease;
-                }
-                .custom-modal-header {
-                    padding: 1.5rem;
-                    border-bottom: 1px solid #e9ecef;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-                .custom-modal-header h3 {
-                    color: #2D3047;
-                    font-size: 1.5rem;
-                    font-weight: 700;
-                    margin: 0;
-                }
-                .close-custom-modal {
-                    background: none;
-                    border: none;
-                    font-size: 1.5rem;
-                    color: #6c757d;
-                    cursor: pointer;
-                    width: 36px;
-                    height: 36px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    transition: all 0.3s ease;
-                }
-                .close-custom-modal:hover {
-                    background: #f8f9fa;
-                    color: #dc3545;
-                }
-                .custom-modal-body {
-                    padding: 1.5rem;
-                }
-                @keyframes slideUp {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .class-details-modal h3 {
-                    color: #2D3047;
-                    font-size: 1.5rem;
-                    margin-bottom: 1.5rem;
-                }
-                .details-grid {
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                    gap: 1rem;
-                    margin: 1.5rem 0;
-                }
-                .detail-item {
-                    display: flex;
-                    align-items: flex-start;
-                    gap: 1rem;
-                }
-                .detail-item i {
-                    color: #FF6B35;
-                    font-size: 1.2rem;
-                    margin-top: 0.2rem;
-                }
-                .detail-item strong {
-                    display: block;
-                    color: #2D3047;
-                    margin-bottom: 0.2rem;
-                }
-                .detail-item p {
-                    color: #6c757d;
-                    margin: 0;
-                }
-                .description {
-                    margin: 1.5rem 0;
-                    padding: 1.5rem;
-                    background: #f8f9fa;
-                    border-radius:
+        // Botón de cerrar
+        notification.querySelector('.notification-close').addEventListener('click', () => {
+            notification.classList.add('fade-out');
+            setTimeout(() => notification.remove(), 300);
+        });
+    }
+    
+    function createNotificationContainer() {
+        const container = document.createElement('div');
+        container.id = 'notifications-container';
+        container.className = 'notifications-container';
+        document.body.appendChild(container);
+        return container;
+    }
+});
