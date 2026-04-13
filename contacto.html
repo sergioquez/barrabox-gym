@@ -132,6 +132,48 @@
         </div>
     </section>
 
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Acceso Barra<span class="logo-accent">BOX</span></h2>
+            <div class="login-tabs">
+                <button class="tab-btn active" data-tab="user">Usuario</button>
+                <button class="tab-btn" data-tab="admin">Administrador</button>
+            </div>
+            
+            <div class="tab-content active" id="userTab">
+                <form id="userLoginForm">
+                    <div class="form-group">
+                        <label for="userEmail">Email</label>
+                        <input type="email" id="userEmail" placeholder="usuario@ejemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPassword">Contraseña</label>
+                        <input type="password" id="userPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">Ingresar como Usuario</button>
+                    <p class="login-note">Demo: Cualquier email/contraseña funciona</p>
+                </form>
+            </div>
+            
+            <div class="tab-content" id="adminTab">
+                <form id="adminLoginForm">
+                    <div class="form-group">
+                        <label for="adminEmail">Email Administrador</label>
+                        <input type="email" id="adminEmail" placeholder="admin@barrabox.cl" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPassword">Contraseña</label>
+                        <input type="password" id="adminPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">Ingresar como Administrador</button>
+                    <p class="login-note">Demo: admin@barrabox.cl / cualquier contraseña</p>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
