@@ -150,8 +150,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show welcome message
             showNotification(`¡Bienvenido ${user.name}! Plan: ${user.plan}. Tienes ${user.classes} clases disponibles esta semana.`, 'success');
             
-            // In next iteration: Redirect to user dashboard
-            console.log('User logged in:', { email, user });
+            // Redirect to user dashboard after 1.5 seconds
+            setTimeout(() => {
+                window.location.href = 'user-dashboard.html';
+            }, 1500);
             
             // Reset form
             submitBtn.textContent = originalText;
@@ -175,8 +177,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show admin message
             showNotification(`Panel de Administración activo. Bienvenido ${demoAdmin.name}.`, 'admin');
             
-            // In next iteration: Redirect to admin dashboard
-            console.log('Admin logged in:', { email });
+            // Redirect to admin dashboard after 1.5 seconds
+            setTimeout(() => {
+                // TODO: Create admin-dashboard.html in Iteration 3
+                // For now, redirect to user dashboard
+                window.location.href = 'user-dashboard.html';
+            }, 1500);
             
             // Reset form
             submitBtn.textContent = originalText;

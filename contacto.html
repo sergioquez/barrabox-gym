@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Barrabox</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="logo">
+                <span class="logo-text">BARRA<span class="logo-accent">BOX</span></span>
+                <span class="logo-tagline">Crossfit • Halterofilia • GAP</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="clases.html">Clases</a></li>
+                <li><a href="planes.html">Planes</a></li>
+                <li><a href="nosotros.html">Nosotros</a></li>
+                <li><a href="contacto.html" class="active">Contacto</a></li>
+                <li class="nav-cta"><a href="#login" class="btn-login">Iniciar Sesión</a></li>
+            </ul>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contacto Hero -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">CONTÁCT<span class="hero-highlight">ANOS</span></h1>
+            <p class="hero-subtitle">¿Tienes preguntas? ¿Quieres una clase de prueba? Estamos aquí para ayudarte en tu camino fitness.</p>
+            <div class="hero-buttons">
+                <a href="#form" class="btn-primary">ESCRÍBENOS</a>
+                <a href="index.html" class="btn-secondary">VOLVER AL INICIO</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Información de Contacto -->
+    <section class="contact-info">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>DIRECCIÓN</h3>
+                    <p>Av. Principal 123</p>
+                    <p>Providencia, Santiago</p>
+                    <p>Región Metropolitana</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3>TELÉFONO</h3>
+                    <p>+56 9 1234 5678</p>
+                    <p>Lunes a Viernes: 6:00-22:00</p>
+                    <p>Sábados: 8:00-14:00</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>EMAIL</h3>
+                    <p>info@barrabox.cl</p>
+                    <p>coaches@barrabox.cl</p>
+                    <p>pagos@barrabox.cl</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>HORARIOS</h3>
+                    <p>Lunes a Viernes: 6:00-22:00</p>
+                    <p>Sábados: 8:00-14:00</p>
+                    <p>Domingos: 10:00-12:00 (Open Box)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario de Contacto -->
+    <section class="contact-form" id="form">
+        <div class="container">
+            <h2 class="section-title">ENVÍANOS UN MENSAJE</h2>
+            <form class="form">
+                <div class="form-group">
+                    <input type="text" placeholder="Nombre completo" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" placeholder="Teléfono">
+                </div>
+                <div class="form-group">
+                    <select required>
+                        <option value="">Motivo de contacto</option>
+                        <option value="info">Información general</option>
+                        <option value="trial">Clase de prueba</option>
+                        <option value="membership">Membresía</option>
+                        <option value="other">Otro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Mensaje" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn-primary">ENVIAR MENSAJE</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Mapa (placeholder) -->
+    <section class="map-section">
+        <div class="container">
+            <div class="map-placeholder">
+                <i class="fas fa-map"></i>
+                <p>Mapa de ubicación - Av. Principal 123, Providencia, Santiago</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-text">BARRA<span class="logo-accent">BOX</span></span>
+                    <p>Crossfit • Halterofilia • GAP</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Enlaces</h4>
+                    <a href="index.html">Inicio</a>
+                    <a href="clases.html">Clases</a>
+                    <a href="planes.html">Planes</a>
+                    <a href="nosotros.html">Nosotros</a>
+                    <a href="contacto.html">Contacto</a>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contacto</h4>
+                    <p><i class="fas fa-map-marker-alt"></i> Av. Principal 123, Santiago</p>
+                    <p><i class="fas fa-phone"></i> +56 9 1234 5678</p>
+                    <p><i class="fas fa-envelope"></i> info@barrabox.cl</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Barrabox. Todos los derechos reservados. | Demo para GitHub Pages</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
