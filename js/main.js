@@ -45,6 +45,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Function to close modal properly
+    function closeLoginModal() {
+        console.log('Cerrando modal de login');
+        loginModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        // Force remove any inline styles that might block
+        loginModal.removeAttribute('style');
+    }
+    
     // Tab Switching
     tabBtns.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -69,11 +78,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (userLoginForm) {
         userLoginForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            e.stopPropagation();
+            console.log('Formulario usuario enviado');
             const email = document.getElementById('userEmail').value;
             const password = document.getElementById('userPassword').value;
             
             // Simulate login - In production this would be an API call
             simulateUserLogin(email, password);
+            return false;
         });
     }
     
@@ -82,11 +94,14 @@ document.addEventListener('DOMContentLoaded', function() {
     if (adminLoginForm) {
         adminLoginForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            e.stopPropagation();
+            console.log('Formulario admin enviado');
             const email = document.getElementById('adminEmail').value;
             const password = document.getElementById('adminPassword').value;
             
             // Simulate admin login
             simulateAdminLogin(email, password);
+            return false;
         });
     }
     
@@ -144,16 +159,17 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             
             // Close modal
-            loginModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            closeLoginModal();
             
             // Show welcome message
-            showNotification(`¡Bienvenido ${user.name}! Plan: ${user.plan}. Tienes ${user.classes} clases disponibles esta semana.`, 'success');
+            showNotification(`¡Bienvenido ${user.name}! Redirigiendo al dashboard...`, 'success');
             
-            // Redirect to user dashboard after 1.5 seconds
+            // Redirect to user dashboard immediately
+            console.log('Login exitoso, redirigiendo a dashboard...');
             setTimeout(() => {
+                console.log('Redirigiendo a user-dashboard.html');
                 window.location.href = 'user-dashboard.html';
-            }, 1500);
+            }, 500);
             
             // Reset form
             submitBtn.textContent = originalText;
@@ -171,18 +187,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         setTimeout(() => {
             // Close modal
-            loginModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            closeLoginModal();
             
             // Show admin message
-            showNotification(`Panel de Administración activo. Bienvenido ${demoAdmin.name}.`, 'admin');
+            showNotification(`Panel de Administración activo. Redirigiendo...`, 'admin');
             
-            // Redirect to admin dashboard after 1.5 seconds
+            // Redirect to admin dashboard immediately
+            console.log('Login admin exitoso, redirigiendo a dashboard...');
             setTimeout(() => {
-                // TODO: Create admin-dashboard.html in Iteration 3
-                // For now, redirect to user dashboard
+                console.log('Redirigiendo a user-dashboard.html (admin)');
                 window.location.href = 'user-dashboard.html';
-            }, 1500);
+            }, 500);
             
             // Reset form
             submitBtn.textContent = originalText;
