@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continuación - Casos de Uso</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            padding: 2rem;
+            background: #f0f2f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            color: #2D3047;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #FF6B35;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .section-title i {
+            color: #FF6B35;
+        }
+        
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .use-case-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-left: 4px solid #FF6B35;
+            transition: transform 0.3s ease;
+        }
+        
+        .use-case-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .use-case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .use-case-id {
+            background: #2D3047;
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        
+        .use-case-priority {
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .priority-high {
+            background: rgba(220,53,69,0.1);
+            color: #DC3545;
+        }
+        
+        .priority-medium {
+            background: rgba(255,193,7,0.1);
+            color: #FFC107;
+        }
+        
+        .priority-low {
+            background: rgba(40,167,69,0.1);
+            color: #28A745;
+        }
+        
+        .use-case-title {
+            color: #2D3047;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+        }
+        
+        .use-case-description {
+            color: #6C757D;
+            margin-bottom: 1.2rem;
+            font-size: 0.95rem;
+        }
+        
+        .data-model {
+            background: #F8F9FA;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+        
+        .json-key {
+            color: #d73a49;
+        }
+        
+        .json-string {
+            color: #032f62;
+        }
+        
+        .json-number {
+            color: #005cc5;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-left: 0.5rem;
+        }
+        
+        .status-planned {
+            background: rgba(108,117,125,0.1);
+            color: #6C757D;
+        }
+        
+        .status-in-progress {
+            background: rgba(23,162,184,0.1);
+            color: #17A2B8;
+        }
+        
+        .status-completed {
+            background: rgba(40,167,69,0.1);
+            color: #28A745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sección 3: Administración (Admin) -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-cogs"></i>
+                3. Administración del Sistema
+            </h2>
+            <div class="use-case-grid">
+                <!-- UC-301: Gestionar Clases -->
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <span class="use-case-id">UC-301</span>
+                        <span class="use-case-priority priority-high">Alta</span>
+                    </div>
+                    <h3 class="use-case-title">Gestionar Clases <span class="status-badge status-in-progress">En Progreso</span></h3>
+                    <p class="use-case-description">Administrador crea, edita o elimina clases del sistema.</p>
+                    <div class="use-case-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Actor:</span>
+                            <span class="detail-value">Administrador</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Precondición:</span>
+                            <span class="detail-value">Acceso a panel admin</span>
+                        </div>
+                        <div class="detail-label">Postcondición:</span>
+                            <span class="detail-value">Clase creada/editada/eliminada</span>
+                        </div>
+                    </div>
+                    <div class="use-case-steps">
+                        <div class="step-title">Flujo principal (Crear):</div>
+                        <ol class="step-list">
+                            <li>Admin navega a "Clases" en panel</li>
+                            <li>Hace clic en "Nueva Clase"</li>
+                            <li>Completa formulario (tipo, horario, coach, capacidad)</li>
+                            <li>Guarda en localStorage</li>
+                            <li>Clase aparece en calendario</li>
+                        </ol>
+                    </div>
+                    <div class="data-model">
+                        <span class="json-key">"class"</span>: {<br>
+                        &nbsp;&nbsp;<span class="json-key">"id"</span>: <span class="json-string">"class_001"</span>,<br>
+                        &nbsp;&nbsp;<span class="json-key">"type"</span>: <span class="json-string">"crossfit"</span>,<br>
+                        &nbsp;&nbsp;<span class="json-key">"title"</span>: <span class="json-string">"Morning WOD"</span>,<br>
+                        &nbsp;&nbsp;<span class="json-key">"coach"</span>: <span class="json-string">"Carlos"</span>,<br>
+                        &nbsp;&nbsp;<span class="json-key">"day"</span>: <span class="json-string">"monday"</span>,<br>
+                        &nbsp;&nbsp;<span class="json-key">"time"</span>: <span class="json-string">"06:00"</span>,<br>
+                        &nbsp;&nbsp;<span class="json-key">"duration"</span>: <span class="json-number">60</span>,<br>
+                        &nbsp;&nbsp;<span class="json-key">"capacity"</span>: <span class="json-number">15</span>,<br>
+                        &nbsp;&nbsp;<span class="json-key">"booked"</span>: <span class="json-number">8</span><br>
+                        }
+                    </div>
+                </div>
+
+                <!-- UC-302: Gestionar Miembros -->
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <span class="use-case-id">UC-302</span>
+                        <span class="use-case-priority priority-medium">Media</span>
+                    </div>
+                    <h3 class="use-case-title">Gestionar Miembros <span class="status-badge status-planned">Planeado</span></h3>
+                    <p class="use-case-description">Administrador gestiona usuarios del sistema (ver, editar, suspender).</p>
+                    <div class="use-case-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Actor:</span>
+                            <span class="detail-value">Administrador</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Precondición:</span>
+                            <span class="detail-value">Usuarios registrados</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Postcondición:</span>
+                            <span class="detail-value">Estado de usuario actualizado</span>
+                        </div>
+                    </div>
+                    <div class="use-case-steps">
+                        <div class="step-title">Flujo principal (Editar):</div>
+                        <ol class="step-list">
+                            <li>Admin navega a "Miembros"</li>
+                            <li>Busca usuario por nombre/email</li>
+                            <li>Hace clic en "Editar"</li>
+                            <li>Modifica datos (plan, estado)</li>
+                            <li>Guarda cambios</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- UC-303: Ver Reportes -->
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <span class="use-case-id">UC-303</span>
+                        <span class="use-case-priority priority-medium">Media</span>
+                    </div>
+                    <h3 class="use-case-title">Ver Reportes <span class="status-badge status-planned">Planeado</span></h3>
+                    <p class="use-case-description">Administrador consulta reportes de ocupación, ingresos y tendencias.</p>
+                    <div class="use-case-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Actor:</span>
+                            <span class="detail-value">Administrador</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Precondición:</span>
+                            <span class="detail-value">Datos históricos disponibles</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Postcondición:</span>
+                            <span class="detail-value">Reporte generado y mostrado</span>
+                        </div>
+                    </div>
+                    <div class="use-case-steps">
+                        <div class="step-title">Flujo principal:</div>
+                        <ol class="step-list">
+                            <li>Admin navega a "Reportes"</li>
+                            <li>Selecciona período (semana/mes)</li>
+                            <li>Selecciona tipo (ocupación/ingresos)</li>
+                            <li>Sistema genera gráficos</li>
+                            <li>Opción de exportar a PDF/CSV</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- UC-304: Gestionar Waitlists -->
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <span class="use-case-id">UC-304</span>
+                        <span class="use-case-priority priority-medium">Media</span>
+                    </div>
+                    <h3 class="use-case-title">Gestionar Waitlists <span class="status-badge status-planned">Planeado</span></h3>
+                    <p class="use-case-description">Administrador gestiona listas de espera cuando hay cancelaciones.</p>
+                    <div class="use-case-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Actor:</span>
+                            <span class="detail-value">Administrador</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Precondición:</span>
+                            <span class="detail-value">Clase con waitlist y cupo liberado</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Postcondición:</span>
+                            <span class="detail-value">Usuario promovido de waitlist a reserva</span>
+                        </div>
+                    </div>
+                    <div class="use-case-steps">
+                        <div class="step-title">Flujo principal:</div>
+                        <ol class="step-list">
+                            <li>Sistema detecta cupo liberado</li>
+                            <li>Notifica al admin</li>
+                            <li>Admin revisa waitlist</li>
+                            <li>Promueve siguiente en lista</li>
+                            <li>Notifica al usuario automáticamente</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección 4: Sistema de Notificaciones -->
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-bell"></i>
+                4. Sistema de Notificaciones
+            </h2>
+            <div class="use-case-grid">
+                <!-- UC-401: Notificación de Confirmación -->
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <span class="use-case-id">UC-401</span>
+                        <span class="use-case-priority priority-high">Alta</span>
+                    </div>
+                    <h3 class="use-case-title">Notificación de Confirmación <span class="status-badge status-in-progress">En Progreso</span></h3>
+                    <p class="use-case-description">Usuario recibe notificación cuando su reserva es confirmada.</p>
+                    <div class="use-case-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Actor:</span>
+                            <span class="detail-value">Sistema</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Precondición:</span>
+                            <span class="detail-value">Reserva exitosa</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Postcondición:</span>
+                            <span class="detail-value">Notificación mostrada al usuario</span>
+                        </div>
+                    </div>
+                    <div class="use-case-steps">
+                        <div class="step-title">Flujo principal:</div>
+                        <ol class="step-list">
+                            <li>Usuario completa reserva</li>
+                            <li>Sistema guarda en localStorage</li>
+                            <li>Muestra notificación en pantalla</li>
+                            <li>Guarda notificación en historial</li>
+                            <li>Usuario puede ver detalles</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- UC-402: Recordatorio de Clase -->
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <span class="use-case-id">UC-402</span>
+                        <span class="use-case-priority priority-medium">Media</span>
+                    </div>
+                    <h3 class="use-case-title">Recordatorio de Clase <span class="status-badge status-planned">Planeado</span></h3>
+                    <p class="use-case-description">Usuario recibe recordatorio antes de su clase programada.</p>
+                    <div class="use-case-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Actor:</span>
+                            <span class="detail-value">Sistema</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Precondición:</span>
+                            <span class="detail-value">Clase programada para hoy</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Postcondición:</span>
+                            <span class="detail-value">Recordatorio mostrado</span>
+                        </div>
+                    </div>
+                    <div class="use-case-steps">
+                        <div class="step-title">Flujo principal:</div>
+                        <ol class="step-list">
+                            <li>Sistema verifica reservas del día</li>
+                            <li>2 horas antes, muestra recordatorio</li>
+                            <li>Incluye detalles (hora, coach, sala)</li>
+                            <li>Opción de cancelar desde notificación</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- UC-403: Notificación de Waitlist -->
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <span class="use-case-id">UC-403</span>
+                        <span class="use-case-priority priority-medium">Media</span>
+                    </div>
+                    <h3 class="use-case-title">Notificación de Waitlist <span class="status-badge status-planned">Planeado</span></h3>
+                    <p class="use-case-description">Usuario es notificado cuando hay cupo disponible desde waitlist.</p>
+                    <div class="use-case-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Actor:</span>
+                            <span class="detail-value">Sistema</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Precondición:</span>
+                            <span class="detail-value">Usuario en waitlist, cupo liberado
