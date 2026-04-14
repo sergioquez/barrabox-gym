@@ -1,0 +1,786 @@
+/* Animations CSS - Sistema de animaciones para Barrabox Gym */
+
+/* ==================== KEYFRAMES ==================== */
+
+/* Fade In */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Fade Out */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Slide In From Top */
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide In From Bottom */
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide In From Left */
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide In From Right */
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Scale In */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Scale Out */
+@keyframes scaleOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+/* Bounce In */
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Bounce Out */
+@keyframes bounceOut {
+  20% {
+    transform: scale(1.1);
+  }
+  50%,
+  55% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+}
+
+/* Rotate In */
+@keyframes rotateIn {
+  from {
+    opacity: 0;
+    transform: rotate(-180deg) scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+/* Rotate Out */
+@keyframes rotateOut {
+  from {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: rotate(180deg) scale(0.3);
+  }
+}
+
+/* Pulse */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Shimmer (for skeleton loading) */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+/* Spin */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Ping */
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* Bounce */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Float */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Shake */
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+/* Heartbeat */
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.3);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.3);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+/* ==================== ANIMATION CLASSES ==================== */
+
+/* Base animation class */
+.animate {
+  animation-duration: var(--duration-300);
+  animation-timing-function: var(--ease-smooth);
+  animation-fill-mode: both;
+}
+
+/* Fade animations */
+.animate-fade-in {
+  animation-name: fadeIn;
+}
+
+.animate-fade-out {
+  animation-name: fadeOut;
+}
+
+.animate-fade-in-up {
+  animation-name: slideInFromBottom;
+}
+
+.animate-fade-in-down {
+  animation-name: slideInFromTop;
+}
+
+.animate-fade-in-left {
+  animation-name: slideInFromLeft;
+}
+
+.animate-fade-in-right {
+  animation-name: slideInFromRight;
+}
+
+/* Scale animations */
+.animate-scale-in {
+  animation-name: scaleIn;
+}
+
+.animate-scale-out {
+  animation-name: scaleOut;
+}
+
+.animate-bounce-in {
+  animation-name: bounceIn;
+  animation-duration: var(--duration-500);
+}
+
+.animate-bounce-out {
+  animation-name: bounceOut;
+  animation-duration: var(--duration-500);
+}
+
+/* Rotate animations */
+.animate-rotate-in {
+  animation-name: rotateIn;
+  animation-duration: var(--duration-500);
+}
+
+.animate-rotate-out {
+  animation-name: rotateOut;
+  animation-duration: var(--duration-500);
+}
+
+/* Special effects */
+.animate-pulse {
+  animation-name: pulse;
+  animation-duration: var(--duration-1000);
+  animation-iteration-count: infinite;
+}
+
+.animate-spin {
+  animation-name: spin;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.animate-ping {
+  animation-name: ping;
+  animation-duration: var(--duration-1000);
+  animation-iteration-count: infinite;
+}
+
+.animate-bounce {
+  animation-name: bounce;
+  animation-duration: var(--duration-1000);
+  animation-iteration-count: infinite;
+}
+
+.animate-float {
+  animation-name: float;
+  animation-duration: 3s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+.animate-shake {
+  animation-name: shake;
+  animation-duration: var(--duration-500);
+}
+
+.animate-heartbeat {
+  animation-name: heartbeat;
+  animation-duration: 1.3s;
+  animation-iteration-count: infinite;
+}
+
+/* ==================== ANIMATION DELAYS ==================== */
+
+.delay-75 {
+  animation-delay: var(--duration-75);
+}
+
+.delay-100 {
+  animation-delay: var(--duration-100);
+}
+
+.delay-150 {
+  animation-delay: var(--duration-150);
+}
+
+.delay-200 {
+  animation-delay: var(--duration-200);
+}
+
+.delay-300 {
+  animation-delay: var(--duration-300);
+}
+
+.delay-500 {
+  animation-delay: var(--duration-500);
+}
+
+.delay-700 {
+  animation-delay: var(--duration-700);
+}
+
+.delay-1000 {
+  animation-delay: var(--duration-1000);
+}
+
+/* ==================== ANIMATION DURATIONS ==================== */
+
+.duration-75 {
+  animation-duration: var(--duration-75);
+}
+
+.duration-100 {
+  animation-duration: var(--duration-100);
+}
+
+.duration-150 {
+  animation-duration: var(--duration-150);
+}
+
+.duration-200 {
+  animation-duration: var(--duration-200);
+}
+
+.duration-300 {
+  animation-duration: var(--duration-300);
+}
+
+.duration-500 {
+  animation-duration: var(--duration-500);
+}
+
+.duration-700 {
+  animation-duration: var(--duration-700);
+}
+
+.duration-1000 {
+  animation-duration: var(--duration-1000);
+}
+
+/* ==================== ANIMATION FILL MODES ==================== */
+
+.fill-none {
+  animation-fill-mode: none;
+}
+
+.fill-forwards {
+  animation-fill-mode: forwards;
+}
+
+.fill-backwards {
+  animation-fill-mode: backwards;
+}
+
+.fill-both {
+  animation-fill-mode: both;
+}
+
+/* ==================== ANIMATION ITERATION ==================== */
+
+.iteration-once {
+  animation-iteration-count: 1;
+}
+
+.iteration-infinite {
+  animation-iteration-count: infinite;
+}
+
+.iteration-twice {
+  animation-iteration-count: 2;
+}
+
+.iteration-thrice {
+  animation-iteration-count: 3;
+}
+
+/* ==================== ANIMATION DIRECTION ==================== */
+
+.direction-normal {
+  animation-direction: normal;
+}
+
+.direction-reverse {
+  animation-direction: reverse;
+}
+
+.direction-alternate {
+  animation-direction: alternate;
+}
+
+.direction-alternate-reverse {
+  animation-direction: alternate-reverse;
+}
+
+/* ==================== PAGE TRANSITIONS ==================== */
+
+.page-transition-enter {
+  animation: fadeIn var(--duration-300) var(--ease-smooth);
+}
+
+.page-transition-exit {
+  animation: fadeOut var(--duration-300) var(--ease-smooth);
+}
+
+/* ==================== STAGGERED ANIMATIONS ==================== */
+
+.stagger-children > * {
+  opacity: 0;
+  animation: fadeIn var(--duration-300) var(--ease-smooth) forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: calc(1 * 50ms); }
+.stagger-children > *:nth-child(2) { animation-delay: calc(2 * 50ms); }
+.stagger-children > *:nth-child(3) { animation-delay: calc(3 * 50ms); }
+.stagger-children > *:nth-child(4) { animation-delay: calc(4 * 50ms); }
+.stagger-children > *:nth-child(5) { animation-delay: calc(5 * 50ms); }
+.stagger-children > *:nth-child(6) { animation-delay: calc(6 * 50ms); }
+.stagger-children > *:nth-child(7) { animation-delay: calc(7 * 50ms); }
+.stagger-children > *:nth-child(8) { animation-delay: calc(8 * 50ms); }
+.stagger-children > *:nth-child(9) { animation-delay: calc(9 * 50ms); }
+.stagger-children > *:nth-child(10) { animation-delay: calc(10 * 50ms); }
+
+/* ==================== SKELETON LOADING ==================== */
+
+.skeleton {
+  background-color: var(--color-neutral-200);
+  border-radius: var(--border-radius-base);
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .skeleton {
+  background-color: var(--color-neutral-800);
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+[data-theme="dark"] .skeleton::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+/* Skeleton variants */
+.skeleton-text {
+  height: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-title {
+  height: 1.5rem;
+  margin-bottom: 1rem;
+  width: 70%;
+}
+
+.skeleton-card {
+  height: 200px;
+  border-radius: var(--border-radius-xl);
+}
+
+.skeleton-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.skeleton-button {
+  height: 40px;
+  width: 120px;
+  border-radius: var(--border-radius-lg);
+}
+
+/* ==================== LOADING STATES ==================== */
+
+.loading {
+  position: relative;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--color-neutral-300);
+  border-top-color: var(--color-brand-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  transform: translate(-50%, -50%);
+}
+
+.loading-sm::after {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
+}
+
+.loading-lg::after {
+  width: 32px;
+  height: 32px;
+  border-width: 4px;
+}
+
+/* ==================== HOVER EFFECTS ==================== */
+
+.hover-lift {
+  transition: transform var(--duration-200) var(--ease-out),
+              box-shadow var(--duration-200) var(--ease-out);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hover-scale {
+  transition: transform var(--duration-200) var(--ease-out);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.hover-rotate {
+  transition: transform var(--duration-200) var(--ease-out);
+}
+
+.hover-rotate:hover {
+  transform: rotate(5deg);
+}
+
+.hover-glow {
+  transition: box-shadow var(--duration-200) var(--ease-out);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+}
+
+/* ==================== FOCUS EFFECTS ==================== */
+
+.focus-ring {
+  outline: none;
+  transition: box-shadow var(--duration-200) var(--ease-out);
+}
+
+.focus-ring:focus {
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+}
+
+/* ==================== REDUCED MOTION SUPPORT ==================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .reduce-motion *,
+  .reduce-motion *::before,
+  .reduce-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .skeleton::after {
+    animation: none;
+  }
+}
+
+/* Class for manually disabling animations */
+.no-animations *,
+.no-animations *::before,
+.no-animations *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.will-change-scroll {
+  will-change: scroll-position;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-3d {
+  transform-style: preserve-3d;
+}
+
+/* ==================== SCROLL ANIMATIONS ==================== */
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--duration-500) var(--ease-smooth),
+              transform var(--duration-500) var(--ease-smooth);
+}
+
+.reveal-on-scroll.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==================== PARALLAX EFFECTS ==================== */
+
+.parallax-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.parallax-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.parallax-layer-back {
+  transform: translateZ(-10px) scale(2);
+}
+
+.parallax-layer-base {
+  transform: translateZ(0);
+}
+
+.parallax-layer-front {
+  transform: translateZ(5px) scale(0.95);
+}
+
+/* ==================== CUSTOM SCROLLBAR ==================== */
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-brand-primary) var(--color-neutral-200);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--color-neutral-200);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-brand-primary);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-700);
+}
+
+[data-theme="dark"] .custom-scrollbar {
+  scrollbar-color: var(--color-brand-primary) var(--color-neutral-800);
+}
+
+[data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--color-neutral-800);
+}
+
+[data-theme="dark"] .custom-scroll
