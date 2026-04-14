@@ -284,6 +284,10 @@ class InitSystem {
             await this.loadScript('js/main.js?v=5.0');
             console.log('✅ Main script cargado');
             
+            // DEBUG: Verificar que initializeMain existe
+            console.log('🔍 DEBUG - typeof initializeMain:', typeof initializeMain);
+            console.log('🔍 DEBUG - window.initializeMain:', window.initializeMain);
+            
             // Inicializar main manualmente ya que DOMContentLoaded ya pasó
             if (typeof initializeMain === 'function') {
                 console.log('⚡ Inicializando Main System manualmente...');
@@ -293,8 +297,16 @@ class InitSystem {
                         console.log('✅ Main System inicializado manualmente');
                     } catch (error) {
                         console.error('❌ Error inicializando Main System:', error);
+                        console.error('📊 Error details:', error.message, error.stack);
                     }
                 }, 100);
+            } else {
+                console.error('❌ initializeMain NO es una función');
+                console.error('📊 Estado:', {
+                    initializeMain: typeof initializeMain,
+                    windowInitializeMain: typeof window.initializeMain,
+                    globalThisInitializeMain: typeof globalThis.initializeMain
+                });
             }
             
         } catch (error) {
