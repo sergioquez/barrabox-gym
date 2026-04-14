@@ -1,0 +1,478 @@
+/* Calendar Mobile Fixes - Mejoras específicas para móviles */
+
+/* ==================== TOUCH OPTIMIZATION ==================== */
+
+/* Mejorar touch targets */
+.calendar-mobile .btn-book,
+.calendar-mobile .calendar-nav,
+.calendar-mobile .mobile-prev-day,
+.calendar-mobile .mobile-next-day,
+.calendar-mobile .mobile-day-selector {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Feedback táctil */
+.calendar-mobile .btn-book:active,
+.calendar-mobile .calendar-nav:active,
+.calendar-mobile .mobile-prev-day:active,
+.calendar-mobile .mobile-next-day:active,
+.calendar-mobile .mobile-day-selector:active {
+    transform: scale(0.95) !important;
+    transition: transform 0.1s ease !important;
+}
+
+/* Deshabilitar selección de texto en elementos interactivos */
+.calendar-mobile .btn-book,
+.calendar-mobile .calendar-slot,
+.calendar-mobile .mobile-controls button {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* ==================== LAYOUT OPTIMIZATION ==================== */
+
+/* Ajustar grid para móviles */
+@media (max-width: 768px) {
+    .calendar-container {
+        margin-left: -1rem;
+        margin-right: -1rem;
+        width: calc(100% + 2rem);
+    }
+    
+    .calendar-grid {
+        grid-template-columns: 70px repeat(2, minmax(140px, 1fr)) !important;
+    }
+    
+    /* Mejorar visibilidad de bordes */
+    .calendar-slot {
+        border-right: 1px solid var(--calendar-border) !important;
+        border-bottom: 1px solid var(--calendar-border) !important;
+    }
+    
+    /* Asegurar que el contenido no se desborde */
+    .slot-content {
+        overflow: hidden;
+    }
+    
+    /* Mejorar espaciado vertical */
+    .time-slot, .calendar-slot {
+        height: 100px !important;
+        padding: 0.6rem !important;
+    }
+}
+
+/* ==================== TYPOGRAPHY OPTIMIZATION ==================== */
+
+/* Mejorar legibilidad en móviles */
+.calendar-mobile .class-title {
+    font-size: 0.95rem !important;
+    line-height: 1.3 !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.4rem !important;
+    color: var(--color-text-primary) !important;
+}
+
+.calendar-mobile .class-coach {
+    font-size: 0.85rem !important;
+    color: var(--color-text-secondary) !important;
+    margin-bottom: 0.3rem !important;
+}
+
+.calendar-mobile .class-slots {
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: var(--color-brand-primary) !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.calendar-mobile .class-type {
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--color-text-disabled);
+    margin-bottom: 0.3rem !important;
+}
+
+/* ==================== BUTTON OPTIMIZATION ==================== */
+
+/* Botones más claros y con mejor contraste */
+.calendar-mobile .btn-book {
+    background: var(--color-brand-primary) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: var(--border-radius-lg) !important;
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    padding: 0.7rem !important;
+    width: 100% !important;
+    margin-top: auto !important;
+    box-shadow: 0 2px 4px rgba(255, 107, 53, 0.2) !important;
+    transition: all 0.2s ease !important;
+}
+
+.calendar-mobile .btn-book:hover:not(:disabled) {
+    background: var(--color-primary-700) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3) !important;
+}
+
+.calendar-mobile .btn-book:disabled {
+    background: var(--color-neutral-300) !important;
+    color: var(--color-text-disabled) !important;
+    cursor: not-allowed !important;
+    opacity: 0.7 !important;
+}
+
+/* ==================== STATE VISUALIZATION ==================== */
+
+/* Mejorar visibilidad de estados */
+.calendar-mobile .calendar-slot[data-state="available"] {
+    background: rgba(212, 237, 218, 0.1) !important;
+    border-left: 3px solid var(--color-brand-success) !important;
+}
+
+.calendar-mobile .calendar-slot[data-state="booked"] {
+    background: rgba(204, 229, 255, 0.1) !important;
+    border-left: 3px solid var(--color-brand-primary) !important;
+}
+
+.calendar-mobile .calendar-slot[data-state="full"] {
+    background: rgba(248, 215, 218, 0.1) !important;
+    border-left: 3px solid var(--color-brand-error) !important;
+}
+
+.calendar-mobile .calendar-slot[data-state="unavailable"] {
+    background: rgba(233, 236, 239, 0.1) !important;
+    border-left: 3px solid var(--color-neutral-400) !important;
+}
+
+/* ==================== HEADER OPTIMIZATION ==================== */
+
+/* Header más compacto en móviles */
+.calendar-mobile .calendar-header {
+    padding: 1rem !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+}
+
+.calendar-mobile .calendar-title {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.5rem !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+/* Controles de navegación móvil */
+.calendar-mobile .mobile-controls {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: var(--border-radius-lg) !important;
+    padding: 0.5rem !important;
+    margin-top: 0.5rem !important;
+}
+
+.calendar-mobile .mobile-prev-day,
+.calendar-mobile .mobile-next-day {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: none !important;
+    color: white !important;
+    border-radius: var(--border-radius-md) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+}
+
+.calendar-mobile .mobile-prev-day:active,
+.calendar-mobile .mobile-next-day:active {
+    background: rgba(255, 255, 255, 0.25) !important;
+}
+
+.calendar-mobile .mobile-day-selector {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: none !important;
+    color: white !important;
+    border-radius: var(--border-radius-md) !important;
+    padding: 0.8rem !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+}
+
+.calendar-mobile .mobile-day-selector:active {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ==================== SCROLL OPTIMIZATION ==================== */
+
+/* Scroll horizontal suave */
+.calendar-mobile .calendar-container {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-brand-primary) transparent;
+}
+
+.calendar-mobile .calendar-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.calendar-mobile .calendar-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.calendar-mobile .calendar-container::-webkit-scrollbar-thumb {
+    background: var(--color-brand-primary);
+    border-radius: 3px;
+}
+
+/* Indicador de scroll */
+.calendar-mobile .scroll-hint {
+    background: var(--color-neutral-100) !important;
+    color: var(--color-text-secondary) !important;
+    padding: 0.8rem !important;
+    text-align: center !important;
+    font-size: 0.85rem !important;
+    border-top: 1px solid var(--color-border) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    animation: fadeIn 0.3s ease !important;
+}
+
+[data-theme="dark"] .calendar-mobile .scroll-hint {
+    background: var(--color-neutral-800) !important;
+    color: var(--color-text-secondary) !important;
+}
+
+.calendar-mobile .scroll-hint i {
+    animation: bounceHorizontal 1.5s infinite ease-in-out !important;
+}
+
+@keyframes bounceHorizontal {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(5px); }
+}
+
+/* ==================== TIME COLUMN OPTIMIZATION ==================== */
+
+/* Columna de horas fija */
+.calendar-mobile .time-header {
+    position: sticky !important;
+    left: 0 !important;
+    background: var(--calendar-time-column) !important;
+    z-index: 50 !important;
+    border-right: 2px solid var(--color-border) !important;
+    min-width: 70px !important;
+}
+
+.calendar-mobile .time-slot {
+    position: sticky !important;
+    left: 0 !important;
+    background: var(--calendar-time-column) !important;
+    z-index: 40 !important;
+    border-right: 2px solid var(--color-border) !important;
+    font-weight: 600 !important;
+    color: var(--color-text-primary) !important;
+}
+
+[data-theme="dark"] .calendar-mobile .time-header,
+[data-theme="dark"] .calendar-mobile .time-slot {
+    background: var(--color-neutral-800) !important;
+}
+
+/* ==================== DAY HEADER OPTIMIZATION ==================== */
+
+/* Encabezados de días más claros */
+.calendar-mobile .day-header {
+    background: var(--calendar-day-header) !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 30 !important;
+    min-width: 140px !important;
+    border-bottom: 2px solid var(--color-border) !important;
+}
+
+.calendar-mobile .day-name {
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    color: var(--color-text-primary) !important;
+    margin-bottom: 0.2rem !important;
+}
+
+.calendar-mobile .day-date {
+    font-size: 1.3rem !important;
+    font-weight: 700 !important;
+    color: var(--color-brand-primary) !important;
+}
+
+/* ==================== LEGEND OPTIMIZATION ==================== */
+
+/* Leyenda optimizada para móviles */
+.calendar-mobile .calendar-legend {
+    padding: 1rem !important;
+    background: var(--color-surface) !important;
+    border-top: 1px solid var(--color-border) !important;
+    font-size: 0.85rem !important;
+}
+
+.calendar-mobile .legend-items {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.8rem !important;
+    width: 100% !important;
+}
+
+.calendar-mobile .legend-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.4rem 0.6rem !important;
+    background: var(--color-neutral-100) !important;
+    border-radius: var(--border-radius-md) !important;
+    border: 1px solid var(--color-border) !important;
+}
+
+[data-theme="dark"] .calendar-mobile .legend-item {
+    background: var(--color-neutral-800) !important;
+}
+
+.calendar-mobile .legend-color {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 4px !important;
+    border: 2px solid transparent !important;
+}
+
+/* ==================== LOADING STATES ==================== */
+
+/* Skeleton loading para calendario */
+.calendar-loading {
+    display: grid;
+    grid-template-columns: 70px repeat(2, 1fr);
+    gap: 1px;
+    background: var(--color-border);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+}
+
+.calendar-loading .time-slot,
+.calendar-loading .day-header,
+.calendar-loading .calendar-slot {
+    background: var(--color-surface);
+    padding: 1rem;
+}
+
+.calendar-loading .skeleton {
+    background: var(--color-neutral-200);
+    border-radius: var(--border-radius-base);
+    height: 20px;
+    margin-bottom: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .calendar-loading .skeleton {
+    background: var(--color-neutral-700);
+}
+
+.calendar-loading .skeleton::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer 1.5s infinite;
+}
+
+/* ==================== ACCESSIBILITY ==================== */
+
+/* Mejoras de accesibilidad */
+.calendar-mobile .btn-book:focus,
+.calendar-mobile .calendar-nav:focus,
+.calendar-mobile .mobile-controls button:focus {
+    outline: 2px solid var(--color-brand-primary) !important;
+    outline-offset: 2px !important;
+}
+
+/* Soporte para screen readers */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ==================== PERFORMANCE ==================== */
+
+/* Optimizaciones de rendimiento */
+.calendar-mobile .calendar-grid {
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.calendar-mobile .calendar-slot {
+    contain: layout style paint;
+}
+
+/* ==================== VERY SMALL SCREENS ==================== */
+
+/* Ajustes para pantallas muy pequeñas */
+@media (max-width: 375px) {
+    .calendar-mobile .calendar-grid {
+        grid-template-columns: 60px repeat(2, minmax(130px, 1fr)) !important;
+    }
+    
+    .calendar-mobile .time-slot, 
+    .calendar-mobile .calendar-slot {
+        height: 95px !important;
+        padding: 0.5rem !important;
+    }
+    
+    .calendar-mobile .class-title {
+        font-size: 0.9rem !important;
+        -webkit-line-clamp: 2 !important;
+    }
+    
+    .calendar-mobile .btn-book {
+        font-size: 0.85rem !important;
+        padding: 0.6rem !important;
+    }
+}
+
+/* ==================== LANDSCAPE MODE ==================== */
+
+/* Mejoras para modo landscape */
+@media (max-width: 768px) and (orientation: landscape) {
+    .calendar-mobile .calendar-grid {
+        grid-template-columns: 60px repeat(3, minmax(120px, 1fr)) !important;
+    }
+    
+    .calendar-mobile .time-slot, 
+    .calendar-mobile .calendar-slot {
+        height: 85px !important;
+        padding: 0.4rem !important;
+    }
+    
+    .calendar-mobile .class-title {
+        -webkit-line-clamp: 1 !important;
+        font-size: 0.85rem !important;
+    }
+    
+    .calendar-mobile .mobile-controls {
+        flex-direction: row !important;
+    }
+}
