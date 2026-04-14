@@ -4,12 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barrabox - Crossfit, Halterofilia & GAP</title>
+    <meta name="description" content="Barrabox Gym - El gimnasio más completo para Crossfit, Halterofilia y GAP en Santiago. Reserva clases, entrenamiento profesional y comunidad activa.">
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .hero-visual {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 4/3;
+            border-radius: 20px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #FF6B35 0%, #e04a1a 50%, #2D3047 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 60px rgba(255, 107, 53, 0.3);
+        }
+        .hero-visual::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(0,168,168,0.2) 0%, transparent 50%);
+        }
+        .hero-visual-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: white;
+        }
+        .hero-visual-content i {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .hero-visual-content .hero-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+        .hero-visual-content .hero-stat {
+            text-align: center;
+        }
+        .hero-visual-content .hero-stat-number {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        .hero-visual-content .hero-stat-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
 </head>
 <body>
     <!-- Header & Navigation -->
@@ -44,9 +106,24 @@
             </div>
         </div>
         <div class="hero-image">
-            <div class="image-placeholder">
-                <i class="fas fa-dumbbell"></i>
-                <p>Imagen: Atletas entrenando Crossfit</p>
+            <div class="hero-visual">
+                <div class="hero-visual-content">
+                    <i class="fas fa-dumbbell"></i>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <div class="hero-stat-number">500+</div>
+                            <div class="hero-stat-label">Atletas</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-number">48</div>
+                            <div class="hero-stat-label">Clases/Semana</div>
+                        </div>
+                        <div class="hero-stat">
+                            <div class="hero-stat-number">5</div>
+                            <div class="hero-stat-label">Coaches</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -158,24 +235,15 @@
         </div>
     </footer>
 
-    <!-- CLEANUP: Remover todos los sistemas duplicados -->
-    <script src="js/cleanup-all.js"></script>
-    
-    <!-- SISTEMA SIMPLE - Solo lo necesario -->
-    <script src="js/simple-menu.js"></script>
-    
-    <!-- FASE 6: Polish & UX (mantenemos por ahora) -->
-    <link rel="stylesheet" href="css/animations.css">
+    <!-- Core Sistema -->
+    <script src="js/data-manager.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+
+    <!-- UX & Theme -->
     <script src="js/theme-system.js"></script>
     <script src="js/waitlist-system.js"></script>
     <script src="js/fase6-integration.js"></script>
-    
-    <!-- DIAGNÓSTICO: Menú duplicado -->
-    <script src="js/diagnose-menu.js"></script>
-    
-    <!-- FIX: Menú que se muestra desplegado -->
-    <script src="js/fix-menu-display.js"></script>
-    
 
 </body>
 </html>

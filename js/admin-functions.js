@@ -438,4 +438,79 @@ function showNewMemberModal() {
                         
                         <div class="form-group">
                             <label for="newMemberPassword">Contraseña Temporal</label>
-                            <input type="text" id="newMemberPassword" value="bienvenido123"
+                            <input type="text" id="newMemberPassword" value="bienvenido123">
+                            <small class="form-text">Se le pedirá cambiarla en su primer acceso</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline close-modal-btn">Cancelar</button>
+                    <button class="btn btn-primary" id="saveMemberBtn">Crear Miembro</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    showModal(modalHtml);
+    
+    // Configurar event listeners del modal
+    document.querySelector('.close-modal')?.addEventListener('click', closeModal);
+    document.querySelector('.close-modal-btn')?.addEventListener('click', closeModal);
+    
+    document.getElementById('saveMemberBtn')?.addEventListener('click', async () => {
+        try {
+            const newMember = {
+                name: document.getElementById('newMemberName').value,
+                email: document.getElementById('newMemberEmail').value,
+                phone: document.getElementById('newMemberPhone')?.value || '',
+                role: document.getElementById('newMemberRole').value,
+                plan: document.getElementById('newMemberPlan').value,
+                status: document.getElementById('newMemberStatus').value,
+                password: document.getElementById('newMemberPassword').value
+            };
+            
+            if (!newMember.name || !newMember.email) {
+                throw new Error('Nombre y email son obligatorios');
+            }
+            
+            await adminSystem.createMember(newMember);
+            closeModal();
+            loadMembersTab();
+            showSuccess('Miembro creado correctamente');
+            
+        } catch (error) {
+            showError(`Error creando miembro: ${error.message}`);
+        }
+    });
+}
+
+// Utility functions
+function showModal(html) {
+    const existing = document.querySelector('.admin-modal-overlay');
+    if (existing) existing.remove();
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'admin-modal-overlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML = html;
+    document.body.appendChild(overlay);
+    
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal();
+    });
+}
+
+function closeModal() {
+    const overlay = document.querySelector('.admin-modal-overlay');
+    if (overlay) overlay.remove();
+}
+
+function showSuccess(message) {
+    console.info('[Admin]', message);
+    alert('✅ ' + message);
+}
+
+function showError(message) {
+    console.error('[Admin]', message);
+    alert('❌ ' + message);
+}

@@ -987,4 +987,110 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="class-details">
                             <div class="detail-section">
                                 <h4>Información de la Clase</h4>
-                                <div class="detail-row
+                                <div class="detail-row">
+                                    <span class="label">Título:</span>
+                                    <span class="value">${cls.title}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Tipo:</span>
+                                    <span class="value">${cls.type}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="label">Ocupación:</span>
+                                    <span class="value">${cls.booked}/${cls.capacity} (${occupancy}%)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-outline close-modal-btn">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        showModal(modalHtml);
+        
+        document.querySelector('.close-modal')?.addEventListener('click', closeModal);
+        document.querySelector('.close-modal-btn')?.addEventListener('click', closeModal);
+    }
+    
+    // ==================== UTILIDADES ====================
+    
+    function debounce(fn, delay) {
+        let timer;
+        return function (...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => fn.apply(this, args), delay);
+        };
+    }
+    
+    function refreshAllData() {
+        loadMembersTab();
+        loadClassesTab();
+        loadBookingsTab();
+        loadReportsTab();
+    }
+    
+    function showNotifications() {
+        alert('Sistema de notificaciones en desarrollo');
+    }
+    
+    function showNewClassModal() {
+        alert('Formulario de nueva clase en desarrollo');
+    }
+    
+    function exportData(type) {
+        try {
+            let data;
+            let filename;
+            
+            switch (type) {
+                case 'members':
+                    data = adminSystem.getAllMembers();
+                    filename = 'barrabox_miembros.json';
+                    break;
+                case 'classes':
+                    data = adminSystem.getAllClasses();
+                    filename = 'barrabox_clases.json';
+                    break;
+                case 'bookings':
+                    data = adminSystem.getAllBookings();
+                    filename = 'barrabox_reservas.json';
+                    break;
+                case 'all':
+                    data = {
+                        members: adminSystem.getAllMembers(),
+                        classes: adminSystem.getAllClasses(),
+                        bookings: adminSystem.getAllBookings()
+                    };
+                    filename = 'barrabox_backup_completo.json';
+                    break;
+                default:
+                    return;
+            }
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            showSuccess(`Datos exportados: ${filename}`);
+        } catch (error) {
+            showError(`Error exportando datos: ${error.message}`);
+        }
+    }
+    
+    // ==================== INICIALIZACIÓN ====================
+    
+    // Inicializar cuando DOM esté listo
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAdminIntegration);
+    } else {
+        initAdminIntegration();
+    }
+
+})();
