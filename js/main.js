@@ -551,14 +551,32 @@ function initializeMain() {
 document.addEventListener('DOMContentLoaded', initializeMain);
 
 // También exportar para inicialización manual
+// Asegurarse de que esté disponible globalmente de múltiples formas
 if (typeof window !== 'undefined') {
+    // Asignar a window (scope global)
     window.initializeMain = initializeMain;
+    
+    // También asignar a globalThis para mayor compatibilidad
+    if (typeof globalThis !== 'undefined') {
+        globalThis.initializeMain = initializeMain;
+    }
+    
+    console.log('📤 initializeMain exportada globalmente');
     
     // Si ya estamos después de DOMContentLoaded, inicializar ahora
     if (document.readyState === 'loading') {
         // DOM aún cargando, esperar a DOMContentLoaded
+        console.log('⏳ DOM aún cargando, esperando DOMContentLoaded...');
     } else {
         // DOM ya cargado, inicializar ahora
-        setTimeout(initializeMain, 100);
+        console.log('⚡ DOM ya cargado, inicializando Main System...');
+        setTimeout(() => {
+            try {
+                initializeMain();
+                console.log('✅ Main System auto-inicializado');
+            } catch (error) {
+                console.error('❌ Error auto-inicializando Main System:', error);
+            }
+        }, 100);
     }
 }
