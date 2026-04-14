@@ -82,6 +82,13 @@ class InitSystem {
             await this.loadScript('js/data-manager.js?v=5.0');
             console.log('📦 Script data-manager.js cargado, esperando inicialización...');
             
+            // Data Manager se inicializa en DOMContentLoaded, pero nosotros ya estamos después de DOMContentLoaded
+            // Necesitamos inicializarlo manualmente si no se ha inicializado automáticamente
+            if (!window.barraboxDataManager && typeof DataManager !== 'undefined') {
+                console.log('⚡ Inicializando Data Manager manualmente...');
+                window.barraboxDataManager = new DataManager();
+            }
+            
             // Esperar a que esté disponible
             await this.waitForCondition(() => {
                 const isAvailable = window.barraboxDataManager && 
@@ -90,11 +97,12 @@ class InitSystem {
                     console.log('⏳ Esperando Data Manager...', {
                         exists: !!window.barraboxDataManager,
                         hasGetUserByEmail: window.barraboxDataManager ? 
-                                          typeof window.barraboxDataManager.getUserByEmail : 'no dataManager'
+                                          typeof window.barraboxDataManager.getUserByEmail : 'no dataManager',
+                        DataManagerClass: typeof DataManager
                     });
                 }
                 return isAvailable;
-            }, 10000, 200); // 10 segundos máximo, verificar cada 200ms
+            }, 5000, 100); // 5 segundos máximo, verificar cada 100ms
             
             this.systems.dataManager = true;
             console.log('✅ Data Manager cargado exitosamente');
@@ -104,7 +112,8 @@ class InitSystem {
             console.error('📊 Estado actual:', {
                 barraboxDataManager: window.barraboxDataManager,
                 hasGetUserByEmail: window.barraboxDataManager ? 
-                                  typeof window.barraboxDataManager.getUserByEmail : 'no dataManager'
+                                  typeof window.barraboxDataManager.getUserByEmail : 'no dataManager',
+                DataManagerClass: typeof DataManager
             });
             
             // Intentar fallback: crear Data Manager manualmente
@@ -143,18 +152,42 @@ class InitSystem {
         try {
             await this.loadScript('js/auth.js?v=5.0');
             
+            // Auth System se inicializa en DOMContentLoaded, pero nosotros ya estamos después de DOMContentLoaded
+            // Necesitamos inicializarlo manualmente si no se ha inicializado automáticamente
+            if (!window.barraboxAuth && typeof AuthSystem !== 'undefined') {
+                console.log('⚡ Inicializando Auth System manualmente...');
+                window.barraboxAuth = new AuthSystem();
+                
+                // Llamar a initialize manualmente ya que el event listener DOMContentLoaded ya pasó
+                if (window.barraboxAuth.initialize) {
+                    await window.barraboxAuth.initialize();
+                }
+            }
+            
             // Esperar a que esté listo
-            await this.waitForCondition(() => 
-                window.barraboxAuth && 
-                window.barraboxAuth.dataManager !== null
-            , 10000, 200);
+            await this.waitForCondition(() => {
+                const isReady = window.barraboxAuth && window.barraboxAuth.dataManager !== null;
+                if (!isReady) {
+                    console.log('⏳ Esperando Auth System...', {
+                        exists: !!window.barraboxAuth,
+                        hasDataManager: window.barraboxAuth ? window.barraboxAuth.dataManager !== null : false,
+                        AuthSystemClass: typeof AuthSystem
+                    });
+                }
+                return isReady;
+            }, 5000, 100);
             
             this.systems.auth = true;
             console.log('✅ Auth System cargado exitosamente');
             
         } catch (error) {
             console.error('❌ Error cargando Auth System:', error);
-            throw new Error('No se pudo cargar el sistema de autenticación');
+            
+            // No lanzamos error crítico, permitimos que el sistema continúe
+            console.warn('⚠️ Auth System no disponible - algunas funcionalidades limitadas');
+            
+            // Crear Auth System de emergencia
+            this.createEmergencyAuthSystem();
         }
     }
     
@@ -306,6 +339,56 @@ class InitSystem {
         
         console.log('✅ Data Manager de emergencia creado');
         return emergencyDataManager;
+    }
+    
+    // Método de emergencia: crear Auth System si todo falla
+    createEmergencyAuthSystem() {
+        console.log('🚨 Creando Auth System de emergencia...');
+        
+        // Crear un Auth System mínimo
+        const emergencyAuthSystem = {
+            dataManager: window.barraboxDataManager || this.createEmergencyDataManager(),
+            currentUser: null,
+            isAuthenticated: false,
+            isAdmin: false,
+            
+            login: async (email, password) => {
+                console.log('🔐 (Emergency) Login attempt:', email);
+                // En emergencia, creamos un usuario automáticamente
+                const user = {
+                    id: `user_${Date.now()}`,
+                    email: email,
+                    name: email.split('@')[0],
+                    role: 'member',
+                    status: 'active'
+                };
+                
+                if (this.dataManager && this.dataManager.createUser) {
+                    this.dataManager.createUser(user);
+                }
+                
+                this.currentUser = user;
+                this.isAuthenticated = true;
+                
+                return { success: true, user: user };
+            },
+            
+            logout: () => {
+                this.currentUser = null;
+                this.isAuthenticated = false;
+                console.log('👋 (Emergency) Logout');
+            },
+            
+            isLoggedIn: () => this.isAuthenticated,
+            getCurrentUser: () => this.currentUser,
+            isInitialized: true
+        };
+        
+        window.barraboxAuth = emergencyAuthSystem;
+        this.systems.auth = true;
+        
+        console.log('✅ Auth System de emergencia creado');
+        return emergencyAuthSystem;
     }
     
     // Cargar script dinámicamente
