@@ -30,8 +30,9 @@ class Fase6Integration {
             await this.loadThemeSystem();
             await this.loadWaitlistSystem();
             await this.loadAnimations();
-            await this.loadRatingSystem();
-            await this.loadPWASystem();
+            // Rating y PWA pendientes de implementación
+            // await this.loadRatingSystem();
+            // await this.loadPWASystem();
             
             // 2. Aplicar mejoras de UX
             this.applyUXEnhancements();

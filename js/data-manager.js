@@ -65,6 +65,17 @@ class DataManager {
                 avatarColor: '#2D3047'
             },
             {
+                id: 'user_004',
+                email: 'usuario@barrabox.cl',
+                name: 'Usuario Demo',
+                role: 'member',
+                plan: 'premium',
+                status: 'active',
+                joinDate: '2026-04-10',
+                phone: '+56955556666',
+                avatarColor: '#28A745'
+            },
+            {
                 id: 'admin_001',
                 email: 'admin@barrabox.cl',
                 name: 'Administrador Barrabox',
@@ -812,29 +823,26 @@ class DataManager {
 // Crear instancia global
 window.DataManager = DataManager;
 
-// Inicializar automáticamente cuando se carga la página
-document.addEventListener('DOMContentLoaded', function() {
-    // Solo inicializar si no existe ya
-    if (!window.barraboxDataManager) {
-        window.barraboxDataManager = new DataManager();
-        
-        // Mostrar resumen en consola (solo en desarrollo)
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            window.barraboxDataManager.debugSummary();
-        }
-        
-        // Limpiar datos antiguos una vez al día
-        const lastCleanup = localStorage.getItem('barrabox_last_cleanup');
-        const today = new Date().toDateString();
-        
-        if (!lastCleanup || lastCleanup !== today) {
-            window.barraboxDataManager.cleanupOldData();
-            localStorage.setItem('barrabox_last_cleanup', today);
-        }
-        
-        console.log('🚀 Data Manager listo para usar');
+// Inicializar inmediatamente (synchronous) para que auth.js pueda acceder
+if (!window.barraboxDataManager) {
+    window.barraboxDataManager = new DataManager();
+    
+    // Mostrar resumen en consola (solo en desarrollo)
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        window.barraboxDataManager.debugSummary();
     }
-});
+    
+    // Limpiar datos antiguos una vez al día
+    const lastCleanup = localStorage.getItem('barrabox_last_cleanup');
+    const today = new Date().toDateString();
+    
+    if (!lastCleanup || lastCleanup !== today) {
+        window.barraboxDataManager.cleanupOldData();
+        localStorage.setItem('barrabox_last_cleanup', today);
+    }
+    
+    console.log('📊 Data Manager inicializado - Versión: 1.0');
+}
 
 // Exportar para Node.js (si es necesario)
 if (typeof module !== 'undefined' && module.exports) {

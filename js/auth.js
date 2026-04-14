@@ -83,6 +83,11 @@ class AuthSystem {
     // ==================== GESTIÓN DE SESIÓN ====================
     
     checkExistingSession() {
+        // Lazy-load dataManager si no está disponible
+        if (!this.dataManager && window.barraboxDataManager) {
+            this.dataManager = window.barraboxDataManager;
+        }
+        
         // Verificar que dataManager esté disponible
         if (!this.dataManager || typeof this.dataManager.getUserById !== 'function') {
             console.warn('⚠️ Data Manager no disponible en checkExistingSession');
@@ -192,6 +197,11 @@ class AuthSystem {
     
     async login(email, password, rememberMe = false) {
         console.log('🔐 Intentando login:', email);
+        
+        // Lazy-load dataManager si no está disponible
+        if (!this.dataManager && window.barraboxDataManager) {
+            this.dataManager = window.barraboxDataManager;
+        }
         
         // Verificar que dataManager esté disponible
         if (!this.dataManager || typeof this.dataManager.getUserByEmail !== 'function') {
