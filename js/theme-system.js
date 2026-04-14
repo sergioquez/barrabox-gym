@@ -2,7 +2,6 @@
 
 class ThemeSystem {
     constructor() {
-        console.log('🎨 Theme System inicializando...');
         
         this.config = {
             themeKey: 'barrabox-theme',
@@ -17,7 +16,6 @@ class ThemeSystem {
     
     initialize() {
         try {
-            console.log('🎯 Configurando sistema de temas...');
             
             // Cargar tema guardado
             this.loadSavedTheme();
@@ -30,7 +28,6 @@ class ThemeSystem {
             
             this.isInitialized = true;
             
-            console.log(`✅ Theme System inicializado - Tema: ${this.currentTheme}`);
             
             // Crear botón de toggle
             this.createThemeToggleButton();
@@ -45,10 +42,8 @@ class ThemeSystem {
         
         if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
             this.currentTheme = savedTheme;
-            console.log(`💾 Tema cargado desde storage: ${this.currentTheme}`);
         } else {
             this.currentTheme = 'light';
-            console.log(`☀️ Usando tema por defecto: ${this.currentTheme}`);
         }
     }
     
@@ -64,7 +59,6 @@ class ThemeSystem {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem(this.config.themeKey, theme);
         
-        console.log(`🎨 Tema aplicado: ${previousTheme} → ${theme}`);
     }
     
     toggleTheme() {
@@ -133,7 +127,6 @@ class ThemeSystem {
         
         document.body.appendChild(button);
         
-        console.log('🎛️ Botón de toggle de tema creado');
         
         return button;
     }
@@ -142,5 +135,4 @@ class ThemeSystem {
 // Crear instancia global
 if (typeof window !== 'undefined') {
     window.barraboxTheme = new ThemeSystem();
-    console.log('🎨 Theme System cargado como window.barraboxTheme');
 }

@@ -1,6 +1,5 @@
 // Admin Integration Script - Conecta el Admin Dashboard con el Admin System
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Admin Integration cargando...');
     
     // Variables globales
     let adminSystem = null;
@@ -8,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar sistema
     async function initialize() {
-        console.log('🧪 Inicializando Admin Integration...');
         
         // Esperar a que los sistemas necesarios estén disponibles
         await waitForDependencies();
@@ -27,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        console.log('✅ Usuario admin verificado:', currentUser.email);
         
         // Inicializar Admin System
         adminSystem = window.barraboxAdmin;
@@ -49,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Actualizar estadísticas
         updateStats();
         
-        console.log('✅ Admin Integration inicializado correctamente');
     }
     
     // Esperar dependencias
@@ -59,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         while (Date.now() - startTime < maxWaitTime) {
             if (window.barraboxDataManager && window.barraboxAuth) {
-                console.log('✅ Dependencias cargadas');
                 return;
             }
             await new Promise(resolve => setTimeout(resolve, 100));
@@ -139,7 +134,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         break;
                 }
                 
-                console.log(`📊 Cambiado a tab: ${tabId}`);
             });
         });
     }
@@ -719,7 +713,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Aplicar filtros
     function applyFilters() {
-        console.log('🔍 Aplicando filtros...');
         
         // Recargar la pestaña actual con los filtros aplicados
         switch (currentTab) {

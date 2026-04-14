@@ -1,0 +1,16 @@
+{
+  "name": "Barrabox Gym",
+  "short_name": "Barrabox",
+  "description": "El gimnasio más completo para Crossfit, Halterofilia y GAP en Santiago.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F8F9FA",
+  "theme_color": "#FF6B35",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

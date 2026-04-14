@@ -22,7 +22,6 @@ class AuthSystem {
     // ==================== INICIALIZACIÓN ====================
     
     async initialize() {
-        console.log('🔐 Auth System inicializando...');
         
         // Esperar a que Data Manager esté disponible
         await this.waitForDataManager();
@@ -30,7 +29,6 @@ class AuthSystem {
         // Obtener referencia al Data Manager
         if (window.barraboxDataManager) {
             this.dataManager = window.barraboxDataManager;
-            console.log('✅ Data Manager encontrado');
         } else {
             console.error('❌ Data Manager no disponible');
             // Intentar crear una instancia como fallback
@@ -38,7 +36,6 @@ class AuthSystem {
                 if (typeof DataManager !== 'undefined') {
                     this.dataManager = new DataManager();
                     window.barraboxDataManager = this.dataManager;
-                    console.log('⚠️ Data Manager creado como fallback');
                 } else {
                     throw new Error('DataManager class not defined');
                 }
@@ -48,7 +45,7 @@ class AuthSystem {
             }
         }
         
-        console.log('✅ Auth System inicializado');
+
         
         // Verificar si hay sesión activa
         this.checkExistingSession();
@@ -66,10 +63,8 @@ class AuthSystem {
                 attempts++;
                 
                 if (window.barraboxDataManager && typeof window.barraboxDataManager.getUserByEmail === 'function') {
-                    console.log(`✅ Data Manager disponible después de ${attempts} intentos`);
                     resolve();
                 } else if (attempts >= maxAttempts) {
-                    console.warn(`⚠️ Timeout esperando Data Manager después de ${maxAttempts} intentos`);
                     resolve(); // Resolvemos igual para no bloquear
                 } else {
                     setTimeout(check, interval);
@@ -105,7 +100,6 @@ class AuthSystem {
                 this.isAuthenticated = true;
                 this.isAdmin = user.role === 'admin';
                 
-                console.log('✅ Sesión restaurada:', user.email);
                 this.triggerAuthEvent('sessionRestored', user);
                 
                 // Actualizar UI si hay elementos de autenticación
@@ -115,7 +109,6 @@ class AuthSystem {
             } else {
                 // Usuario no existe o está inactivo
                 this.clearSession();
-                console.log('❌ Sesión inválida - usuario no encontrado o inactivo');
             }
         }
         
@@ -149,7 +142,6 @@ class AuthSystem {
             localStorage.removeItem(this.REMEMBER_ME_KEY);
         }
         
-        console.log('💾 Sesión guardada para usuario:', userId);
     }
     
     getSessionExpiry(rememberMe) {
@@ -173,7 +165,6 @@ class AuthSystem {
         this.isAuthenticated = false;
         this.isAdmin = false;
         
-        console.log('🧹 Sesión limpiada');
         this.triggerAuthEvent('sessionCleared');
         
         // Actualizar UI
@@ -196,7 +187,6 @@ class AuthSystem {
     // ==================== AUTENTICACIÓN ====================
     
     async login(email, password, rememberMe = false) {
-        console.log('🔐 Intentando login:', email);
         
         // Lazy-load dataManager si no está disponible
         if (!this.dataManager && window.barraboxDataManager) {
@@ -231,7 +221,6 @@ class AuthSystem {
         
         // En un sistema real, aquí se verificaría el password con hash
         // Para el demo, aceptamos cualquier password
-        console.log('✅ Login exitoso (demo - cualquier password aceptada)');
         
         // Guardar sesión
         this.saveSession(user.id, rememberMe);
@@ -266,7 +255,6 @@ class AuthSystem {
     }
     
     async register(userData) {
-        console.log('📝 Registrando nuevo usuario:', userData.email);
         
         // Verificar que dataManager esté disponible
         if (!this.dataManager || typeof this.dataManager.getUserByEmail !== 'function') {
@@ -305,7 +293,6 @@ class AuthSystem {
             throw new Error('Error al guardar usuario');
         }
         
-        console.log('✅ Usuario registrado exitosamente:', newUser.email);
         
         // Auto-login después del registro
         return this.login(newUser.email, userData.password, false);
@@ -329,7 +316,6 @@ class AuthSystem {
         // Limpiar sesión
         this.clearSession();
         
-        console.log('👋 Logout exitoso:', userEmail);
         this.triggerAuthEvent('logoutSuccess', { email: userEmail });
         
         return {
@@ -553,7 +539,6 @@ class AuthSystem {
         // En un sistema real, aquí se verificaría currentPassword
         // Para el demo, aceptamos cualquier currentPassword
         
-        console.log('🔑 Contraseña cambiada para:', this.currentUser.email);
         
         // Crear notificación
         this.dataManager.createNotification(
@@ -583,7 +568,6 @@ class AuthSystem {
         const user = this.dataManager.getUserByEmail(email);
         if (!user) {
             // Por seguridad, no revelamos si el email existe o no
-            console.log('📧 Email de reset enviado (simulado):', email);
             return {
                 success: true,
                 message: 'Si el email existe, recibirás instrucciones para resetear tu contraseña.'
@@ -600,7 +584,6 @@ class AuthSystem {
             'Se ha solicitado un reset de contraseña para tu cuenta.'
         );
         
-        console.log('📧 Reset de contraseña solicitado para:', email);
         
         return {
             success: true,
@@ -650,7 +633,6 @@ class AuthSystem {
             'Tu perfil ha sido actualizado exitosamente.'
         );
         
-        console.log('👤 Perfil actualizado:', this.currentUser.email);
         
         // Actualizar UI
         this.updateUserInfoUI();
@@ -707,7 +689,6 @@ class AuthSystem {
             );
         }
         
-        console.log('👑 Admin actualizó usuario:', user.email, filteredUpdates);
         
         return {
             success: true,
@@ -755,7 +736,6 @@ class AuthSystem {
             throw new Error('Error al crear usuario');
         }
         
-        console.log('👑 Admin creó usuario:', newUser.email);
         
         return {
             success: true,
@@ -802,7 +782,6 @@ class AuthSystem {
             return;
         }
         
-        console.log('📊 Dashboard inicializado para:', this.currentUser.email);
         
         // Configurar elementos específicos del dashboard
         this.setupDashboardEvents();
@@ -815,7 +794,6 @@ class AuthSystem {
             return;
         }
         
-        console.log('👑 Admin page inicializado para:', this.currentUser.email);
         
         // Configurar elementos específicos de admin
         this.setupAdminEvents();
@@ -829,7 +807,6 @@ class AuthSystem {
             return;
         }
         
-        console.log('🔐 Login page inicializado');
         
         // Configurar formularios de login/register
         this.setupLoginForms();
@@ -841,7 +818,6 @@ class AuthSystem {
             return;
         }
         
-        console.log('👤 Profile page inicializado para:', this.currentUser.email);
         
         // Cargar datos del perfil
         this.loadProfileData();
@@ -849,7 +825,6 @@ class AuthSystem {
     
     initializeGeneralPage() {
         // Configuración general para todas las páginas
-        console.log('🌐 Página general inicializada');
     }
     
     // ==================== SETUP METHODS ====================

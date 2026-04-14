@@ -10,7 +10,6 @@ class DataManager {
         // Inicializar datos si no existen
         this.initializeData();
         
-        console.log('📊 Data Manager inicializado - Versión:', this.SCHEMA_VERSION);
     }
     
     // ==================== DATOS POR DEFECTO ====================
@@ -175,14 +174,12 @@ class DataManager {
     initializeData() {
         const existingData = localStorage.getItem(this.STORAGE_KEY);
         if (!existingData) {
-            console.log('📝 Inicializando datos por primera vez...');
             this.saveAllData(this.DEFAULT_DATA);
         } else {
             // Verificar versión del esquema
             try {
                 const data = JSON.parse(existingData);
                 if (data.schemaVersion !== this.SCHEMA_VERSION) {
-                    console.log('🔄 Actualizando esquema de datos...');
                     this.migrateData(data);
                 }
             } catch (error) {
@@ -745,13 +742,7 @@ class DataManager {
     debugSummary() {
         const stats = this.getStats();
         console.group('📊 Data Manager - Resumen del Sistema');
-        console.log('👥 Usuarios:', stats.totalUsers, '(activos:', stats.activeUsers, ')');
-        console.log('🏋️ Clases:', stats.totalClasses, '(activas:', stats.activeClasses, ')');
-        console.log('📅 Reservas:', stats.totalBookings, '(confirmadas:', stats.confirmedBookings, ')');
         console.log('⏳ Waitlists:', stats.totalWaitlists, '(activas:', stats.activeWaitlists, ')');
-        console.log('🔔 Notificaciones:', stats.totalNotifications, '(no leídas:', stats.unreadNotifications, ')');
-        console.log('💾 Tamaño almacenamiento:', stats.storageSize, 'bytes');
-        console.log('🕐 Última actualización:', stats.lastUpdated);
         console.groupEnd();
     }
     
@@ -782,7 +773,6 @@ class DataManager {
         });
         
         if (errors.length === 0) {
-            console.log('✅ Validación de datos: OK');
             return true;
         } else {
             console.error('❌ Errores de validación:', errors);
@@ -811,7 +801,7 @@ class DataManager {
         
         if (cleaned) {
             this.saveAllData(data);
-            console.log('🧹 Datos antiguos limpiados');
+
         }
         
         return cleaned;
@@ -841,7 +831,7 @@ if (!window.barraboxDataManager) {
         localStorage.setItem('barrabox_last_cleanup', today);
     }
     
-    console.log('📊 Data Manager inicializado - Versión: 1.0');
+
 }
 
 // Exportar para Node.js (si es necesario)

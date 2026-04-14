@@ -1,7 +1,6 @@
 // Barrabox - Main JavaScript (Actualizado con Auth System)
 // Función de inicialización que se puede llamar en cualquier momento
 function initializeMain() {
-    console.log('🏠 Inicializando Main System...');
     // Mobile Navigation Toggle
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
@@ -79,9 +78,7 @@ function initializeMain() {
     let authSystem = null;
     if (window.barraboxAuth) {
         authSystem = window.barraboxAuth;
-        console.log('✅ Auth System disponible');
     } else {
-        console.log('⚠️ Auth System no disponible - cargando módulos...');
         // Los módulos se cargarán automáticamente
     }
     
@@ -391,12 +388,10 @@ function initializeMain() {
     function checkAuthStatus() {
         if (authSystem && authSystem.isLoggedIn()) {
             const user = authSystem.getCurrentUser();
-            console.log('✅ Usuario autenticado:', user.email);
             
             // Actualizar UI si hay elementos de autenticación
             updateAuthUI(user);
         } else {
-            console.log('🔐 No hay usuario autenticado');
         }
     }
     
@@ -544,7 +539,6 @@ function initializeMain() {
         });
     }
     
-    console.log('✅ Barrabox Main JS cargado con Auth System');
 }
 
 // Inicializar cuando el DOM esté listo
@@ -561,7 +555,6 @@ if (typeof window !== 'undefined') {
         globalThis.initializeMain = initializeMain;
     }
     
-    console.log('📤 initializeMain exportada globalmente');
     
     // Si ya estamos después de DOMContentLoaded, inicializar ahora
     if (document.readyState === 'loading') {
@@ -569,11 +562,9 @@ if (typeof window !== 'undefined') {
         console.log('⏳ DOM aún cargando, esperando DOMContentLoaded...');
     } else {
         // DOM ya cargado, inicializar ahora
-        console.log('⚡ DOM ya cargado, inicializando Main System...');
         setTimeout(() => {
             try {
                 initializeMain();
-                console.log('✅ Main System auto-inicializado');
             } catch (error) {
                 console.error('❌ Error auto-inicializando Main System:', error);
             }

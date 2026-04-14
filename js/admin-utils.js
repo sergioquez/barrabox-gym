@@ -378,5 +378,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    console.log('🛠️ Admin Utilities cargadas');
 });

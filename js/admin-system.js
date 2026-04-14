@@ -1,7 +1,6 @@
 // Admin System - Sistema central de administración para Barrabox Gym
 class AdminSystem {
     constructor() {
-        console.log('🚀 Admin System inicializando...');
         
         // Dependencias necesarias
         this.dataManager = window.barraboxDataManager;
@@ -41,7 +40,6 @@ class AdminSystem {
     // Inicializar sistema
     async initialize() {
         try {
-            console.log('🧪 Verificando dependencias...');
             
             // Verificar que Data Manager esté disponible
             if (!this.dataManager) {
@@ -64,7 +62,6 @@ class AdminSystem {
                 throw new Error('Acceso denegado: Se requiere rol de administrador');
             }
             
-            console.log('✅ Admin verificado:', this.currentAdmin.email);
             
             // Cargar datos iniciales
             await this.loadInitialData();
@@ -81,7 +78,6 @@ class AdminSystem {
                 timestamp: new Date().toISOString()
             });
             
-            console.log('✅ Admin System inicializado correctamente');
             
         } catch (error) {
             console.error('❌ Error inicializando Admin System:', error);
@@ -91,7 +87,6 @@ class AdminSystem {
     
     // Cargar datos iniciales
     async loadInitialData() {
-        console.log('📊 Cargando datos iniciales...');
         
         try {
             // Cargar todos los datos necesarios
@@ -100,7 +95,6 @@ class AdminSystem {
             this.cache.bookings = this.dataManager.getAllBookings();
             this.cache.lastUpdate = new Date();
             
-            console.log(`📈 Datos cargados: 
                 ${this.cache.members.length} miembros,
                 ${this.cache.classes.length} clases,
                 ${this.cache.bookings.length} reservas`);
@@ -125,11 +119,9 @@ class AdminSystem {
         const timeSinceLastUpdate = now - this.cache.lastUpdate;
         
         if (!force && timeSinceLastUpdate < this.config.cacheTTL) {
-            console.log('🔄 Cache aún válido, usando datos cacheados');
             return this.cache;
         }
         
-        console.log('🔄 Refrescando datos del cache...');
         
         try {
             const oldCounts = {
@@ -157,7 +149,6 @@ class AdminSystem {
                 bookings: newCounts.bookings - oldCounts.bookings
             };
             
-            console.log(`📊 Datos refrescados: 
                 Miembros: ${oldCounts.members} → ${newCounts.members} (${changes.members >= 0 ? '+' : ''}${changes.members})
                 Clases: ${oldCounts.classes} → ${newCounts.classes} (${changes.classes >= 0 ? '+' : ''}${changes.classes})
                 Reservas: ${oldCounts.bookings} → ${newCounts.bookings} (${changes.bookings >= 0 ? '+' : ''}${changes.bookings})`);
@@ -279,7 +270,6 @@ class AdminSystem {
             timestamp: new Date().toISOString()
         });
         
-        console.log('✅ Miembro creado:', createdMember.email);
         
         return createdMember;
     }
@@ -334,7 +324,6 @@ class AdminSystem {
             timestamp: new Date().toISOString()
         });
         
-        console.log('✅ Miembro actualizado:', updatedMember.email);
         
         return updatedMember;
     }
@@ -390,7 +379,6 @@ class AdminSystem {
             timestamp: new Date().toISOString()
         });
         
-        console.log('✅ Miembro eliminado:', existingMember.email);
         
         return true;
     }
@@ -495,7 +483,6 @@ class AdminSystem {
             timestamp: new Date().toISOString()
         });
         
-        console.log('✅ Clase creada:', createdClass.title);
         
         return createdClass;
     }
@@ -550,7 +537,6 @@ class AdminSystem {
             timestamp: new Date().toISOString()
         });
         
-        console.log('✅ Clase actualizada:', updatedClass.title);
         
         return updatedClass;
     }
@@ -603,7 +589,6 @@ class AdminSystem {
             timestamp: new Date().toISOString()
         });
         
-        console.log('✅ Clase eliminada:', existingClass.title);
         
         return true;
     }
@@ -749,7 +734,6 @@ class AdminSystem {
             timestamp: new Date().toISOString()
         });
         
-        console.log('✅ Reserva cancelada por admin:', bookingId);
         
         return cancelled;
     }
@@ -942,7 +926,6 @@ class AdminSystem {
             'info'
         );
         
-        console.log(`✅ Datos exportados (${dataType}):`, Array.isArray(data) ? data.length : 'multiple');
         
         return {
             data: data,
@@ -963,7 +946,6 @@ class AdminSystem {
         // Escuchar cambios en Data Manager
         if (this.dataManager && this.dataManager.addEventListener) {
             this.dataManager.addEventListener('dataChanged', () => {
-                console.log('🔄 Data Manager cambió, refrescando cache...');
                 this.refreshData(true).catch(console.error);
             });
         }
@@ -971,7 +953,6 @@ class AdminSystem {
         // Escuchar cambios en Auth System
         if (this.authSystem && this.authSystem.addEventListener) {
             this.authSystem.addEventListener('auth:logout', () => {
-                console.log('👋 Usuario cerró sesión, limpiando Admin System...');
                 this.cleanup();
             });
         }
@@ -979,7 +960,6 @@ class AdminSystem {
         // Escuchar eventos del DOM
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
-                console.log('📱 Página visible, refrescando datos...');
                 this.refreshData().catch(console.error);
             }
         });
@@ -1037,7 +1017,6 @@ class AdminSystem {
             lastUpdate: null
         };
         
-        console.log('🧹 Admin System limpiado');
     }
     
     // Verificar permisos
@@ -1072,8 +1051,6 @@ if (typeof window !== 'undefined') {
     
     // Exponer para debugging
     window.debugAdminSystem = () => {
-        console.log('🔧 Debug Admin System:', window.barraboxAdmin.getSystemInfo());
     };
     
-    console.log('🌐 Admin System cargado como window.barraboxAdmin');
 }

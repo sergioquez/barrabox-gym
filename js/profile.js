@@ -1,7 +1,5 @@
 // Profile Management Script
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('✅ Profile JS cargado');
-    
     // Auth System
     let authSystem = null;
     let dataManager = null;
@@ -10,12 +8,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function initializeSystems() {
         if (window.barraboxAuth) {
             authSystem = window.barraboxAuth;
-            console.log('✅ Auth System disponible');
         }
         
         if (window.barraboxDataManager) {
             dataManager = window.barraboxDataManager;
-            console.log('✅ Data Manager disponible');
         }
         
         // Load user data

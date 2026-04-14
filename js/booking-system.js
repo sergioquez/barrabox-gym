@@ -1,15 +1,11 @@
 // Booking Integration Script
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Booking Integration cargando...');
-    
     // Variables globales
     let calendar = null;
     let currentUser = null;
     
     // Inicializar sistema
     async function initialize() {
-        console.log('🧪 Inicializando sistema de reservas...');
-        
         // Verificar que los sistemas necesarios estén disponibles
         if (!window.barraboxDataManager) {
             showError('Data Manager no disponible');
@@ -32,8 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Obtener usuario actual
         currentUser = window.barraboxAuth.getCurrentUser();
-        console.log('✅ Usuario autenticado:', currentUser.email);
-        
         // Cargar datos iniciales
         await loadInitialData();
         
@@ -48,8 +42,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Actualizar estadísticas
         updateStats();
-        
-        console.log('✅ Sistema de reservas inicializado correctamente');
     }
     
     // Cargar datos iniciales
@@ -59,12 +51,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = window.barraboxDataManager.getAllData();
             
             if (data.classes.length === 0) {
-                console.log('⚠️ No hay clases, creando datos de demo...');
                 createDemoClasses();
             }
             
             if (data.users.length <= 2) { // Solo admin y usuario demo
-                console.log('⚠️ Pocos usuarios, asegurando datos de demo...');
                 ensureDemoData();
             }
             
@@ -136,8 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
         demoClasses.forEach(cls => {
             window.barraboxDataManager.createClass(cls);
         });
-        
-        console.log('✅ Clases de demo creadas');
     }
     
     // Asegurar datos de demo
@@ -178,9 +166,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Obtener datos para el calendario
         const classes = window.barraboxDataManager.getAllClasses();
         const bookings = window.barraboxDataManager.getAllBookings();
-        
-        console.log(`📊 Datos para calendario: ${classes.length} clases, ${bookings.length} reservas`);
-        
         // Crear instancia del calendario
         calendar = new BarraboxCalendar({
             container: container,
@@ -191,20 +176,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Configurar event listeners del calendario
         container.addEventListener('calendar:bookingCreated', (e) => {
-            console.log('✅ Reserva creada:', e.detail);
             showSuccess('¡Reserva creada exitosamente!');
             loadUpcomingBookings();
             updateStats();
         });
         
         container.addEventListener('calendar:bookingCancelled', (e) => {
-            console.log('❌ Reserva cancelada:', e.detail);
             showInfo('Reserva cancelada exitosamente');
             loadUpcomingBookings();
             updateStats();
         });
-        
-        console.log('✅ Calendario inicializado');
     }
     
     // Cargar reservas próximas
@@ -542,7 +523,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function applyFilters() {
         // En una implementación real, esto filtraría las clases en el calendario
         // Por ahora, solo mostramos un mensaje
-        console.log('Filtros aplicados');
         showInfo('Filtros aplicados (demo)');
     }
     
@@ -707,8 +687,6 @@ document.addEventListener('DOMContentLoaded', function() {
         cancelBooking,
         viewBookingDetails
     };
-    
-    console.log('📋 Booking Integration cargado. Usa window.bookingSystem para debugging.');
 });
 
 // Estilos adicionales para la página de booking

@@ -2,7 +2,6 @@
 
 class WaitlistSystem {
     constructor() {
-        console.log('📋 Waitlist System inicializando...');
         
         this.dataManager = window.barraboxDataManager;
         this.authSystem = window.barraboxAuth;
@@ -19,7 +18,6 @@ class WaitlistSystem {
     
     initialize() {
         try {
-            console.log('🧪 Verificando dependencias...');
             
             if (!this.dataManager) {
                 console.warn('⚠️ Data Manager no disponible para Waitlist System');
@@ -34,14 +32,12 @@ class WaitlistSystem {
             // Verificar que exista la colección de waitlists
             const data = this.dataManager.getAllData();
             if (!data.waitlists) {
-                console.log('📝 Creando colección de waitlists...');
                 this.dataManager.data.waitlists = [];
                 this.dataManager.saveData();
             }
             
             this.isInitialized = true;
             
-            console.log('✅ Waitlist System inicializado correctamente');
             
         } catch (error) {
             console.error('❌ Error inicializando Waitlist System:', error);
@@ -102,7 +98,6 @@ class WaitlistSystem {
             throw new Error('Error uniéndose a la lista de espera');
         }
         
-        console.log(`✅ Usuario ${user.email} se unió a waitlist para clase ${cls.title} (posición: ${position})`);
         
         return created;
     }
@@ -133,7 +128,6 @@ class WaitlistSystem {
             throw new Error('Error saliendo de la lista de espera');
         }
         
-        console.log(`❌ Usuario salió de waitlist para clase ${waitlist.classId}`);
         
         return true;
     }
@@ -169,5 +163,4 @@ class WaitlistSystem {
 if (typeof window !== 'undefined') {
     window.barraboxWaitlist = new WaitlistSystem();
     
-    console.log('📋 Waitlist System cargado como window.barraboxWaitlist');
 }

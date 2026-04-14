@@ -2,7 +2,6 @@
 
 class Fase6Integration {
     constructor() {
-        console.log('✨ FASE 6 Integration inicializando...');
         
         // Sistemas
         this.systems = {
@@ -24,7 +23,6 @@ class Fase6Integration {
     // Inicializar todos los sistemas
     async initialize() {
         try {
-            console.log('🚀 Iniciando FASE 6: Polish & UX...');
             
             // 1. Cargar sistemas en orden
             await this.loadThemeSystem();
@@ -43,8 +41,6 @@ class Fase6Integration {
             // 4. Marcar como inicializado
             this.isInitialized = true;
             
-            console.log('✅ FASE 6 Integration completada');
-            console.log(`📊 Sistemas cargados: ${Array.from(this.loadedSystems).join(', ')}`);
             
             // Disparar evento
             this.dispatchEvent('fase6:initialized', {
@@ -60,12 +56,10 @@ class Fase6Integration {
     // Cargar sistema de temas
     async loadThemeSystem() {
         try {
-            console.log('🎨 Cargando Theme System...');
             
             // Verificar si el script ya está cargado
             if (typeof window.barraboxTheme !== 'undefined') {
                 this.systems.theme = window.barraboxTheme;
-                console.log('✅ Theme System ya cargado');
             } else {
                 // Cargar script
                 await this.loadScript('js/theme-system.js');
@@ -77,7 +71,6 @@ class Fase6Integration {
                 );
                 
                 this.systems.theme = window.barraboxTheme;
-                console.log('✅ Theme System cargado');
             }
             
             this.loadedSystems.add('theme');
@@ -102,7 +95,6 @@ class Fase6Integration {
     // Cargar sistema de waitlist
     async loadWaitlistSystem() {
         try {
-            console.log('📋 Cargando Waitlist System...');
             
             // Verificar dependencias
             if (!window.barraboxDataManager || !window.barraboxAuth) {
@@ -115,7 +107,6 @@ class Fase6Integration {
             // Verificar si el script ya está cargado
             if (typeof window.barraboxWaitlist !== 'undefined') {
                 this.systems.waitlist = window.barraboxWaitlist;
-                console.log('✅ Waitlist System ya cargado');
             } else {
                 // Cargar script
                 await this.loadScript('js/waitlist-system.js');
@@ -127,7 +118,6 @@ class Fase6Integration {
                 );
                 
                 this.systems.waitlist = window.barraboxWaitlist;
-                console.log('✅ Waitlist System cargado');
             }
             
             this.loadedSystems.add('waitlist');
@@ -148,7 +138,6 @@ class Fase6Integration {
     // Cargar animaciones
     async loadAnimations() {
         try {
-            console.log('🎬 Cargando sistema de animaciones...');
             
             // Cargar CSS de animaciones
             await this.loadCSS('css/animations.css');
@@ -157,7 +146,6 @@ class Fase6Integration {
             this.applyAnimationClasses();
             
             this.loadedSystems.add('animations');
-            console.log('✅ Animaciones cargadas');
             
         } catch (error) {
             console.error('❌ Error cargando animaciones:', error);
@@ -189,7 +177,6 @@ class Fase6Integration {
                 
                 this.systems.rating = window.barraboxRating;
                 this.loadedSystems.add('rating');
-                console.log('✅ Rating System cargado');
             } else {
                 console.log('ℹ️ Rating System no disponible (archivo no encontrado)');
             }
@@ -202,7 +189,6 @@ class Fase6Integration {
     // Cargar sistema PWA
     async loadPWASystem() {
         try {
-            console.log('📱 Cargando PWA System...');
             
             // Verificar si existe service worker
             if ('serviceWorker' in navigator) {
@@ -210,7 +196,6 @@ class Fase6Integration {
                 if (await this.scriptExists('js/pwa-service-worker.js')) {
                     await this.loadScript('js/pwa-service-worker.js');
                     this.loadedSystems.add('pwa');
-                    console.log('✅ PWA System cargado');
                 } else {
                     console.log('ℹ️ PWA System no disponible (archivo no encontrado)');
                 }
@@ -225,7 +210,6 @@ class Fase6Integration {
     
     // Aplicar mejoras de UX
     applyUXEnhancements() {
-        console.log('🎯 Aplicando mejoras de UX...');
         
         // 1. Mejorar formularios
         this.enhanceForms();
@@ -242,7 +226,6 @@ class Fase6Integration {
         // 5. Optimizar para móviles
         this.optimizeForMobile();
         
-        console.log('✅ Mejoras de UX aplicadas');
     }
     
     // Mejorar formularios
@@ -506,11 +489,9 @@ class Fase6Integration {
     setupEventListeners() {
         // Escuchar eventos de los sistemas
         document.addEventListener('theme:changed', (e) => {
-            console.log('🎨 Tema cambiado:', e.detail.currentTheme);
         });
         
         document.addEventListener('waitlist:joined', (e) => {
-            console.log('📋 Usuario se unió a waitlist:', e.detail.user.email);
         });
         
         // Configurar shortcuts de teclado
@@ -760,11 +741,9 @@ class Fase6Integration {
         console.log('Estado:', this.getSystemInfo());
         
         if (this.systems.theme) {
-            console.log('🎨 Theme System:', this.systems.theme.getSystemInfo?.() || 'No info');
         }
         
         if (this.systems.waitlist) {
-            console.log('📋 Waitlist System:', this.systems.waitlist.getSystemInfo?.() || 'No info');
         }
         
         console.groupEnd();
@@ -775,7 +754,6 @@ class Fase6Integration {
 
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🚀 DOM listo, iniciando FASE 6 Integration...');
     
     // Crear instancia global
     window.barraboxFase6 = new Fase6Integration();
@@ -965,7 +943,6 @@ document.addEventListener('DOMContentLoaded', () => {
     style.textContent = additionalStyles;
     document.head.appendChild(style);
     
-    console.log('🎨 Estilos de FASE 6 agregados');
 });
 
 // ==================== POLYFILLS Y FALLBACKS ====================
@@ -1017,5 +994,4 @@ if (!String.prototype.includes) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = Fase6Integration;
 }
-
-console.log('✨ FASE 6 Integration script cargado');
+
