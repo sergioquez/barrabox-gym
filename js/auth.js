@@ -21,17 +21,34 @@ class AuthSystem {
     
     // ==================== INICIALIZACIÓN ====================
     
-    initialize() {
+    async initialize() {
+        console.log('🔐 Auth System inicializando...');
+        
+        // Esperar a que Data Manager esté disponible
+        await this.waitForDataManager();
+        
         // Obtener referencia al Data Manager
         if (window.barraboxDataManager) {
             this.dataManager = window.barraboxDataManager;
+            console.log('✅ Data Manager encontrado');
         } else {
-            // Si no existe, crear una instancia
-            this.dataManager = new DataManager();
-            window.barraboxDataManager = this.dataManager;
+            console.error('❌ Data Manager no disponible');
+            // Intentar crear una instancia como fallback
+            try {
+                if (typeof DataManager !== 'undefined') {
+                    this.dataManager = new DataManager();
+                    window.barraboxDataManager = this.dataManager;
+                    console.log('⚠️ Data Manager creado como fallback');
+                } else {
+                    throw new Error('DataManager class not defined');
+                }
+            } catch (error) {
+                console.error('❌ No se pudo crear Data Manager:', error);
+                return;
+            }
         }
         
-        console.log('🔐 Auth System inicializado');
+        console.log('✅ Auth System inicializado');
         
         // Verificar si hay sesión activa
         this.checkExistingSession();
@@ -40,9 +57,38 @@ class AuthSystem {
         this.setupGlobalEvents();
     }
     
+    // Esperar a que Data Manager esté disponible
+    waitForDataManager(maxAttempts = 10, interval = 100) {
+        return new Promise((resolve, reject) => {
+            let attempts = 0;
+            
+            const check = () => {
+                attempts++;
+                
+                if (window.barraboxDataManager && typeof window.barraboxDataManager.getUserByEmail === 'function') {
+                    console.log(`✅ Data Manager disponible después de ${attempts} intentos`);
+                    resolve();
+                } else if (attempts >= maxAttempts) {
+                    console.warn(`⚠️ Timeout esperando Data Manager después de ${maxAttempts} intentos`);
+                    resolve(); // Resolvemos igual para no bloquear
+                } else {
+                    setTimeout(check, interval);
+                }
+            };
+            
+            check();
+        });
+    }
+    
     // ==================== GESTIÓN DE SESIÓN ====================
     
     checkExistingSession() {
+        // Verificar que dataManager esté disponible
+        if (!this.dataManager || typeof this.dataManager.getUserById !== 'function') {
+            console.warn('⚠️ Data Manager no disponible en checkExistingSession');
+            return false;
+        }
+        
         const sessionData = this.getSessionData();
         
         if (sessionData && sessionData.userId) {
@@ -147,6 +193,12 @@ class AuthSystem {
     async login(email, password, rememberMe = false) {
         console.log('🔐 Intentando login:', email);
         
+        // Verificar que dataManager esté disponible
+        if (!this.dataManager || typeof this.dataManager.getUserByEmail !== 'function') {
+            console.error('❌ Data Manager no disponible en login');
+            throw new Error('Sistema temporalmente no disponible. Por favor, recarga la página.');
+        }
+        
         // Validar entrada
         if (!this.validateEmail(email)) {
             throw new Error('Email inválido');
@@ -205,6 +257,12 @@ class AuthSystem {
     
     async register(userData) {
         console.log('📝 Registrando nuevo usuario:', userData.email);
+        
+        // Verificar que dataManager esté disponible
+        if (!this.dataManager || typeof this.dataManager.getUserByEmail !== 'function') {
+            console.error('❌ Data Manager no disponible en registro');
+            throw new Error('Sistema temporalmente no disponible. Por favor, recarga la página.');
+        }
         
         // Validar datos
         const validation = this.validateRegistration(userData);
@@ -502,6 +560,12 @@ class AuthSystem {
     }
     
     async requestPasswordReset(email) {
+        // Verificar que dataManager esté disponible
+        if (!this.dataManager || typeof this.dataManager.getUserByEmail !== 'function') {
+            console.error('❌ Data Manager no disponible en reset password');
+            throw new Error('Sistema temporalmente no disponible. Por favor, recarga la página.');
+        }
+        
         if (!this.validateEmail(email)) {
             throw new Error('Email inválido');
         }
