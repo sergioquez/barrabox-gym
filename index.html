@@ -158,18 +158,21 @@
         </div>
     </footer>
 
-    <!-- Initialization System (carga todo en orden) -->
-    <script src="js/init-system.js?v=1.0"></script>
+    <!-- NUEVO SISTEMA SIMPLIFICADO -->
+    <!-- 1. Event Bus (comunicación central) -->
+    <script src="js/event-bus.js"></script>
     
-    <!-- Scripts (cargados dinámicamente por init-system) -->
-    <!-- 
-    <script src="js/data-manager.js?v=5.0"></script>
-    <script src="js/auth.js?v=5.0"></script>
-    <script src="js/main.js?v=5.0"></script>
-    <script src="js/diagnostic.js?v=1.0"></script>
-    -->
+    <!-- 2. System Loader (carga componentes en orden) -->
+    <script src="js/system-loader.js"></script>
     
-    <!-- FASE 6: Polish & UX -->
+    <!-- Los demás componentes se cargan automáticamente por System Loader -->
+    <!-- - data-manager-simple.js -->
+    <!-- - auth-simple.js -->
+    <!-- - main-simple.js -->
+    <!-- - theme-simple.js (opcional) -->
+    <!-- - diagnostic-simple.js (opcional) -->
+    
+    <!-- FASE 6: Polish & UX (mantenemos por ahora) -->
     <link rel="stylesheet" href="css/animations.css">
     <script src="js/theme-system.js"></script>
     <script src="js/waitlist-system.js"></script>
