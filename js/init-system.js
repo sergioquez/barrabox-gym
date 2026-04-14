@@ -284,6 +284,19 @@ class InitSystem {
             await this.loadScript('js/main.js?v=5.0');
             console.log('✅ Main script cargado');
             
+            // Inicializar main manualmente ya que DOMContentLoaded ya pasó
+            if (typeof initializeMain === 'function') {
+                console.log('⚡ Inicializando Main System manualmente...');
+                setTimeout(() => {
+                    try {
+                        initializeMain();
+                        console.log('✅ Main System inicializado manualmente');
+                    } catch (error) {
+                        console.error('❌ Error inicializando Main System:', error);
+                    }
+                }, 100);
+            }
+            
         } catch (error) {
             console.error('❌ Error cargando main script:', error);
             // No es crítico para todas las páginas

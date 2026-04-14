@@ -1,5 +1,7 @@
 // Barrabox - Main JavaScript (Actualizado con Auth System)
-document.addEventListener('DOMContentLoaded', function() {
+// Función de inicialización que se puede llamar en cualquier momento
+function initializeMain() {
+    console.log('🏠 Inicializando Main System...');
     // Mobile Navigation Toggle
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
@@ -543,4 +545,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     console.log('✅ Barrabox Main JS cargado con Auth System');
-});
+}
+
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', initializeMain);
+
+// También exportar para inicialización manual
+if (typeof window !== 'undefined') {
+    window.initializeMain = initializeMain;
+    
+    // Si ya estamos después de DOMContentLoaded, inicializar ahora
+    if (document.readyState === 'loading') {
+        // DOM aún cargando, esperar a DOMContentLoaded
+    } else {
+        // DOM ya cargado, inicializar ahora
+        setTimeout(initializeMain, 100);
+    }
+}
