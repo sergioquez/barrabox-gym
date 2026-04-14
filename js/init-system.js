@@ -407,12 +407,23 @@ class InitSystem {
             script.src = src;
             script.async = false; // Importante: cargar en orden
             
+            let timeoutId;
+            
+            const cleanup = () => {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                    timeoutId = null;
+                }
+            };
+            
             script.onload = () => {
+                cleanup();
                 console.log(`✅ Script cargado exitosamente: ${src}`);
                 resolve();
             };
             
             script.onerror = (error) => {
+                cleanup();
                 console.error(`❌ Error cargando script ${src}:`, error);
                 console.error('📊 Información del error:', {
                     src: src,
@@ -423,12 +434,12 @@ class InitSystem {
             };
             
             // Timeout por si el script nunca carga
-            setTimeout(() => {
+            timeoutId = setTimeout(() => {
                 if (script.readyState !== 'loaded' && script.readyState !== 'complete') {
                     console.error(`⏰ Timeout cargando script: ${src}`);
                     reject(new Error(`Timeout cargando script: ${src}`));
                 }
-            }, 15000); // 15 segundos timeout
+            }, 5000); // 5 segundos timeout (reducido de 15)
             
             document.head.appendChild(script);
         });
