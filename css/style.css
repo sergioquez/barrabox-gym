@@ -516,7 +516,43 @@ h1, h2, h3, h4, h5, h6 {
     }
     
     .nav-menu.active {
-        display: flex;
+        display: flex !important;
+        flex-direction: column;
+        position: fixed;
+        top: 80px;
+        left: 0;
+        right: 0;
+        background: var(--color-surface);
+        padding: 2rem;
+        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        animation: slideDown 0.3s var(--ease-smooth);
+        gap: 1rem;
+    }
+    
+    .nav-menu.active a {
+        color: var(--color-text-primary);
+        font-size: 1.2rem;
+        padding: 0.75rem 1rem;
+        border-radius: var(--border-radius-base);
+        transition: all 0.3s var(--ease-smooth);
+    }
+    
+    .nav-menu.active a:hover {
+        background: var(--color-brand-primary);
+        color: white;
+        transform: translateX(5px);
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     .hamburger {
