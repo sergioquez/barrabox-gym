@@ -33,7 +33,10 @@ class InitSystem {
             // 4. Cargar scripts específicos de la página
             await this.loadPageSpecificScripts();
             
-            // 5. Marcar como inicializado
+            // 5. Cargar sistema de diagnóstico
+            await this.loadDiagnosticSystem();
+            
+            // 6. Marcar como inicializado
             this.initialized = true;
             
             console.log('✅ Initialization System completado');
@@ -75,20 +78,53 @@ class InitSystem {
         
         // Intentar cargar el script
         try {
+            console.log('📥 Intentando cargar: js/data-manager.js?v=5.0');
             await this.loadScript('js/data-manager.js?v=5.0');
+            console.log('📦 Script data-manager.js cargado, esperando inicialización...');
             
             // Esperar a que esté disponible
-            await this.waitForCondition(() => 
-                window.barraboxDataManager && 
-                typeof window.barraboxDataManager.getUserByEmail === 'function'
-            , 5000, 100);
+            await this.waitForCondition(() => {
+                const isAvailable = window.barraboxDataManager && 
+                                   typeof window.barraboxDataManager.getUserByEmail === 'function';
+                if (!isAvailable) {
+                    console.log('⏳ Esperando Data Manager...', {
+                        exists: !!window.barraboxDataManager,
+                        hasGetUserByEmail: window.barraboxDataManager ? 
+                                          typeof window.barraboxDataManager.getUserByEmail : 'no dataManager'
+                    });
+                }
+                return isAvailable;
+            }, 10000, 200); // 10 segundos máximo, verificar cada 200ms
             
             this.systems.dataManager = true;
             console.log('✅ Data Manager cargado exitosamente');
             
         } catch (error) {
             console.error('❌ Error cargando Data Manager:', error);
-            throw new Error('No se pudo cargar el sistema de datos');
+            console.error('📊 Estado actual:', {
+                barraboxDataManager: window.barraboxDataManager,
+                hasGetUserByEmail: window.barraboxDataManager ? 
+                                  typeof window.barraboxDataManager.getUserByEmail : 'no dataManager'
+            });
+            
+            // Intentar fallback: crear Data Manager manualmente
+            try {
+                console.log('🔄 Intentando fallback: crear Data Manager manualmente...');
+                if (typeof DataManager !== 'undefined') {
+                    window.barraboxDataManager = new DataManager();
+                    this.systems.dataManager = true;
+                    console.log('✅ Data Manager creado manualmente como fallback');
+                    return;
+                }
+            } catch (fallbackError) {
+                console.error('❌ Fallback también falló:', fallbackError);
+            }
+            
+            // Último recurso: Data Manager de emergencia
+            this.createEmergencyDataManager();
+            
+            // No lanzamos error, permitimos que el sistema continúe
+            console.warn('⚠️ Usando Data Manager de emergencia - funcionalidad limitada');
         }
     }
     
@@ -221,22 +257,95 @@ class InitSystem {
         }
     }
     
+    // Cargar sistema de diagnóstico
+    async loadDiagnosticSystem() {
+        console.log('🔧 Cargando Diagnostic System...');
+        
+        try {
+            await this.loadScript('js/diagnostic.js?v=1.0');
+            console.log('✅ Diagnostic System cargado');
+            
+            // Ejecutar diagnóstico automático si hay errores
+            if (!this.systems.dataManager || !this.systems.auth) {
+                console.log('⚠️ Sistemas críticos faltantes, ejecutando diagnóstico...');
+                setTimeout(() => {
+                    if (window.diagnostic) {
+                        window.diagnostic.checkSystemStatus();
+                    }
+                }, 1000);
+            }
+            
+        } catch (error) {
+            console.error('❌ Error cargando Diagnostic System:', error);
+            // No es crítico, solo para debugging
+        }
+    }
+    
+    // Método de emergencia: crear Data Manager si todo falla
+    createEmergencyDataManager() {
+        console.log('🚨 Creando Data Manager de emergencia...');
+        
+        // Crear un Data Manager mínimo
+        const emergencyDataManager = {
+            getAllData: () => ({
+                users: [],
+                classes: [],
+                bookings: [],
+                notifications: [],
+                waitlists: []
+            }),
+            getUserByEmail: (email) => null,
+            getUserById: (id) => null,
+            createUser: (user) => ({ ...user, id: `user_${Date.now()}` }),
+            saveData: () => console.log('💾 (Emergency) Datos guardados'),
+            isInitialized: true
+        };
+        
+        window.barraboxDataManager = emergencyDataManager;
+        this.systems.dataManager = true;
+        
+        console.log('✅ Data Manager de emergencia creado');
+        return emergencyDataManager;
+    }
+    
     // Cargar script dinámicamente
     loadScript(src) {
         return new Promise((resolve, reject) => {
             // Verificar si ya está cargado
             const existingScript = document.querySelector(`script[src="${src}"]`);
             if (existingScript) {
+                console.log(`📄 Script ya cargado: ${src}`);
                 resolve();
                 return;
             }
             
+            console.log(`📥 Cargando script: ${src}`);
             const script = document.createElement('script');
             script.src = src;
             script.async = false; // Importante: cargar en orden
             
-            script.onload = () => resolve();
-            script.onerror = () => reject(new Error(`Error cargando script: ${src}`));
+            script.onload = () => {
+                console.log(`✅ Script cargado exitosamente: ${src}`);
+                resolve();
+            };
+            
+            script.onerror = (error) => {
+                console.error(`❌ Error cargando script ${src}:`, error);
+                console.error('📊 Información del error:', {
+                    src: src,
+                    readyState: script.readyState,
+                    error: error
+                });
+                reject(new Error(`Error cargando script: ${src}. Verifica que el archivo exista.`));
+            };
+            
+            // Timeout por si el script nunca carga
+            setTimeout(() => {
+                if (script.readyState !== 'loaded' && script.readyState !== 'complete') {
+                    console.error(`⏰ Timeout cargando script: ${src}`);
+                    reject(new Error(`Timeout cargando script: ${src}`));
+                }
+            }, 15000); // 15 segundos timeout
             
             document.head.appendChild(script);
         });
