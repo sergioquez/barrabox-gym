@@ -90,15 +90,38 @@
             background: #FF6B35; flex-shrink: 0; margin-top: 4px;
         }
 
-        /* Week calendar override for dashboard */
-        .week-calendar {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 0.75rem;
-            overflow-x: auto;
-            padding-bottom: 0.5rem;
+        /* Mobile-First Calendar */
+        .date-ribbon {
+            display: flex; gap: 0.75rem; overflow-x: auto;
+            padding-bottom: 1rem; scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch; margin-bottom: 1rem;
         }
-        .day-column { min-width: 130px; }
+        .date-chip {
+            flex-shrink: 0; min-width: 75px; background: white;
+            border: 2px solid #e9ecef; border-radius: 16px;
+            padding: 0.8rem 0.5rem; text-align: center; cursor: pointer;
+            scroll-snap-align: center; transition: all 0.2s; 
+            display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+            position: relative;
+        }
+        .date-chip:hover { border-color: #FF6B35; }
+        .date-chip.active {
+            border-color: #FF6B35; background: rgba(255,107,53,0.05); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,107,53,0.1);
+        }
+        .date-chip.today .chip-day { color: #FF6B35; }
+        .chip-day { font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: #6C757D; }
+        .chip-date { font-size: 1.5rem; font-weight: 800; font-family: 'Montserrat', sans-serif; color: #2D3047; line-height: 1; }
+        
+        .day-classes-list {
+            display: grid; grid-template-columns: 1fr; gap: 1rem;
+        }
+        @media (min-width: 768px) {
+            .day-classes-list { grid-template-columns: repeat(2, 1fr); }
+            .date-chip { min-width: 90px; }
+        }
+        @media (min-width: 1024px) {
+            .day-classes-list { grid-template-columns: repeat(3, 1fr); }
+        }
 
         /* Reservation cards */
         .bookings-grid {
@@ -211,12 +234,13 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .week-calendar { grid-template-columns: repeat(3, 1fr); }
             .notif-panel { width: calc(100vw - 2rem); right: 1rem; }
             .user-details { display: none; }
-        }
-        @media (max-width: 480px) {
-            .week-calendar { grid-template-columns: repeat(2, 1fr); }
+            .quick-stats-grid { grid-template-columns: 1fr; }
+            .section-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .welcome-section h2 { font-size: 1.5rem; }
+            .booking-modal { padding: 0 !important; align-items: flex-end; }
+            .modal-content { align-self: flex-end; border-radius: 20px 20px 0 0; width: 100%; max-height: 90vh; margin: 0; }
         }
     </style>
 </head>
@@ -292,23 +316,29 @@
                 <div class="section-header">
                     <h2><i class="fas fa-calendar-alt"></i> Reservar Clases</h2>
                     <div style="display:flex;gap:0.75rem;align-items:center;">
-                        <select id="userClassFilter" style="padding:.45rem .8rem;border:1.5px solid #dee2e6;border-radius:8px;font-size:.88rem;font-family:inherit;outline:none;">
-                            <option value="">Todas</option>
-                            <option value="crossfit">CrossFit</option>
-                            <option value="halterofilia">Halterofilia</option>
-                            <option value="gap">GAP</option>
-                        </select>
                         <button class="nav-btn" id="prevWeekBtn" title="Semana anterior"><i class="fas fa-chevron-left"></i></button>
-                        <span class="current-week" id="weekLabel">Cargando...</span>
+                        <span class="current-week" id="weekLabel" style="min-width:140px;text-align:center;">Cargando...</span>
                         <button class="nav-btn" id="nextWeekBtn" title="Siguiente semana"><i class="fas fa-chevron-right"></i></button>
                     </div>
                 </div>
 
-                <!-- Week Calendar -->
-                <div class="week-calendar" id="weekCalendar">
-                    <div class="db-loading" style="grid-column:1/-1;">
-                        <i class="fas fa-spinner"></i> Cargando calendario...
-                    </div>
+                <div style="margin-bottom:1.5rem; display:flex; justify-content:flex-end;">
+                    <select id="userClassFilter" style="padding:.6rem .8rem; width: 100%; max-width: 300px; border:1.5px solid #dee2e6;border-radius:8px;font-size:.95rem;font-family:inherit;outline:none;">
+                        <option value="">Todos los tipos</option>
+                        <option value="crossfit">CrossFit</option>
+                        <option value="halterofilia">Halterofilia</option>
+                        <option value="gap">GAP</option>
+                    </select>
+                </div>
+
+                <!-- Date Ribbon -->
+                <div class="date-ribbon" id="dateRibbon">
+                    <div class="db-loading" style="width:100%;"><i class="fas fa-spinner"></i> Cargando semanas...</div>
+                </div>
+
+                <!-- Day Classes -->
+                <div class="day-classes-list" id="dayClassesList">
+                    <!-- Classes are rendered here -->
                 </div>
 
                 <!-- Legend -->
@@ -620,58 +650,72 @@
         }
 
         // ── Week Calendar ───────────────────────────────────────
+        // ── Week Calendar ───────────────────────────────────────
         function renderWeekCalendar() {
             const dates = getWeekDates(state.weekOffset);
             const start = formatDateShort(dates[0]);
             const end   = formatDateShort(dates[5]);
             document.getElementById('weekLabel').textContent = `${start} – ${end}`;
 
-            const container = document.getElementById('weekCalendar');
+            const ribbon = document.getElementById('dateRibbon');
+            ribbon.innerHTML = '';
+            
+            // If selectedDate is not in the current week view, auto-select the first day of this week view
+            if (!state.selectedDate || !dates.includes(state.selectedDate)) {
+                state.selectedDate = dates[0];
+            }
+
+            dates.forEach(date => {
+                const dateObj = new Date(date + 'T12:00:00');
+                const dayName = dateObj.toLocaleDateString('es-ES', { weekday: 'short' }).toUpperCase();
+                const dayNum  = dateObj.getDate();
+                
+                const chip = document.createElement('div');
+                chip.className = `date-chip ${isToday(date) ? 'today' : ''} ${state.selectedDate === date ? 'active' : ''}`;
+                chip.innerHTML = `
+                    <div class="chip-day">${dayName}</div>
+                    <div class="chip-date">${dayNum}</div>
+                `;
+                
+                chip.addEventListener('click', () => {
+                    state.selectedDate = date;
+                    renderWeekCalendar(); // re-render to update active chip and classes
+                });
+                
+                ribbon.appendChild(chip);
+            });
+            
+            // Auto scroll the ribbon to the active chip if needed
+            const activeChip = ribbon.querySelector('.date-chip.active');
+            if (activeChip) {
+                activeChip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+
+            renderDayClasses();
+        }
+
+        function renderDayClasses() {
+            const container = document.getElementById('dayClassesList');
             container.innerHTML = '';
             
             const filterEl = document.getElementById('userClassFilter');
             const typeFilter = filterEl ? filterEl.value : '';
-
-            dates.forEach(date => {
-                let classes = state.dm.getClassesByDate ? state.dm.getClassesByDate(date) : [];
-                if (typeFilter) {
-                    classes = classes.filter(c => c.type === typeFilter);
-                }
-                const col = buildDayColumn(date, classes);
-                container.appendChild(col);
-            });
-        }
-
-        function buildDayColumn(date, classes) {
-            const col = document.createElement('div');
-            col.className = `day-column${isToday(date) ? ' today' : ''}`;
-
-            const dateObj = new Date(date + 'T12:00:00');
-            const dayName = dateObj.toLocaleDateString('es-ES', { weekday: 'short' }).toUpperCase();
-            const dayNum  = dateObj.getDate();
-
-            col.innerHTML = `
-                <div class="day-header">
-                    <div class="day-name">${dayName}</div>
-                    <div class="day-date">${dayNum}</div>
-                    ${isToday(date) ? '<span class="day-tag">HOY</span>' : ''}
-                </div>
-                <div class="day-classes" id="dc-${date}"></div>`;
-
-            const dcEl = col.querySelector(`#dc-${date}`);
+            
+            let classes = state.dm.getClassesByDate ? state.dm.getClassesByDate(state.selectedDate) : [];
+            if (typeFilter) {
+                classes = classes.filter(c => c.type === typeFilter);
+            }
 
             if (!classes || classes.length === 0) {
-                dcEl.innerHTML = `<div class="class-slot closed">
+                container.innerHTML = `<div class="class-slot closed" style="grid-column:1/-1;">
                     <i class="fas fa-moon"></i>
-                    <small style="color:#9aa0a6;">Sin clases</small>
+                    <small style="color:#9aa0a6;">Sin clases programadas para este día</small>
                 </div>`;
             } else {
                 classes.sort((a,b) => a.time.localeCompare(b.time)).forEach(cls => {
-                    dcEl.appendChild(buildClassSlot(cls, date));
+                    container.appendChild(buildClassSlot(cls, state.selectedDate));
                 });
             }
-
-            return col;
         }
 
         function buildClassSlot(cls, date) {

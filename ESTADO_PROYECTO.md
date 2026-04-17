@@ -34,7 +34,10 @@
 | Fecha | Archivos Modificados | Descripción del Cambio |
 |---|---|---|
 | 2026-04-16 | `playwright_tests/test_dashboard.py` (Eliminado) | Reducción de flakiness eliminando el archivo redundante. |
-| 2026-04-16 | `admin-dashboard.html`, `test_admin_flows.py` | Implementada sección para la Creación de Clases (Modal). Añadida Prueba Automatizada UC-A3. |
+| 2026-04-16 | `admin-dashboard.html`, `test_admin_flows.py` | Implementada sección para la Creación de Clases (Modal) agregando Lógica de Recurrencia (Creación Diaria y Semanal en lote). Añadida Prueba Automatizada UC-A3. |
+| 2026-04-16 | `js/data-manager.js` | Corregido Bug de Reservas Huérfanas. Al borrar una clase, ahora se cancelan automáticamente las reservas y notifica a los usuarios con mitigación de race conditions en JS. Corregidos también race conditions críticos al reservar y unirse a waitlist. |
 | 2026-04-16 | `user-dashboard.html`, `test_user_flows.py` | Implementado Filtro Visual de Tipos de Clase en el Calendario. Solucionado Bug del Badge de Notificaciones. Añadida Prueba Automatizada UC-U4. |
+| 2026-04-17 | `user-dashboard.html`, `admin-dashboard.html`, `css/style.css` | Realizada la estabilización y estilización Full Mobile Responsive UI/UX para el Admin y Usuario. Implementación de Bottom Sheets nativos para los Modales, y Carouseles Swippeables (scroll-snap) en calendarios y reportes para una experiencia app-like. |
+| 2026-04-17 | `user-dashboard.html`, `test_user_flows.py` | Rediseñado el UI del calendario a un modelo Mobile-First: en lugar de mostrar todos los días de la semana en grid, ahora se presenta un "Date Ribbon" superior horizontal. Al seleccionar un día (chip), se despliega abajo una vista exclusiva de las clases (`day-classes-list`). Automatizaciones de E2E adaptadas para recorrer chips y encontrar clases activas. |
 | 2026-04-16 | `playwright_tests/test_user_flows.py`, `playwright_tests/test_admin_flows.py` | Desarrollo y automatización de casos de uso completos para reserva/cancelación de usuario y CRUD de administrador en Playwright. |
 | 2026-04-16 | `ESTADO_PROYECTO.md`, `AGENTS.md`, `PROYECTO_COMPLETO.md` | Creación del archivo de estado y adición de la regla de actualización obligatoria. |

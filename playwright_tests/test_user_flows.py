@@ -62,8 +62,27 @@ def test_user_uc1_empty_state_and_booking(page: Page, app_url: str):
     # Buscar el primer botón "Reservar" disponible
     book_btn = page.locator(".class-slot.available").get_by_role("button", name="Reservar").first
     
-    if not book_btn.is_visible():
+    # Iterate through day chips until we find a day with available classes
+    found_class = False
+    for i in range(6):
+        date_chips = page.locator(".date-chip")
+        
+        # Click the i-th chip
+        if date_chips.nth(i).is_visible():
+            date_chips.nth(i).click()
+            time.sleep(0.5)
+            
+            # Now check for book button
+            if book_btn.is_visible():
+                found_class = True
+                break
+                
+    if not found_class:
+        # Pasa a la siguiente semana si no hubo suerte
         page.get_by_title("Siguiente semana").click()
+        time.sleep(0.5)
+        # Try finding again on the first day
+        page.locator(".date-chip").first.click()
         time.sleep(0.5)
         
     expect(book_btn).to_be_visible()
@@ -153,7 +172,24 @@ def test_user_uc4_filter_classes(page: Page, app_url: str):
     filter_dropdown.select_option(value="crossfit")
     time.sleep(0.5) # Wait for render
     
-    # Después de filtrar por crossfit, no debería haber clases de gap visibles
+    # Iterate through day chips until we find a crossfit class
+    found_crossfit = False
+    for i in range(6):
+        date_chips = page.locator(".date-chip")
+        if date_chips.nth(i).is_visible():
+            date_chips.nth(i).click()
+            time.sleep(0.5)
+            if page.locator(".class-type.crossfit").first.is_visible():
+                found_crossfit = True
+                break
+                
+    if not found_crossfit:
+        page.get_by_title("Siguiente semana").click()
+        time.sleep(0.5)
+        page.locator(".date-chip").first.click()
+        time.sleep(0.5)
+
+    # Después de filtrar por crossfit, en la pestaña que encontramos, no debería haber clases de gap visibles
     expect(page.locator(".class-type.gap").first).not_to_be_visible()
     # Las clases visibles deben ser de tipo crossfit
     expect(page.locator(".class-type.crossfit").first).to_be_visible()

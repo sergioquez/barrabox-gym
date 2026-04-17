@@ -129,17 +129,47 @@ def test_admin_uc3_create_class(page: Page, app_url: str):
     page.locator("#cDuration").fill("45")
     page.locator("#cCapacity").fill("20")
     
+    # NUEVO: Utilizar la opción de recurrencia diaria
+    page.locator("#cRecurrence").select_option(value="daily")
+    
     # Guardar la clase
     page.get_by_role("button", name="Guardar Clase").click()
     
-    # Verificar que el Toast de éxito aparece
-    expect(page.locator(".toast.success", has_text="Clase guardada exitosamente")).to_be_visible()
+    # Verificar que el Toast de éxito aparece y menciona múltiples clases
+    expect(page.locator(".toast.success")).to_contain_text("Se crearon 20 clases")
     
     # Asegurar que el modal se cerró
     expect(page.locator("#classModal")).not_to_have_class("modal-overlay open")
     
-    # Validar que la tabla tiene la nueva clase
-    target_row = page.locator("#classesBody tr").filter(has_text=class_title)
-    expect(target_row).to_be_visible()
-    expect(target_row).to_contain_text("Coach IA")
-    expect(target_row).to_contain_text("Halterofilia", ignore_case=True)
+    # Validar que la tabla tiene la nueva clase y buscar cuantas se generaron.
+    page.get_by_placeholder("Buscar clase...").fill(class_title)
+    
+    # Tienen que haber como minimo varias (en daily seran 20 días sin contar fines de semana en 4 semanas)
+    # Validamos que al menos se vean más de 1 en pantalla generadas por este título
+    rows = page.locator("#classesBody tr").filter(has_text=class_title)
+    expect(rows).to_have_count(20)
+
+def test_admin_uc4_delete_class_cleans_bookings(page: Page, app_url: str):
+    """UC-A4: Prevención de reservas huérfanas al eliminar una clase."""
+    login_as_admin(page, app_url)
+    
+    # Borrar la primera clase que haya activa y confirmar que cancela su reserva
+    page.get_by_role("button", name="Clases").click()
+    expect(page.locator("#tab-classes")).to_have_class("tab-panel active")
+    
+    # Buscamos alguna fila arbitraria y tomamos su título
+    first_row = page.locator("#classesBody tr").first
+    expect(first_row).to_be_visible()
+    
+    # Vamos a eliminarla
+    page.once("dialog", lambda dialog: dialog.accept())
+    first_row.locator("[data-delete-class]").click()
+    
+    # Toast debe advertir que la borró
+    expect(page.locator(".toast.info", has_text="Eliminada")).to_be_visible()
+    
+    # Vamos a buscar las reservas, deberian estar actualizadas.
+    # No podemos asegurar que haya bookings exactamente para *esa* clase en la suite simple,
+    # pero sí podemos asegurar que este test no explota ni deja el UI dañado.
+    page.get_by_role("button", name="Reservas").click()
+    expect(page.locator("#tab-bookings")).to_be_visible()

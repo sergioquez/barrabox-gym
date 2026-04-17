@@ -271,7 +271,30 @@ class DataManager {
     
     deleteClass(id) {
         const data = this.getAllData();
+        const classItem = this.getClassById(id);
+        if (!classItem) return false;
+        
+        // 1. Cancelar reservas activas y notificar a los usuarios
+        const classBookings = data.bookings.filter(b => b.classId === id && b.status === 'confirmed');
+        classBookings.forEach(booking => {
+            booking.status = 'cancelled';
+            booking.updatedAt = new Date().toISOString();
+            
+            // Push directly to avoid overwritten data from this.saveAllData below
+            data.notifications.push({
+                id: `notif_${(data.notifications.length + 1).toString().padStart(3, '0')}`,
+                userId: booking.userId,
+                type: 'booking_cancellation',
+                title: 'Clase Eliminada',
+                message: `Tu reserva para ${classItem.title} (${booking.date} a las ${booking.time || classItem.time}) ha sido cancelada porque el administrador eliminó la clase.`,
+                read: false,
+                createdAt: new Date().toISOString()
+            });
+        });
+        
+        // 2. Eliminar la clase del sistema
         data.classes = data.classes.filter(cls => cls.id !== id);
+        
         return this.saveAllData(data);
     }
     
@@ -339,13 +362,16 @@ class DataManager {
             data.classes[classIndex].booked = classBookings.length + 1;
         }
         
-        // Crear notificación
-        this.createNotification(
-            userId,
-            'booking_confirmation',
-            'Reserva Confirmada',
-            `Tu reserva para ${classItem.title} (${date} ${time}) ha sido confirmada.`
-        );
+        // Push direct notification to avoid race condition with saveAllData
+        data.notifications.push({
+            id: `notif_${(data.notifications.length + 1).toString().padStart(3, '0')}`,
+            userId: userId,
+            type: 'booking_confirmation',
+            title: 'Reserva Confirmada',
+            message: `Tu reserva para ${classItem ? classItem.title : ''} (${date} a las ${time}) ha sido confirmada.`,
+            read: false,
+            createdAt: new Date().toISOString()
+        });
         
         return this.saveAllData(data) ? booking : null;
     }
@@ -372,19 +398,24 @@ class DataManager {
             data.classes[classIndex].booked = classBookings.length;
         }
         
-        // Crear notificación
+        // Push direct notification to avoid race condition with saveAllData
         const classItem = this.getClassById(booking.classId);
-        this.createNotification(
-            booking.userId,
-            'booking_cancellation',
-            'Reserva Cancelada',
-            `Tu reserva para ${classItem.title} ha sido cancelada.`
-        );
+        data.notifications.push({
+            id: `notif_${(data.notifications.length + 1).toString().padStart(3, '0')}`,
+            userId: booking.userId,
+            type: 'booking_cancellation',
+            title: 'Reserva Cancelada',
+            message: `Tu reserva para ${classItem ? classItem.title : ''} ha sido cancelada.`,
+            read: false,
+            createdAt: new Date().toISOString()
+        });
+        
+        this.saveAllData(data);
         
         // Verificar waitlist para esta clase
         this.processWaitlist(booking.classId, booking.date);
         
-        return this.saveAllData(data);
+        return true;
     }
     
     // WAITLISTS
@@ -422,14 +453,17 @@ class DataManager {
         
         data.waitlists.push(waitlist);
         
-        // Crear notificación
+        // Push direct notification to avoid race condition with saveAllData
         const classItem = this.getClassById(classId);
-        this.createNotification(
-            userId,
-            'waitlist_joined',
-            'Agregado a Waitlist',
-            `Te has unido a la waitlist para ${classItem.title}. Tu posición: ${position}`
-        );
+        data.notifications.push({
+            id: `notif_${(data.notifications.length + 1).toString().padStart(3, '0')}`,
+            userId: userId,
+            type: 'waitlist_joined',
+            title: 'Agregado a Waitlist',
+            message: `Te has unido a la waitlist para ${classItem ? classItem.title : ''}. Tu posición: ${position}`,
+            read: false,
+            createdAt: new Date().toISOString()
+        });
         
         return this.saveAllData(data) ? waitlist : null;
     }
@@ -450,22 +484,25 @@ class DataManager {
             const booking = this.createBooking(nextInLine.userId, classId, date, nextInLine.time);
             
             if (booking) {
+                // Fetch fresh data since createBooking just modified and saved it
+                const freshData = this.getAllData();
+
                 // Actualizar estado de la waitlist
-                const waitlistIndex = data.waitlists.findIndex(w => w.id === nextInLine.id);
+                const waitlistIndex = freshData.waitlists.findIndex(w => w.id === nextInLine.id);
                 if (waitlistIndex >= 0) {
-                    data.waitlists[waitlistIndex].status = 'promoted';
-                    data.waitlists[waitlistIndex].promotedAt = new Date().toISOString();
-                    data.waitlists[waitlistIndex].bookingId = booking.id;
+                    freshData.waitlists[waitlistIndex].status = 'promoted';
+                    freshData.waitlists[waitlistIndex].promotedAt = new Date().toISOString();
+                    freshData.waitlists[waitlistIndex].bookingId = booking.id;
                 }
                 
                 // Recalcular posiciones para los demás en waitlist
-                data.waitlists
+                freshData.waitlists
                     .filter(w => w.classId === classId && w.date === date && w.status === 'waiting')
                     .forEach((w, index) => {
                         w.position = index + 1;
                     });
                 
-                this.saveAllData(data);
+                this.saveAllData(freshData);
                 
                 // Notificar al usuario
                 const classItem = this.getClassById(classId);

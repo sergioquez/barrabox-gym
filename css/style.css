@@ -567,9 +567,14 @@ h1, h2, h3, h4, h5, h6 {
         font-size: 2rem;
     }
     
+    .modal { padding: 0 !important; align-items: flex-end; }
     .modal-content {
         padding: 1.5rem;
-        width: 95%;
+        width: 100%;
+        max-width: none;
+        align-self: flex-end;
+        border-radius: 20px 20px 0 0;
+        margin: 0;
     }
 }
 

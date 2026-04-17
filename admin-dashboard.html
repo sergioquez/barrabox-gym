@@ -148,8 +148,16 @@ tbody tr:hover{background:#fafafa}
 @media(max-width:768px){
   .kpi-grid{grid-template-columns:repeat(2,1fr)}
   .adm-name,.adm-role{display:none}
+  .overview-grid { grid-template-columns: 1fr !important; }
+  .adm-tabs .container { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; padding-bottom: .2rem; }
+  .tab-btn { flex-shrink: 0; scroll-snap-align: start; }
+  .sec-actions { flex-direction: column; align-items: stretch; }
+  .modal-overlay { padding: 0 !important; }
+  .modal-box { align-self: flex-end; border-radius: 20px 20px 0 0; margin-top: auto; }
 }
-@media(max-width:480px){.kpi-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){
+  .kpi-grid{grid-template-columns:1fr}
+}
     </style>
 </head>
 <body>
@@ -234,7 +242,7 @@ tbody tr:hover{background:#fafafa}
 
 <!-- OVERVIEW TAB -->
 <div class="tab-panel active" id="tab-overview">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem">
+    <div class="overview-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem">
 
         <!-- Clases de hoy -->
         <div class="sec" style="grid-column:1/-1">
@@ -415,7 +423,16 @@ tbody tr:hover{background:#fafafa}
                 <div class="form-row"><label>Hora</label><input type="time" id="cTime"></div>
                 <div class="form-row"><label>Duración (min)</label><input type="number" id="cDuration" value="60"></div>
             </div>
-            <div class="form-row"><label>Capacidad</label><input type="number" id="cCapacity" value="15"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div class="form-row"><label>Capacidad</label><input type="number" id="cCapacity" value="15"></div>
+                <div class="form-row"><label>Recurrencia (Opcional)</label>
+                    <select id="cRecurrence">
+                        <option value="none">Sólo una vez</option>
+                        <option value="daily">Diaria (L-V, 4 semanas)</option>
+                        <option value="weekly">Semanal (4 semanas)</option>
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="form-actions">
             <button class="btn btn-outline" data-close="classModal">Cancelar</button>
@@ -857,21 +874,53 @@ function setupEvents(){
             return;
         }
 
+        const recurrence=document.getElementById('cRecurrence').value;
+
         const classData = {
             title, type, coach, date, time, duration, capacity,
             status: 'active',
             booked: 0,
             room: 'Sala Central'
         };
-        if(id) classData.id=id; // Para futura edición; por ahora es sólo Agregar
-        
-        // Asignar el atributo day basado en date para coherencia del frontend
-        const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
-        classData.day = days[new Date(date + 'T12:00:00').getDay()];
 
-        S.dm.saveClass(classData);
+        const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+        
+        let datesToCreate = [];
+        const baseDateObj = new Date(date + 'T12:00:00');
+        
+        if (id || recurrence === 'none') {
+            datesToCreate.push(new Date(baseDateObj));
+        } else if (recurrence === 'daily') {
+            // Monday to Friday for 4 weeks (20 days total max, skipping weekends)
+            for (let i = 0; i < 28; i++) {
+                const d = new Date(baseDateObj);
+                d.setDate(d.getDate() + i);
+                const dayStr = days[d.getDay()];
+                if (dayStr !== 'sunday' && dayStr !== 'saturday') {
+                    datesToCreate.push(d);
+                }
+            }
+        } else if (recurrence === 'weekly') {
+            // Once a week for 4 weeks
+            for (let i = 0; i < 4; i++) {
+                const d = new Date(baseDateObj);
+                d.setDate(d.getDate() + (i * 7));
+                datesToCreate.push(d);
+            }
+        }
+
+        datesToCreate.forEach(d => {
+            const newClass = { ...classData };
+            newClass.date = d.toISOString().split('T')[0];
+            newClass.day = days[d.getDay()];
+            // Si hay id (edición), sólo se procesaría un item con su ID
+            if(id) newClass.id = id; 
+            else delete newClass.id; // Asegurar que asigne ID único en cada vuelta del loop
+            S.dm.saveClass(newClass);
+        });
+
         document.getElementById('classModal').classList.remove('open');
-        toast('Clase guardada exitosamente', 'success');
+        toast(datesToCreate.length > 1 ? `Se crearon ${datesToCreate.length} clases exitosamente` : 'Clase guardada exitosamente', 'success');
         renderClasses(document.getElementById('classSearch').value, document.getElementById('classTypeFilter').value);
         renderKPIs();
         renderOverview();
