@@ -75,7 +75,9 @@ barrabox-gym/
 │   └── fase6-integration.js        # UX, accesibilidad, tooltips
 │
 ├── README.md                       # Documentación pública
-└── PROYECTO_COMPLETO.md            # Documentación técnica interna
+├── PROYECTO_COMPLETO.md            # Documentación técnica interna
+├── ESTADO_PROYECTO.md              # Estado actual y registro de cambios
+└── AGENTS.md                       # Reglas universales para agentes de IA
 ```
 
 ### Arquitectura por Capas

@@ -12,12 +12,220 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="manifest" href="manifest.json">
+    <style>
+        /* Dashboard improvements */
+        .db-loading {
+            display: flex; align-items: center; justify-content: center;
+            gap: 1rem; padding: 3rem; color: #6C757D; font-size: 1rem;
+        }
+        .db-loading i { font-size: 1.5rem; animation: spin 1s linear infinite; color: #FF6B35; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .empty-bookings {
+            text-align: center; padding: 3rem 1rem; color: #6C757D;
+        }
+        .empty-bookings i { font-size: 3rem; color: #dee2e6; margin-bottom: 1rem; display: block; }
+        .empty-bookings h3 { color: #495057; margin-bottom: 0.5rem; }
+        .empty-bookings p { font-size: 0.95rem; margin-bottom: 1.5rem; }
+
+        /* Notification bell */
+        .notif-btn {
+            position: relative; background: none; border: none;
+            font-size: 1.2rem; color: #6C757D; cursor: pointer;
+            padding: 0.5rem; border-radius: 8px; transition: all 0.2s;
+        }
+        .notif-btn:hover { background: #f8f9fa; color: #FF6B35; }
+        .notif-badge {
+            position: absolute; top: 2px; right: 2px;
+            background: #DC3545; color: white; font-size: 0.65rem;
+            font-weight: 700; min-width: 16px; height: 16px;
+            border-radius: 8px; display: flex; align-items: center;
+            justify-content: center; padding: 0 3px;
+        }
+
+        /* Notification panel */
+        .notif-panel {
+            position: fixed; top: 70px; right: 1rem;
+            width: 340px; max-height: 480px;
+            background: white; border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            z-index: 500; display: none; overflow: hidden;
+            border: 1px solid #e9ecef;
+        }
+        .notif-panel.open { display: flex; flex-direction: column; }
+        .notif-panel-header {
+            padding: 1rem 1.25rem; border-bottom: 1px solid #f0f0f0;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .notif-panel-header h4 { margin: 0; font-size: 1rem; color: #2D3047; }
+        .notif-mark-all {
+            font-size: 0.8rem; color: #FF6B35; cursor: pointer;
+            background: none; border: none; font-weight: 600;
+        }
+        .notif-list { overflow-y: auto; flex: 1; }
+        .notif-item {
+            padding: 1rem 1.25rem; border-bottom: 1px solid #f9f9f9;
+            display: flex; gap: 0.8rem; align-items: flex-start;
+            cursor: pointer; transition: background 0.15s;
+        }
+        .notif-item:hover { background: #fafafa; }
+        .notif-item.unread { background: #fff8f5; }
+        .notif-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; flex-shrink: 0;
+        }
+        .notif-icon.booking { background: rgba(40,167,69,0.1); color: #28A745; }
+        .notif-icon.cancel  { background: rgba(220,53,69,0.1);  color: #DC3545; }
+        .notif-icon.login   { background: rgba(255,107,53,0.1); color: #FF6B35; }
+        .notif-icon.info    { background: rgba(23,162,184,0.1); color: #17A2B8; }
+        .notif-content { flex: 1; min-width: 0; }
+        .notif-title { font-weight: 600; font-size: 0.88rem; color: #2D3047; }
+        .notif-msg  { font-size: 0.8rem; color: #6C757D; margin-top: 0.2rem; line-height: 1.4; }
+        .notif-time { font-size: 0.75rem; color: #adb5bd; margin-top: 0.3rem; }
+        .notif-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: #FF6B35; flex-shrink: 0; margin-top: 4px;
+        }
+
+        /* Week calendar override for dashboard */
+        .week-calendar {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0.75rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        .day-column { min-width: 130px; }
+
+        /* Reservation cards */
+        .bookings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        .booking-card {
+            border: 1px solid #e9ecef; border-radius: 12px;
+            padding: 1.25rem; transition: all 0.25s;
+            position: relative; overflow: hidden;
+        }
+        .booking-card::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 4px;
+        }
+        .booking-card.crossfit::before  { background: #FF6B35; }
+        .booking-card.halterofilia::before { background: #00A8A8; }
+        .booking-card.gap::before       { background: #2D3047; }
+        .booking-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+        .bk-type {
+            display: inline-block; padding: 0.2rem 0.7rem;
+            border-radius: 20px; font-size: 0.72rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.6rem;
+        }
+        .bk-type.crossfit    { background: rgba(255,107,53,0.1); color: #FF6B35; }
+        .bk-type.halterofilia{ background: rgba(0,168,168,0.1);  color: #00A8A8; }
+        .bk-type.gap         { background: rgba(45,48,71,0.1);   color: #2D3047; }
+        .bk-title { font-weight: 700; font-size: 1.05rem; color: #2D3047; margin-bottom: 0.8rem; }
+        .bk-meta { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+        .bk-meta span { font-size: 0.88rem; color: #6C757D; display: flex; align-items: center; gap: 0.5rem; }
+        .bk-meta i { color: #FF6B35; width: 14px; }
+        .btn-cancel {
+            width: 100%; padding: 0.55rem; background: transparent;
+            border: 1px solid #DC3545; color: #DC3545; border-radius: 8px;
+            font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-cancel:hover { background: #DC3545; color: white; }
+
+        /* Modal mejoras */
+        .modal-class-info { padding: 1.5rem; border-bottom: 1px solid #f0f0f0; }
+        .modal-class-info h4 { font-size: 1.3rem; color: #2D3047; margin-bottom: 0.5rem; }
+        .modal-class-badge {
+            display: inline-block; padding: 0.25rem 0.8rem;
+            border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+            text-transform: uppercase; margin-bottom: 1rem;
+        }
+        .modal-class-badge.crossfit    { background: rgba(255,107,53,0.1); color: #FF6B35; }
+        .modal-class-badge.halterofilia{ background: rgba(0,168,168,0.1);  color: #00A8A8; }
+        .modal-class-badge.gap         { background: rgba(45,48,71,0.1);   color: #2D3047; }
+        .modal-details { display: flex; flex-direction: column; gap: 0.8rem; }
+        .modal-detail  { display: flex; align-items: center; gap: 0.8rem; color: #495057; font-size: 0.95rem; }
+        .modal-detail i { color: #FF6B35; width: 18px; text-align: center; }
+        .capacity-bar-wrap { margin-top: 1rem; }
+        .capacity-bar-wrap label { font-size: 0.85rem; color: #6C757D; font-weight: 600; margin-bottom: 0.4rem; display: block; }
+        .capacity-bar { height: 8px; background: #e9ecef; border-radius: 4px; overflow: hidden; }
+        .capacity-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+        .capacity-fill.low    { background: #28A745; }
+        .capacity-fill.medium { background: #FFC107; }
+        .capacity-fill.high   { background: #DC3545; }
+
+        /* Toast notifications */
+        #toastContainer {
+            position: fixed; bottom: 1.5rem; right: 1.5rem;
+            z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem;
+        }
+        .toast {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.9rem 1.25rem; border-radius: 12px;
+            color: white; font-size: 0.9rem; font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            animation: toastIn 0.3s ease;
+            max-width: 320px;
+        }
+        @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } to { transform: none; opacity: 1; } }
+        .toast.success { background: #28A745; }
+        .toast.error   { background: #DC3545; }
+        .toast.info    { background: #17A2B8; }
+
+        /* Logout button styling */
+        .btn-logout-real {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1rem; border: 1px solid #e9ecef;
+            border-radius: 8px; color: #6C757D; text-decoration: none;
+            font-size: 0.88rem; font-weight: 600; cursor: pointer;
+            background: none; transition: all 0.2s;
+        }
+        .btn-logout-real:hover { border-color: #DC3545; color: #DC3545; background: rgba(220,53,69,0.05); }
+
+        /* User avatar colored */
+        .user-avatar-circle {
+            width: 42px; height: 42px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Access denied state */
+        .access-denied {
+            min-height: 80vh; display: flex; align-items: center;
+            justify-content: center; text-align: center; padding: 2rem;
+        }
+        .access-denied-card {
+            background: white; border-radius: 20px; padding: 3rem;
+            max-width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+        .access-denied-card i { font-size: 3rem; color: #FF6B35; margin-bottom: 1rem; }
+        .access-denied-card h2 { color: #2D3047; margin-bottom: 1rem; }
+        .access-denied-card p { color: #6C757D; margin-bottom: 1.5rem; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .week-calendar { grid-template-columns: repeat(3, 1fr); }
+            .notif-panel { width: calc(100vw - 2rem); right: 1rem; }
+            .user-details { display: none; }
+        }
+        @media (max-width: 480px) {
+            .week-calendar { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
 </head>
 <body class="dashboard-clean">
-    <!-- Header Simple -->
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <!-- Header -->
     <header class="dashboard-header-clean">
         <div class="container">
             <div class="header-content">
@@ -27,263 +235,87 @@
                         <span class="subtitle">Mi Espacio de Entrenamiento</span>
                     </a>
                 </div>
-                <div class="user-info">
-                    <div class="user-avatar">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div class="user-details">
-                        <div class="user-name">Juan Pérez</div>
-                        <div class="user-plan">Plan Premium</div>
-                    </div>
-                    <a href="index.html" class="btn-logout">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </a>
+                <div class="user-info" id="headerUserInfo">
+                    <!-- Se llena dinámicamente -->
+                    <div class="db-loading"><i class="fas fa-spinner"></i></div>
                 </div>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="dashboard-main">
+    <main class="dashboard-main" id="mainContent" style="display:none;">
         <div class="container">
+
             <!-- Welcome Section -->
             <div class="welcome-section">
-                <h2><i class="fas fa-hand-wave"></i> ¡Hola, Juan!</h2>
-                <p>Tu próximo entrenamiento es hoy a las <strong>18:00</strong> - CrossFit Intenso</p>
+                <h2><i class="fas fa-fire" style="color:#FF6B35;"></i> ¡Hola, <span id="welcomeName">...</span>!</h2>
+                <p id="welcomeMsg">Cargando tu información...</p>
             </div>
 
             <!-- Quick Stats -->
             <div class="quick-stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon" style="background: rgba(255,107,53,0.1);">
-                        <i class="fas fa-dumbbell" style="color: #FF6B35;"></i>
+                    <div class="stat-icon" style="background:rgba(255,107,53,0.1);">
+                        <i class="fas fa-calendar-check" style="color:#FF6B35;"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-number">8</div>
-                        <div class="stat-label">Clases este mes</div>
-                        <div class="stat-sub">de 12 disponibles</div>
+                        <div class="stat-number" id="statUpcoming">—</div>
+                        <div class="stat-label">Próximas reservas</div>
+                        <div class="stat-sub">confirmadas</div>
                     </div>
                 </div>
-
                 <div class="stat-card">
-                    <div class="stat-icon" style="background: rgba(0,168,168,0.1);">
-                        <i class="fas fa-calendar-check" style="color: #00A8A8;"></i>
+                    <div class="stat-icon" style="background:rgba(0,168,168,0.1);">
+                        <i class="fas fa-dumbbell" style="color:#00A8A8;"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-number">2</div>
-                        <div class="stat-label">Próximas clases</div>
+                        <div class="stat-number" id="statTotal">—</div>
+                        <div class="stat-label">Total de clases</div>
                         <div class="stat-sub">reservadas</div>
                     </div>
                 </div>
-
                 <div class="stat-card">
-                    <div class="stat-icon" style="background: rgba(45,48,71,0.1);">
-                        <i class="fas fa-bolt" style="color: #2D3047;"></i>
+                    <div class="stat-icon" style="background:rgba(45,48,71,0.1);">
+                        <i class="fas fa-star" style="color:#2D3047;"></i>
                     </div>
                     <div class="stat-content">
-                        <div class="stat-number">5</div>
-                        <div class="stat-label">Días seguidos</div>
-                        <div class="stat-sub">¡Sigue así!</div>
+                        <div class="stat-number" id="statPlan">—</div>
+                        <div class="stat-label">Plan activo</div>
+                        <div class="stat-sub" id="statPlanSub">—</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Main Calendar Section -->
+            <!-- Calendar Section -->
             <div class="calendar-section">
                 <div class="section-header">
-                    <h2><i class="fas fa-calendar-alt"></i> Calendario de Reservas</h2>
-                    <div class="header-actions">
-                        <button class="btn btn-primary" id="bookClassBtn">
-                            <i class="fas fa-plus"></i> Reservar Nueva Clase
-                        </button>
+                    <h2><i class="fas fa-calendar-alt"></i> Reservar Clases</h2>
+                    <div style="display:flex;gap:0.75rem;align-items:center;">
+                        <select id="userClassFilter" style="padding:.45rem .8rem;border:1.5px solid #dee2e6;border-radius:8px;font-size:.88rem;font-family:inherit;outline:none;">
+                            <option value="">Todas</option>
+                            <option value="crossfit">CrossFit</option>
+                            <option value="halterofilia">Halterofilia</option>
+                            <option value="gap">GAP</option>
+                        </select>
+                        <button class="nav-btn" id="prevWeekBtn" title="Semana anterior"><i class="fas fa-chevron-left"></i></button>
+                        <span class="current-week" id="weekLabel">Cargando...</span>
+                        <button class="nav-btn" id="nextWeekBtn" title="Siguiente semana"><i class="fas fa-chevron-right"></i></button>
                     </div>
-                </div>
-
-                <!-- Week Navigation -->
-                <div class="week-navigation">
-                    <button class="nav-btn" id="prevWeek">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="current-week" id="currentWeek">
-                        Semana 14-20 Abril 2026
-                    </div>
-                    <button class="nav-btn" id="nextWeek">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
                 </div>
 
                 <!-- Week Calendar -->
-                <div class="week-calendar">
-                    <div class="day-column">
-                        <div class="day-header">
-                            <div class="day-name">Lun</div>
-                            <div class="day-date">14</div>
-                        </div>
-                        <div class="day-classes">
-                            <div class="class-slot available">
-                                <div class="class-time">06:00</div>
-                                <div class="class-info">
-                                    <span class="class-type crossfit">CF</span>
-                                    <div class="class-title">CrossFit AM</div>
-                                    <div class="class-coach">Coach: Carlos</div>
-                                </div>
-                                <button class="btn-book">Reservar</button>
-                            </div>
-                            <div class="class-slot booked">
-                                <div class="class-time">18:00</div>
-                                <div class="class-info">
-                                    <span class="class-type crossfit">CF</span>
-                                    <div class="class-title">WOD Intenso</div>
-                                    <div class="class-coach">Coach: Ana</div>
-                                </div>
-                                <span class="badge-booked">Reservada</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="day-column">
-                        <div class="day-header">
-                            <div class="day-name">Mar</div>
-                            <div class="day-date">15</div>
-                        </div>
-                        <div class="day-classes">
-                            <div class="class-slot available">
-                                <div class="class-time">17:00</div>
-                                <div class="class-info">
-                                    <span class="class-type halterofilia">HL</span>
-                                    <div class="class-title">Técnica Envión</div>
-                                    <div class="class-coach">Coach: Carlos</div>
-                                </div>
-                                <button class="btn-book">Reservar</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="day-column today">
-                        <div class="day-header">
-                            <div class="day-name">Mié</div>
-                            <div class="day-date">16</div>
-                            <div class="day-tag">HOY</div>
-                        </div>
-                        <div class="day-classes">
-                            <div class="class-slot full">
-                                <div class="class-time">10:00</div>
-                                <div class="class-info">
-                                    <span class="class-type crossfit">CF</span>
-                                    <div class="class-title">WOD Competidores</div>
-                                    <div class="class-coach">Coach: Marco</div>
-                                </div>
-                                <span class="badge-full">Lleno</span>
-                            </div>
-                            <div class="class-slot available">
-                                <div class="class-time">19:00</div>
-                                <div class="class-info">
-                                    <span class="class-type gap">GAP</span>
-                                    <div class="class-title">Glúteos & Abdomen</div>
-                                    <div class="class-coach">Coach: Sofia</div>
-                                </div>
-                                <button class="btn-book">Reservar</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="day-column">
-                        <div class="day-header">
-                            <div class="day-name">Jue</div>
-                            <div class="day-date">17</div>
-                        </div>
-                        <div class="day-classes">
-                            <div class="class-slot available">
-                                <div class="class-time">08:00</div>
-                                <div class="class-info">
-                                    <span class="class-type halterofilia">HL</span>
-                                    <div class="class-title">Arranque Técnico</div>
-                                    <div class="class-coach">Coach: Ana</div>
-                                </div>
-                                <button class="btn-book">Reservar</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="day-column">
-                        <div class="day-header">
-                            <div class="day-name">Vie</div>
-                            <div class="day-date">18</div>
-                        </div>
-                        <div class="day-classes">
-                            <div class="class-slot available">
-                                <div class="class-time">17:30</div>
-                                <div class="class-info">
-                                    <span class="class-type crossfit">CF</span>
-                                    <div class="class-title">Friday Night Lights</div>
-                                    <div class="class-coach">Coach: Marco</div>
-                                </div>
-                                <button class="btn-book">Reservar</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="day-column">
-                        <div class="day-header">
-                            <div class="day-name">Sáb</div>
-                            <div class="day-date">19</div>
-                        </div>
-                        <div class="day-classes">
-                            <div class="class-slot available">
-                                <div class="class-time">09:00</div>
-                                <div class="class-info">
-                                    <span class="class-type crossfit">CF</span>
-                                    <div class="class-title">Open Gym</div>
-                                    <div class="class-coach">Coach: Carlos</div>
-                                </div>
-                                <button class="btn-book">Reservar</button>
-                            </div>
-                            <div class="class-slot available">
-                                <div class="class-time">11:00</div>
-                                <div class="class-info">
-                                    <span class="class-type gap">GAP</span>
-                                    <div class="class-title">Weekend Burn</div>
-                                    <div class="class-coach">Coach: Sofia</div>
-                                </div>
-                                <button class="btn-book">Reservar</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="day-column">
-                        <div class="day-header">
-                            <div class="day-name">Dom</div>
-                            <div class="day-date">20</div>
-                        </div>
-                        <div class="day-classes">
-                            <div class="class-slot closed">
-                                <div class="class-info">
-                                    <i class="fas fa-door-closed"></i>
-                                    <div>Cerrado - Descanso</div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="week-calendar" id="weekCalendar">
+                    <div class="db-loading" style="grid-column:1/-1;">
+                        <i class="fas fa-spinner"></i> Cargando calendario...
                     </div>
                 </div>
 
-                <!-- Calendar Legend -->
-                <div class="calendar-legend">
-                    <div class="legend-item">
-                        <span class="legend-dot available"></span>
-                        <span>Disponible</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot booked"></span>
-                        <span>Reservada por ti</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot full"></span>
-                        <span>Llena</span>
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-dot closed"></span>
-                        <span>Cerrado</span>
-                    </div>
+                <!-- Legend -->
+                <div class="calendar-legend" style="margin-top:1.5rem;">
+                    <div class="legend-item"><div class="legend-dot available"></div> Disponible</div>
+                    <div class="legend-item"><div class="legend-dot booked"></div> Reservada</div>
+                    <div class="legend-item"><div class="legend-dot full"></div> Llena</div>
                 </div>
             </div>
 
@@ -292,92 +324,34 @@
                 <div class="section-header">
                     <h2><i class="fas fa-clock"></i> Tus Próximas Reservas</h2>
                 </div>
-                <div class="reservations-list">
-                    <div class="reservation-card">
-                        <div class="reservation-header">
-                            <span class="class-type crossfit">CrossFit</span>
-                            <span class="reservation-date">Hoy, 18:00</span>
-                        </div>
-                        <h3>WOD Intenso</h3>
-                        <div class="reservation-details">
-                            <div class="detail">
-                                <i class="fas fa-user-tie"></i>
-                                <span>Coach: Ana Rodríguez</span>
-                            </div>
-                            <div class="detail">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Sala Principal</span>
-                            </div>
-                            <div class="detail">
-                                <i class="fas fa-clock"></i>
-                                <span>60 minutos</span>
-                            </div>
-                        </div>
-                        <div class="reservation-actions">
-                            <button class="btn btn-outline btn-small">
-                                <i class="fas fa-info-circle"></i> Detalles
-                            </button>
-                            <button class="btn btn-danger btn-small">
-                                <i class="fas fa-times"></i> Cancelar
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="reservation-card">
-                        <div class="reservation-header">
-                            <span class="class-type halterofilia">Halterofilia</span>
-                            <span class="reservation-date">Mañana, 17:00</span>
-                        </div>
-                        <h3>Técnica de Envión</h3>
-                        <div class="reservation-details">
-                            <div class="detail">
-                                <i class="fas fa-user-tie"></i>
-                                <span>Coach: Carlos Méndez</span>
-                            </div>
-                            <div class="detail">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Sala de Pesas</span>
-                            </div>
-                            <div class="detail">
-                                <i class="fas fa-clock"></i>
-                                <span>90 minutos</span>
-                            </div>
-                        </div>
-                        <div class="reservation-actions">
-                            <button class="btn btn-outline btn-small">
-                                <i class="fas fa-info-circle"></i> Detalles
-                            </button>
-                            <button class="btn btn-danger btn-small">
-                                <i class="fas fa-times"></i> Cancelar
-                            </button>
-                        </div>
-                    </div>
+                <div id="upcomingBookings">
+                    <div class="db-loading"><i class="fas fa-spinner"></i> Cargando reservas...</div>
                 </div>
             </div>
 
-            <!-- Quick Booking Guide -->
+            <!-- Quick Guide -->
             <div class="guide-section">
                 <h2><i class="fas fa-lightbulb"></i> Cómo Reservar</h2>
                 <div class="guide-steps">
                     <div class="guide-step">
                         <div class="step-number">1</div>
                         <div class="step-content">
-                            <h3>Busca en el Calendario</h3>
-                            <p>Las clases disponibles tienen botón "Reservar" en verde.</p>
+                            <h3>Elige tu clase</h3>
+                            <p>Explora el calendario semanal. Las clases en verde tienen cupos disponibles.</p>
                         </div>
                     </div>
                     <div class="guide-step">
                         <div class="step-number">2</div>
                         <div class="step-content">
                             <h3>Haz clic en Reservar</h3>
-                            <p>Confirma la clase y listo. Recibirás confirmación por email.</p>
+                            <p>Confirma los detalles en el modal y listo. Tu cupo queda asegurado al instante.</p>
                         </div>
                     </div>
                     <div class="guide-step">
                         <div class="step-number">3</div>
                         <div class="step-content">
-                            <h3>Gestiona tus Reservas</h3>
-                            <p>Puedes cancelar hasta 2 horas antes sin costo.</p>
+                            <h3>Gestiona tus reservas</h3>
+                            <p>Puedes cancelar desde "Próximas Reservas". El cupo se libera automáticamente.</p>
                         </div>
                     </div>
                 </div>
@@ -385,58 +359,612 @@
         </div>
     </main>
 
+    <!-- Access Denied -->
+    <div class="access-denied" id="accessDenied" style="display:none;">
+        <div class="access-denied-card">
+            <i class="fas fa-lock"></i>
+            <h2>Acceso Restringido</h2>
+            <p>Debes iniciar sesión para acceder a tu dashboard personal.</p>
+            <a href="index.html" class="btn btn-primary" style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 2rem;background:#FF6B35;color:white;border:none;border-radius:10px;font-weight:700;text-decoration:none;font-size:1rem;">
+                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+            </a>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="dashboard-footer">
         <div class="container">
-            <p>Barrabox Gym &copy; 2026 | <a href="index.html">Volver al sitio principal</a></p>
-            <p class="footer-note">Dashboard de demostración - Para uso educativo</p>
+            <p>Barrabox Gym &copy; 2026 | <a href="index.html">Volver al sitio principal</a> | <a href="profile.html">Mi Perfil</a></p>
+            <p class="footer-note">Dashboard de demostración — datos en localStorage</p>
         </div>
     </footer>
 
-    <!-- Booking Modal -->
+    <!-- Booking Confirm Modal -->
     <div class="booking-modal" id="bookingModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fas fa-calendar-check"></i> Confirmar Reserva</h3>
-                <button class="close-modal">&times;</button>
+                <button class="close-modal" id="closeModal">&times;</button>
             </div>
-            <div class="modal-body">
-                <div class="booking-summary">
-                    <h4>CrossFit AM</h4>
-                    <div class="booking-details">
-                        <div class="detail">
-                            <i class="fas fa-clock"></i>
-                            <span>Lunes 14 Abril, 06:00</span>
-                        </div>
-                        <div class="detail">
-                            <i class="fas fa-user-tie"></i>
-                            <span>Coach: Carlos</span>
-                        </div>
-                        <div class="detail">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Sala Principal</span>
-                        </div>
-                        <div class="detail">
-                            <i class="fas fa-clock"></i>
-                            <span>60 minutos</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-actions">
-                    <button class="btn btn-outline close-modal-btn">Cancelar</button>
-                    <button class="btn btn-primary confirm-booking">Confirmar Reserva</button>
-                </div>
+            <div id="modalBody"></div>
+            <div style="padding:1.25rem;display:flex;gap:0.75rem;">
+                <button class="btn btn-outline" id="cancelModalBtn" style="flex:1;padding:0.75rem;border:1px solid #dee2e6;border-radius:10px;background:none;cursor:pointer;font-weight:600;color:#6C757D;">Cancelar</button>
+                <button class="btn btn-primary" id="confirmBookingBtn" style="flex:2;padding:0.75rem;background:#FF6B35;border:none;border-radius:10px;color:white;font-weight:700;cursor:pointer;font-size:1rem;">
+                    <i class="fas fa-check"></i> Confirmar Reserva
+                </button>
             </div>
         </div>
     </div>
 
+    <!-- Notification Panel -->
+    <div class="notif-panel" id="notifPanel">
+        <div class="notif-panel-header">
+            <h4><i class="fas fa-bell" style="color:#FF6B35;margin-right:0.4rem;"></i> Notificaciones</h4>
+            <button class="notif-mark-all" id="markAllRead">Marcar todas como leídas</button>
+        </div>
+        <div class="notif-list" id="notifList">
+            <div class="db-loading"><i class="fas fa-spinner"></i></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="js/data-manager.js"></script>
     <script src="js/auth.js"></script>
-    <script src="js/main.js"></script>
-
-    <!-- UX & Theme -->
     <script src="js/theme-system.js"></script>
-    <script src="js/waitlist-system.js"></script>
-    <script src="js/fase6-integration.js"></script>
+
+    <script>
+    // ============================================================
+    // USER DASHBOARD - Lógica funcional completa
+    // ============================================================
+    (function() {
+
+        // Estado del dashboard
+        const state = {
+            user: null,
+            dm: null,
+            bookings: [],
+            weekOffset: 0,
+            pendingBooking: null   // { classId, date, time, classData }
+        };
+
+        // ── Utilidades ─────────────────────────────────────────
+        function showToast(msg, type = 'info') {
+            const c = document.getElementById('toastContainer');
+            const t = document.createElement('div');
+            t.className = `toast ${type}`;
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+            t.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i> <span>${msg}</span>`;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 4000);
+        }
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr + 'T12:00:00');
+            return d.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+        }
+
+        function formatDateShort(dateStr) {
+            const d = new Date(dateStr + 'T12:00:00');
+            return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+        }
+
+        function getDayName(dateStr) {
+            const d = new Date(dateStr + 'T12:00:00');
+            return d.toLocaleDateString('es-ES', { weekday: 'short' }).toUpperCase();
+        }
+
+        function getWeekDates(offset) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            // Ir al lunes de la semana actual
+            const day = today.getDay();
+            const monday = new Date(today);
+            monday.setDate(today.getDate() - (day === 0 ? 6 : day - 1) + (offset * 7));
+
+            const dates = [];
+            for (let i = 0; i < 6; i++) { // Lun–Sáb
+                const d = new Date(monday);
+                d.setDate(monday.getDate() + i);
+                dates.push(d.toISOString().split('T')[0]);
+            }
+            return dates;
+        }
+
+        function isToday(dateStr) {
+            return dateStr === new Date().toISOString().split('T')[0];
+        }
+
+        function isPast(dateStr) {
+            return dateStr < new Date().toISOString().split('T')[0];
+        }
+
+        // ── Inicialización ──────────────────────────────────────
+        function init() {
+            // Esperar a que los módulos carguen
+            let attempts = 0;
+            const wait = setInterval(() => {
+                attempts++;
+                if (window.barraboxDataManager && window.barraboxAuth) {
+                    clearInterval(wait);
+                    onModulesReady();
+                } else if (attempts > 30) {
+                    clearInterval(wait);
+                    showAccessDenied();
+                }
+            }, 150);
+        }
+
+        function onModulesReady() {
+            state.dm = window.barraboxDataManager;
+            const auth = window.barraboxAuth;
+
+            // Verificar sesión después de que auth se inicialice
+            let authAttempts = 0;
+            const authWait = setInterval(() => {
+                authAttempts++;
+                // Soportar ambas formas de acceso al usuario actual
+                const user = (auth.getCurrentUser && auth.getCurrentUser())
+                          || auth.currentUser
+                          || null;
+                const authenticated = auth.isAuthenticated === true
+                                   || (auth.isLoggedIn && auth.isLoggedIn());
+
+                if (user && user.id && authenticated) {
+                    clearInterval(authWait);
+                    state.user = user;
+                    renderDashboard();
+                } else if (authAttempts > 30) {
+                    clearInterval(authWait);
+                    // Último intento: revisar localStorage directamente
+                    try {
+                        const session = JSON.parse(localStorage.getItem('barrabox_gym_session') || 'null');
+                        if (session && session.userId) {
+                            const u = state.dm.getUserById(session.userId);
+                            if (u && u.status === 'active') {
+                                state.user = u;
+                                renderDashboard();
+                                return;
+                            }
+                        }
+                    } catch(e) {}
+                    showAccessDenied();
+                }
+            }, 150);
+        }
+
+        function showAccessDenied() {
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('accessDenied').style.display = 'flex';
+            document.getElementById('headerUserInfo').innerHTML = `
+                <a href="index.html" class="btn-logout-real">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </a>`;
+        }
+
+        // ── Render principal ────────────────────────────────────
+        function renderDashboard() {
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('accessDenied').style.display = 'none';
+
+            renderHeader();
+            renderWelcome();
+            renderStats();
+            renderWeekCalendar();
+            renderUpcoming();
+            renderNotifications();
+            setupEvents();
+        }
+
+        // ── Header ──────────────────────────────────────────────
+        function renderHeader() {
+            const u = state.user;
+            const initials = (u.name || 'U').split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+            const color = u.avatarColor || '#FF6B35';
+            const unread = state.dm.getUserNotifications(u.id).filter(n => !n.read).length;
+
+            let extraHtml = '';
+            if (u.role === 'admin') {
+                extraHtml = `<a href="admin-dashboard.html" class="btn-logout-real" style="color:#00A8A8; border-color:#00A8A8; background:rgba(0,168,168,0.05)"><i class="fas fa-shield-alt"></i> Volver a Admin</a>`;
+            }
+
+            document.getElementById('headerUserInfo').innerHTML = `
+                ${extraHtml}
+                <button class="notif-btn" id="notifToggle" title="Notificaciones">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge" style="${unread > 0 ? '' : 'display:none;'}">${unread}</span>
+                </button>
+                <div class="user-avatar-circle" style="background:${color};">${initials}</div>
+                <div class="user-details">
+                    <div class="user-name">${u.name}</div>
+                    <div class="user-plan">${u.plan === 'premium' ? '⭐ Premium' : 'Básico'} ${u.role === 'admin' ? '(Admin Mode)' : ''}</div>
+                </div>
+                <button class="btn-logout-real" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </button>`;
+        }
+
+        // ── Welcome ─────────────────────────────────────────────
+        function renderWelcome() {
+            const u = state.user;
+            const firstName = u.name.split(' ')[0];
+            document.getElementById('welcomeName').textContent = firstName;
+
+            // Buscar próxima clase del usuario
+            const upcoming = getUpcomingBookings();
+            if (upcoming.length > 0) {
+                const next = upcoming[0];
+                const cls = next.class;
+                const dateLabel = isToday(next.booking.date) ? 'hoy' : formatDateShort(next.booking.date);
+                document.getElementById('welcomeMsg').innerHTML =
+                    `Tu próxima clase es <strong>${cls ? cls.title : '—'}</strong> ${dateLabel} a las <strong>${next.booking.time || cls?.time || '—'}</strong>. ¡A darle!`;
+            } else {
+                document.getElementById('welcomeMsg').textContent = 'No tienes clases reservadas. ¡Elige una en el calendario!';
+            }
+        }
+
+        // ── Stats ───────────────────────────────────────────────
+        function renderStats() {
+            const u = state.user;
+            const allBookings = state.dm.getUserBookings(u.id);
+            state.bookings = allBookings;
+
+            const upcoming = allBookings.filter(b => b.status === 'confirmed' && b.date >= new Date().toISOString().split('T')[0]);
+            const total = allBookings.filter(b => b.status === 'confirmed').length;
+            const plan = u.plan === 'premium' ? 'PRO' : 'BASE';
+            const planSub = u.plan === 'premium' ? '12 clases/mes' : '4 clases/mes';
+
+            document.getElementById('statUpcoming').textContent = upcoming.length;
+            document.getElementById('statTotal').textContent = total;
+            document.getElementById('statPlan').textContent = plan;
+            document.getElementById('statPlanSub').textContent = planSub;
+        }
+
+        // ── Week Calendar ───────────────────────────────────────
+        function renderWeekCalendar() {
+            const dates = getWeekDates(state.weekOffset);
+            const start = formatDateShort(dates[0]);
+            const end   = formatDateShort(dates[5]);
+            document.getElementById('weekLabel').textContent = `${start} – ${end}`;
+
+            const container = document.getElementById('weekCalendar');
+            container.innerHTML = '';
+
+            dates.forEach(date => {
+                const classes = state.dm.getClassesByDate ? state.dm.getClassesByDate(date) : [];
+                const col = buildDayColumn(date, classes);
+                container.appendChild(col);
+            });
+        }
+
+        function buildDayColumn(date, classes) {
+            const col = document.createElement('div');
+            col.className = `day-column${isToday(date) ? ' today' : ''}`;
+
+            const dateObj = new Date(date + 'T12:00:00');
+            const dayName = dateObj.toLocaleDateString('es-ES', { weekday: 'short' }).toUpperCase();
+            const dayNum  = dateObj.getDate();
+
+            col.innerHTML = `
+                <div class="day-header">
+                    <div class="day-name">${dayName}</div>
+                    <div class="day-date">${dayNum}</div>
+                    ${isToday(date) ? '<span class="day-tag">HOY</span>' : ''}
+                </div>
+                <div class="day-classes" id="dc-${date}"></div>`;
+
+            const dcEl = col.querySelector(`#dc-${date}`);
+
+            if (!classes || classes.length === 0) {
+                dcEl.innerHTML = `<div class="class-slot closed">
+                    <i class="fas fa-moon"></i>
+                    <small style="color:#9aa0a6;">Sin clases</small>
+                </div>`;
+            } else {
+                classes.sort((a,b) => a.time.localeCompare(b.time)).forEach(cls => {
+                    dcEl.appendChild(buildClassSlot(cls, date));
+                });
+            }
+
+            return col;
+        }
+
+        function buildClassSlot(cls, date) {
+            const slot = document.createElement('div');
+            const userBooking = getUserBookingForClass(cls.id, date);
+            const isFull = (cls.booked || 0) >= cls.capacity;
+            const pastDate = isPast(date);
+
+            let slotClass = 'available';
+            if (userBooking) slotClass = 'booked';
+            else if (isFull) slotClass = 'full';
+            else if (pastDate) slotClass = 'full';
+
+            slot.className = `class-slot ${slotClass}`;
+            slot.innerHTML = `
+                <div class="class-time"><i class="fas fa-clock" style="width:12px;"></i> ${cls.time}</div>
+                <div class="class-info">
+                    <span class="class-type ${cls.type}">${cls.type}</span>
+                    <div class="class-title">${cls.title}</div>
+                    <div class="class-coach"><i class="fas fa-user-tie" style="width:12px;"></i> ${cls.coach}</div>
+                    <div style="font-size:0.78rem;color:#9aa0a6;margin-top:0.3rem;">
+                        <i class="fas fa-users" style="width:12px;"></i> ${cls.booked || 0}/${cls.capacity}
+                    </div>
+                </div>`;
+
+            if (userBooking) {
+                const badge = document.createElement('span');
+                badge.className = 'badge-booked';
+                badge.innerHTML = '<i class="fas fa-check"></i> Reservada';
+                slot.appendChild(badge);
+            } else if (isFull || pastDate) {
+                const badge = document.createElement('span');
+                badge.className = 'badge-full';
+                badge.innerHTML = pastDate ? '<i class="fas fa-lock"></i> Pasada' : '<i class="fas fa-times"></i> Llena';
+                slot.appendChild(badge);
+            } else {
+                const btn = document.createElement('button');
+                btn.className = 'btn-book';
+                btn.innerHTML = '<i class="fas fa-plus"></i> Reservar';
+                btn.addEventListener('click', () => openBookingModal(cls, date));
+                slot.appendChild(btn);
+            }
+
+            return slot;
+        }
+
+        function getUserBookingForClass(classId, date) {
+            return state.bookings.find(b =>
+                b.classId === classId &&
+                b.date === date &&
+                b.status === 'confirmed'
+            ) || null;
+        }
+
+        // ── Upcoming Bookings ───────────────────────────────────
+        function getUpcomingBookings() {
+            const today = new Date().toISOString().split('T')[0];
+            return state.dm.getUserUpcomingClasses
+                ? state.dm.getUserUpcomingClasses(state.user.id).filter(item => item.booking.date >= today)
+                : [];
+        }
+
+        function renderUpcoming() {
+            const container = document.getElementById('upcomingBookings');
+            const items = getUpcomingBookings();
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-bookings">
+                        <i class="fas fa-calendar-plus"></i>
+                        <h3>Sin reservas próximas</h3>
+                        <p>Usa el calendario de arriba para reservar tu primera clase.</p>
+                    </div>`;
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'bookings-grid';
+
+            items.slice(0, 6).forEach(item => {
+                const { booking, class: cls } = item;
+                if (!cls) return;
+                const card = document.createElement('div');
+                card.className = `booking-card ${cls.type}`;
+                card.innerHTML = `
+                    <span class="bk-type ${cls.type}">${cls.type}</span>
+                    <div class="bk-title">${cls.title}</div>
+                    <div class="bk-meta">
+                        <span><i class="fas fa-calendar"></i> ${formatDate(booking.date)}</span>
+                        <span><i class="fas fa-clock"></i> ${booking.time || cls.time} — ${cls.duration} min</span>
+                        <span><i class="fas fa-user-tie"></i> Coach ${cls.coach}</span>
+                        <span><i class="fas fa-map-marker-alt"></i> ${cls.room || 'Sala Principal'}</span>
+                    </div>
+                    <button class="btn-cancel" data-booking-id="${booking.id}">
+                        <i class="fas fa-times"></i> Cancelar reserva
+                    </button>`;
+                grid.appendChild(card);
+            });
+
+            container.innerHTML = '';
+            container.appendChild(grid);
+
+            // Bind cancel buttons
+            grid.querySelectorAll('.btn-cancel').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (confirm('¿Cancelar esta reserva?')) {
+                        cancelBooking(btn.dataset.bookingId);
+                    }
+                });
+            });
+        }
+
+        // ── Notifications ───────────────────────────────────────
+        function renderNotifications() {
+            const notifs = state.dm.getUserNotifications(state.user.id);
+            const list = document.getElementById('notifList');
+
+            if (!notifs || notifs.length === 0) {
+                list.innerHTML = `<div style="padding:2rem;text-align:center;color:#9aa0a6;"><i class="fas fa-bell-slash" style="font-size:2rem;margin-bottom:0.5rem;display:block;"></i>Sin notificaciones</div>`;
+                return;
+            }
+
+            list.innerHTML = notifs.slice(0, 12).map(n => {
+                const iconMap = {
+                    booking_confirmation: { cls: 'booking', icon: 'fa-check' },
+                    booking_cancellation: { cls: 'cancel',  icon: 'fa-times' },
+                    login_success:        { cls: 'login',   icon: 'fa-sign-in-alt' },
+                    waitlist_promoted:    { cls: 'booking', icon: 'fa-arrow-up' },
+                    default:              { cls: 'info',    icon: 'fa-info' }
+                };
+                const im = iconMap[n.type] || iconMap.default;
+                const time = new Date(n.createdAt).toLocaleString('es-ES', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+                return `
+                    <div class="notif-item ${n.read ? '' : 'unread'}" data-notif-id="${n.id}">
+                        <div class="notif-icon ${im.cls}"><i class="fas ${im.icon}"></i></div>
+                        <div class="notif-content">
+                            <div class="notif-title">${n.title}</div>
+                            <div class="notif-msg">${n.message}</div>
+                            <div class="notif-time">${time}</div>
+                        </div>
+                        ${!n.read ? '<div class="notif-dot"></div>' : ''}
+                    </div>`;
+            }).join('');
+
+            // Mark individual as read on click
+            list.querySelectorAll('.notif-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const id = item.dataset.notifId;
+                    state.dm.markNotificationAsRead(id);
+                    item.classList.remove('unread');
+                    item.querySelector('.notif-dot')?.remove();
+                    updateNotifBadge();
+                });
+            });
+        }
+
+        function updateNotifBadge() {
+            const unread = state.dm.getUserNotifications(state.user.id).filter(n => !n.read).length;
+            const badge = document.querySelector('.notif-badge');
+            if (badge) {
+                if (unread > 0) { badge.textContent = unread; badge.style.display = ''; }
+                else badge.style.display = 'none';
+            }
+        }
+
+        // ── Booking Modal ───────────────────────────────────────
+        function openBookingModal(cls, date) {
+            state.pendingBooking = { classId: cls.id, date, time: cls.time, classData: cls };
+
+            const confirmed = state.dm.getClassBookings(cls.id).filter(b => b.status === 'confirmed' && b.date === date).length;
+            const available = cls.capacity - confirmed;
+            const pct = Math.round((confirmed / cls.capacity) * 100);
+            const fillClass = pct < 50 ? 'low' : pct < 80 ? 'medium' : 'high';
+
+            document.getElementById('modalBody').innerHTML = `
+                <div class="modal-class-info">
+                    <span class="modal-class-badge ${cls.type}">${cls.type}</span>
+                    <h4>${cls.title}</h4>
+                    <div class="modal-details">
+                        <div class="modal-detail"><i class="fas fa-calendar"></i> ${formatDate(date)}</div>
+                        <div class="modal-detail"><i class="fas fa-clock"></i> ${cls.time} — ${cls.duration} minutos</div>
+                        <div class="modal-detail"><i class="fas fa-user-tie"></i> Coach ${cls.coach}</div>
+                        <div class="modal-detail"><i class="fas fa-map-marker-alt"></i> ${cls.room || 'Sala Principal'}</div>
+                        <div class="modal-detail"><i class="fas fa-users"></i> ${available} cupos disponibles de ${cls.capacity}</div>
+                    </div>
+                    <div class="capacity-bar-wrap">
+                        <label>Ocupación: ${pct}%</label>
+                        <div class="capacity-bar">
+                            <div class="capacity-fill ${fillClass}" style="width:${pct}%;"></div>
+                        </div>
+                    </div>
+                </div>`;
+
+            document.getElementById('bookingModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('bookingModal').classList.remove('active');
+            state.pendingBooking = null;
+        }
+
+        // ── Book / Cancel ───────────────────────────────────────
+        function confirmBooking() {
+            if (!state.pendingBooking) return;
+            const { classId, date, time } = state.pendingBooking;
+
+            try {
+                const booking = state.dm.createBooking(state.user.id, classId, date, time);
+                if (booking) {
+                    // Refresh state
+                    state.bookings = state.dm.getUserBookings(state.user.id);
+                    closeModal();
+                    showToast('¡Reserva confirmada! 🎉', 'success');
+                    renderStats();
+                    renderWeekCalendar();
+                    renderUpcoming();
+                    renderWelcome();
+                    renderNotifications();
+                }
+            } catch (err) {
+                showToast(err.message || 'Error al reservar', 'error');
+                closeModal();
+            }
+        }
+
+        function cancelBooking(bookingId) {
+            try {
+                state.dm.cancelBooking(bookingId);
+                state.bookings = state.dm.getUserBookings(state.user.id);
+                showToast('Reserva cancelada correctamente.', 'info');
+                renderStats();
+                renderWeekCalendar();
+                renderUpcoming();
+                renderWelcome();
+                renderNotifications();
+            } catch (err) {
+                showToast(err.message || 'Error al cancelar', 'error');
+            }
+        }
+
+        // ── Events ──────────────────────────────────────────────
+        function setupEvents() {
+            // Week navigation
+            document.getElementById('prevWeekBtn').addEventListener('click', () => {
+                state.weekOffset--;
+                renderWeekCalendar();
+            });
+            document.getElementById('nextWeekBtn').addEventListener('click', () => {
+                state.weekOffset++;
+                renderWeekCalendar();
+            });
+
+            // Modal close
+            document.getElementById('closeModal').addEventListener('click', closeModal);
+            document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
+            document.getElementById('bookingModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('bookingModal')) closeModal();
+            });
+
+            // Confirm booking
+            document.getElementById('confirmBookingBtn').addEventListener('click', confirmBooking);
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                if (confirm('¿Cerrar sesión?')) {
+                    const auth = window.barraboxAuth;
+                    if (auth && auth.logout) { auth.logout(); }
+                    // Limpiar cookies de sesión
+                    localStorage.removeItem('barrabox_gym_session');
+                    localStorage.removeItem('barrabox_gym_current_user');
+                    showToast('Sesión cerrada. ¡Hasta pronto!', 'info');
+                    setTimeout(() => window.location.href = 'index.html', 1000);
+                }
+            });
+
+            // Notification toggle
+            document.getElementById('notifToggle').addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.getElementById('notifPanel').classList.toggle('open');
+            });
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#notifPanel') && !e.target.closest('#notifToggle')) {
+                    document.getElementById('notifPanel').classList.remove('open');
+                }
+            });
+
+            // Mark all read
+            document.getElementById('markAllRead').addEventListener('click', () => {
+                state.dm.markAllNotificationsAsRead(state.user.id);
+                renderNotifications();
+                updateNotifBadge();
+                showToast('Todas las notificaciones marcadas como leídas.', 'info');
+            });
+        }
+
+        // ── Bootstrap ───────────────────────────────────────────
+        document.addEventListener('DOMContentLoaded', init);
+
+    })();
+    </script>
 </body>
 </html>

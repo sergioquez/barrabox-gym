@@ -487,8 +487,17 @@ function initializeMain() {
         }
     }
     
-    // Iniciar verificación de auth
-    setTimeout(initializeAuth, 1000);
+    // Iniciar verificación de auth con polling (más confiable que timeout fijo)
+    let authInitAttempts = 0;
+    const authInitInterval = setInterval(() => {
+        authInitAttempts++;
+        if (window.barraboxAuth) {
+            clearInterval(authInitInterval);
+            initializeAuth();
+        } else if (authInitAttempts > 40) { // 40 * 100ms = 4 segundos máximo
+            clearInterval(authInitInterval);
+        }
+    }, 100);
     
     // ==================== OTHER FUNCTIONALITY ====================
     

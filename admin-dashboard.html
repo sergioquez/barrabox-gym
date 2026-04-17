@@ -3,399 +3,998 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Barrabox Gym</title>
+    <title>Admin - Barrabox Gym</title>
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/admin-clean.css">
-    <link rel="stylesheet" href="css/admin-enhanced.css">
     <link rel="stylesheet" href="css/animations.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="manifest" href="manifest.json">
+    <style>
+/* ── Reset & Base ─────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;background:#f0f2f5;color:#333;min-height:100vh}
+.container{max-width:1300px;margin:0 auto;padding:0 1.5rem}
+button{cursor:pointer;font-family:inherit}
+a{text-decoration:none}
+
+/* ── Header ───────────────────────────────────── */
+.adm-header{background:#2D3047;color:white;padding:.9rem 0;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.2)}
+.adm-header .container{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.adm-logo h1{font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:800;color:white}
+.adm-logo h1 span{color:#FF6B35}
+.adm-logo small{font-size:.75rem;opacity:.6;display:block}
+.adm-right{display:flex;align-items:center;gap:1rem}
+.adm-user{display:flex;align-items:center;gap:.75rem}
+.adm-avatar{width:38px;height:38px;border-radius:50%;background:#FF6B35;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:white;flex-shrink:0}
+.adm-name{font-weight:600;font-size:.9rem}
+.adm-role{font-size:.75rem;opacity:.6}
+.adm-logout{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:white;padding:.4rem .9rem;border-radius:8px;font-size:.82rem;font-weight:600;transition:all .2s}
+.adm-logout:hover{background:rgba(220,53,69,.8)}
+
+/* ── KPI Bar ──────────────────────────────────── */
+.kpi-bar{background:white;border-bottom:1px solid #e9ecef;padding:1rem 0}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.kpi{display:flex;align-items:center;gap:1rem;padding:.75rem 1rem;border-radius:12px;background:#f8f9fa;transition:background .2s}
+.kpi:hover{background:#fff3ee}
+.kpi-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.kpi-val{font-family:'Montserrat',sans-serif;font-size:1.6rem;font-weight:800;color:#2D3047;line-height:1}
+.kpi-lbl{font-size:.78rem;color:#6C757D;margin-top:.15rem}
+.kpi-sub{font-size:.74rem;margin-top:.1rem}
+.kpi-sub.up{color:#28A745}
+.kpi-sub.down{color:#DC3545}
+
+/* ── Tabs ─────────────────────────────────────── */
+.adm-tabs{background:white;border-bottom:2px solid #f0f0f0;padding:0 1.5rem}
+.adm-tabs .container{display:flex;gap:0;overflow-x:auto}
+.tab-btn{display:flex;align-items:center;gap:.5rem;padding:.9rem 1.25rem;border:none;background:none;color:#6C757D;font-weight:600;font-size:.88rem;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap}
+.tab-btn:hover{color:#FF6B35}
+.tab-btn.active{color:#FF6B35;border-bottom-color:#FF6B35}
+.tab-btn i{font-size:.95rem}
+
+/* ── Tab Content ──────────────────────────────── */
+.tab-panel{display:none;padding:1.5rem 0}
+.tab-panel.active{display:block}
+
+/* ── Section Card ─────────────────────────────── */
+.sec{background:white;border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.sec-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.sec-title{font-family:'Montserrat',sans-serif;font-size:1.1rem;font-weight:700;color:#2D3047;display:flex;align-items:center;gap:.6rem}
+.sec-title i{color:#FF6B35}
+.sec-actions{display:flex;gap:.5rem;flex-wrap:wrap}
+
+/* ── Buttons ──────────────────────────────────── */
+.btn{padding:.55rem 1.1rem;border-radius:8px;font-weight:600;font-size:.85rem;border:none;display:inline-flex;align-items:center;gap:.4rem;transition:all .2s}
+.btn-primary{background:#FF6B35;color:white}.btn-primary:hover{background:#e05520}
+.btn-secondary{background:#2D3047;color:white}.btn-secondary:hover{background:#1e2033}
+.btn-outline{background:none;border:1.5px solid #dee2e6;color:#495057}.btn-outline:hover{border-color:#FF6B35;color:#FF6B35}
+.btn-danger{background:#DC3545;color:white;font-size:.8rem;padding:.35rem .75rem}.btn-danger:hover{background:#c82333}
+.btn-success{background:#28A745;color:white;font-size:.8rem;padding:.35rem .75rem}.btn-success:hover{background:#218838}
+.btn-sm{padding:.35rem .75rem;font-size:.8rem}
+
+/* ── Table ────────────────────────────────────── */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid #f0f0f0}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+thead th{background:#f8f9fa;padding:.75rem 1rem;text-align:left;font-weight:700;color:#495057;font-size:.8rem;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid #e9ecef}
+tbody td{padding:.8rem 1rem;border-bottom:1px solid #f5f5f5;vertical-align:middle}
+tbody tr:last-child td{border:none}
+tbody tr:hover{background:#fafafa}
+.td-actions{display:flex;gap:.4rem}
+
+/* ── Badges ───────────────────────────────────── */
+.badge{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.75rem;font-weight:700}
+.badge-active{background:#d4edda;color:#155724}
+.badge-inactive{background:#f8d7da;color:#721c24}
+.badge-suspended{background:#fff3cd;color:#856404}
+.badge-premium{background:rgba(255,107,53,.1);color:#FF6B35}
+.badge-basic{background:#e9ecef;color:#495057}
+.badge-admin{background:rgba(45,48,71,.1);color:#2D3047}
+.badge-confirmed{background:#d4edda;color:#155724}
+.badge-cancelled{background:#f8d7da;color:#721c24}
+.badge-crossfit{background:rgba(255,107,53,.1);color:#FF6B35}
+.badge-halterofilia{background:rgba(0,168,168,.1);color:#00A8A8}
+.badge-gap{background:rgba(45,48,71,.1);color:#2D3047}
+
+/* ── Search bar ───────────────────────────────── */
+.search-bar{display:flex;align-items:center;gap:.5rem;background:#f8f9fa;border:1.5px solid #e9ecef;border-radius:8px;padding:.45rem .9rem;min-width:220px}
+.search-bar input{border:none;background:none;outline:none;font-size:.88rem;width:100%;font-family:inherit}
+.search-bar i{color:#9aa0a6;font-size:.9rem}
+
+/* ── Ocupancy bar ─────────────────────────────── */
+.occ-bar{height:6px;background:#e9ecef;border-radius:3px;overflow:hidden;margin-top:4px;min-width:80px}
+.occ-fill{height:100%;border-radius:3px;transition:width .4s}
+.occ-fill.low{background:#28A745}
+.occ-fill.med{background:#FFC107}
+.occ-fill.hi{background:#DC3545}
+
+/* ── Report cards ─────────────────────────────── */
+.report-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.report-card{background:#f8f9fa;border-radius:12px;padding:1.25rem;border-left:4px solid}
+.report-card.orange{border-color:#FF6B35}
+.report-card.teal{border-color:#00A8A8}
+.report-card.navy{border-color:#2D3047}
+.report-card.green{border-color:#28A745}
+.report-num{font-family:'Montserrat',sans-serif;font-size:2rem;font-weight:800;color:#2D3047}
+.report-lbl{font-size:.85rem;color:#6C757D;margin-top:.25rem}
+.report-sub{font-size:.78rem;margin-top:.4rem}
+
+/* ── Toast ────────────────────────────────────── */
+#toast-wrap{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.5rem}
+.toast{padding:.8rem 1.2rem;border-radius:10px;color:white;font-size:.88rem;font-weight:500;display:flex;align-items:center;gap:.6rem;max-width:320px;box-shadow:0 6px 20px rgba(0,0,0,.15);animation:tIn .3s ease}
+@keyframes tIn{from{transform:translateX(100%);opacity:0}to{transform:none;opacity:1}}
+.toast.success{background:#28A745}.toast.error{background:#DC3545}.toast.info{background:#17A2B8}
+
+/* ── Modal ────────────────────────────────────── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal-box{background:white;border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{font-family:'Montserrat',sans-serif;font-size:1.05rem;font-weight:700;color:#2D3047}
+.modal-close{background:none;border:none;font-size:1.4rem;color:#9aa0a6;cursor:pointer}
+.modal-body{padding:1.5rem}
+.form-row{margin-bottom:1rem}
+.form-row label{display:block;font-size:.84rem;font-weight:600;color:#495057;margin-bottom:.35rem}
+.form-row input,.form-row select,.form-row textarea{width:100%;padding:.6rem .9rem;border:1.5px solid #dee2e6;border-radius:8px;font-size:.9rem;font-family:inherit;outline:none;transition:border .2s}
+.form-row input:focus,.form-row select:focus{border-color:#FF6B35}
+.form-actions{display:flex;gap:.75rem;justify-content:flex-end;padding:1rem 1.5rem;border-top:1px solid #f0f0f0}
+
+/* ── Access denied ────────────────────────────── */
+#accessDenied{display:none;min-height:80vh;align-items:center;justify-content:center;text-align:center;padding:2rem}
+.denied-card{background:white;border-radius:20px;padding:3rem;max-width:460px;box-shadow:0 20px 60px rgba(0,0,0,.08)}
+.denied-card i{font-size:3rem;color:#FF6B35;margin-bottom:1rem}
+
+/* ── Responsive ───────────────────────────────── */
+@media(max-width:768px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .adm-name,.adm-role{display:none}
+}
+@media(max-width:480px){.kpi-grid{grid-template-columns:1fr 1fr}}
+    </style>
 </head>
-<body class="admin-clean">
-    <!-- Admin Header -->
-    <header class="admin-header-clean">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <a href="index.html">
-                        <h1>BARRA<span class="accent">BOX</span></h1>
-                        <span class="subtitle">Panel de Administración</span>
-                    </a>
-                </div>
-                <div class="admin-info">
-                    <div class="admin-avatar">
-                        <i class="fas fa-user-shield"></i>
-                    </div>
-                    <div class="admin-details">
-                        <div class="admin-name">Administrador Barrabox</div>
-                        <div class="admin-role">Super Admin</div>
-                    </div>
-                    <div class="admin-actions">
-                        <button class="btn-notification" id="notificationBtn">
-                            <i class="fas fa-bell"></i>
-                            <span class="notification-badge">3</span>
-                        </button>
-                        <a href="index.html" class="btn-logout">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </a>
-                    </div>
+<body>
+
+<div id="toast-wrap"></div>
+
+<!-- Access Denied -->
+<div id="accessDenied" style="display:none;min-height:100vh;align-items:center;justify-content:center;text-align:center;padding:2rem;">
+    <div class="denied-card">
+        <i class="fas fa-shield-alt"></i>
+        <h2 style="color:#2D3047;font-family:'Montserrat',sans-serif;margin-bottom:.75rem">Acceso Restringido</h2>
+        <p style="color:#6C757D;margin-bottom:1.5rem">Este panel es solo para administradores. Por favor inicia sesi&oacute;n con una cuenta admin.</p>
+        <a href="index.html" style="display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 2rem;background:#FF6B35;color:white;border-radius:10px;font-weight:700;">
+            <i class="fas fa-sign-in-alt"></i> Ir al Login
+        </a>
+    </div>
+</div>
+
+<!-- Dashboard -->
+<div id="adminApp" style="display:none">
+
+<!-- Header -->
+<header class="adm-header">
+    <div class="container">
+        <div class="adm-logo">
+            <h1>BARRA<span>BOX</span></h1>
+            <small>Panel de Administraci&oacute;n</small>
+        </div>
+        <div class="adm-right">
+            <div class="adm-user">
+                <div class="adm-avatar" id="adminAvatar">A</div>
+                <div>
+                    <div class="adm-name" id="adminName">Administrador</div>
+                    <div class="adm-role">Super Admin</div>
                 </div>
             </div>
+            <a href="user-dashboard.html" class="adm-logout" style="font-size:.8rem;padding:.4rem .75rem">
+                <i class="fas fa-user"></i> Ver como usuario
+            </a>
+            <button class="adm-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</button>
         </div>
-    </header>
+    </div>
+</header>
 
-    <!-- Admin Quick Stats -->
-    <div class="admin-quick-stats">
-        <div class="container">
-            <div class="stats-grid">
-                <div class="admin-stat">
-                    <div class="stat-icon" style="background: rgba(255,107,53,0.1);">
-                        <i class="fas fa-users" style="color: #FF6B35;"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-number">142</div>
-                        <div class="stat-label">Usuarios Activos</div>
-                        <div class="stat-change positive">+12 esta semana</div>
-                    </div>
-                </div>
-
-                <div class="admin-stat">
-                    <div class="stat-icon" style="background: rgba(0,168,168,0.1);">
-                        <i class="fas fa-calendar-check" style="color: #00A8A8;"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-number">67</div>
-                        <div class="stat-label">Reservas Hoy</div>
-                        <div class="stat-change positive">85% ocupación</div>
-                    </div>
-                </div>
-
-                <div class="admin-stat">
-                    <div class="stat-icon" style="background: rgba(45,48,71,0.1);">
-                        <i class="fas fa-money-bill-wave" style="color: #2D3047;"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-number">$4.2M</div>
-                        <div class="stat-label">Ingresos Mes</div>
-                        <div class="stat-change positive">+8% vs mes pasado</div>
-                    </div>
-                </div>
-
-                <div class="admin-stat">
-                    <div class="stat-icon" style="background: rgba(220,53,69,0.1);">
-                        <i class="fas fa-exclamation-triangle" style="color: #DC3545;"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-number">3</div>
-                        <div class="stat-label">Alertas</div>
-                        <div class="stat-change negative">Requieren atención</div>
-                    </div>
-                </div>
+<!-- KPI Bar -->
+<div class="kpi-bar">
+    <div class="container">
+        <div class="kpi-grid">
+            <div class="kpi">
+                <div class="kpi-icon" style="background:rgba(255,107,53,.1)"><i class="fas fa-users" style="color:#FF6B35"></i></div>
+                <div><div class="kpi-val" id="kpiUsers">—</div><div class="kpi-lbl">Miembros activos</div><div class="kpi-sub up" id="kpiUsersSub">—</div></div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-icon" style="background:rgba(0,168,168,.1)"><i class="fas fa-calendar-check" style="color:#00A8A8"></i></div>
+                <div><div class="kpi-val" id="kpiBookings">—</div><div class="kpi-lbl">Reservas totales</div><div class="kpi-sub up" id="kpiBookingsSub">—</div></div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-icon" style="background:rgba(45,48,71,.1)"><i class="fas fa-dumbbell" style="color:#2D3047"></i></div>
+                <div><div class="kpi-val" id="kpiClasses">—</div><div class="kpi-lbl">Clases activas</div><div class="kpi-sub" id="kpiClassesSub">—</div></div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-icon" style="background:rgba(40,167,69,.1)"><i class="fas fa-chart-line" style="color:#28A745"></i></div>
+                <div><div class="kpi-val" id="kpiOcc">—</div><div class="kpi-lbl">Ocupaci&oacute;n media</div><div class="kpi-sub" id="kpiOccSub">—</div></div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Main Content -->
-    <main class="admin-main">
-        <div class="container">
-            <!-- Admin Navigation -->
-            <div class="admin-navigation">
-                <button class="admin-nav-btn active" data-tab="calendar">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span>Calendario</span>
-                </button>
-                <button class="admin-nav-btn" data-tab="reservations">
-                    <i class="fas fa-calendar-check"></i>
-                    <span>Reservas</span>
-                </button>
-                <button class="admin-nav-btn" data-tab="members">
-                    <i class="fas fa-user-friends"></i>
-                    <span>Miembros</span>
-                </button>
-                <button class="admin-nav-btn" data-tab="classes">
-                    <i class="fas fa-dumbbell"></i>
-                    <span>Clases</span>
-                </button>
-                <button class="admin-nav-btn" data-tab="payments">
-                    <i class="fas fa-credit-card"></i>
-                    <span>Pagos</span>
-                </button>
-                <button class="admin-nav-btn" data-tab="reports">
-                    <i class="fas fa-chart-bar"></i>
-                    <span>Reportes</span>
-                </button>
-            </div>
+<!-- Tabs -->
+<div class="adm-tabs">
+    <div class="container">
+        <button class="tab-btn active" data-tab="overview"><i class="fas fa-th-large"></i> Resumen</button>
+        <button class="tab-btn" data-tab="members"><i class="fas fa-users"></i> Miembros</button>
+        <button class="tab-btn" data-tab="classes"><i class="fas fa-dumbbell"></i> Clases</button>
+        <button class="tab-btn" data-tab="bookings"><i class="fas fa-calendar-check"></i> Reservas</button>
+        <button class="tab-btn" data-tab="reports"><i class="fas fa-chart-bar"></i> Reportes</button>
+    </div>
+</div>
 
-            <!-- Calendar Tab (Active by Default) -->
-            <div class="admin-tab-content active" id="calendarTab">
-                <div class="admin-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-calendar-day"></i> Calendario de Clases - Hoy</h2>
-                        <div class="header-actions">
-                            <button class="btn btn-primary" id="addClassBtn">
-                                <i class="fas fa-plus"></i> Nueva Clase
-                            </button>
-                            <button class="btn btn-outline" id="printScheduleBtn">
-                                <i class="fas fa-print"></i> Imprimir
-                            </button>
-                        </div>
-                    </div>
+<main style="padding-bottom:3rem">
+<div class="container">
 
-                    <!-- Interactive Calendar - 6 Days (Removed Sunday) -->
-                    <div class="interactive-calendar">
-                        <!-- Day Navigation -->
-                        <div class="day-navigation">
-                            <button class="nav-btn" id="prevDay">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <div class="current-day" id="currentDay">
-                                Miércoles 16 Abril 2026
-                            </div>
-                            <button class="nav-btn" id="nextDay">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
+<!-- OVERVIEW TAB -->
+<div class="tab-panel active" id="tab-overview">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.5rem">
 
-                        <!-- Day Schedule -->
-                        <div class="day-schedule" id="daySchedule">
-                            <!-- Schedule will be loaded dynamically -->
-                        </div>
-
-                        <!-- Quick Actions -->
-                        <div class="schedule-actions">
-                            <button class="action-btn" data-action="copy">
-                                <i class="fas fa-copy"></i>
-                                <span>Copiar Horario</span>
-                            </button>
-                            <button class="action-btn" data-action="email">
-                                <i class="fas fa-envelope"></i>
-                                <span>Email a Coaches</span>
-                            </button>
-                            <button class="action-btn" data-action="stats">
-                                <i class="fas fa-chart-line"></i>
-                                <span>Ver Estadísticas</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Today's Summary -->
-                <div class="admin-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-chart-pie"></i> Resumen del Día</h2>
-                    </div>
-                    <div class="summary-grid">
-                        <div class="summary-card">
-                            <div class="summary-icon" style="background: rgba(255,107,53,0.1);">
-                                <i class="fas fa-users" style="color: #FF6B35;"></i>
-                            </div>
-                            <div class="summary-content">
-                                <div class="summary-number">42</div>
-                                <div class="summary-label">Total Asistentes</div>
-                                <div class="summary-detail">Capacidad: 85%</div>
-                            </div>
-                        </div>
-
-                        <div class="summary-card">
-                            <div class="summary-icon" style="background: rgba(0,168,168,0.1);">
-                                <i class="fas fa-dumbbell" style="color: #00A8A8;"></i>
-                            </div>
-                            <div class="summary-content">
-                                <div class="summary-number">8</div>
-                                <div class="summary-label">Clases Programadas</div>
-                                <div class="summary-detail">2 CrossFit, 3 Halterofilia, 3 GAP</div>
-                            </div>
-                        </div>
-
-                        <div class="summary-card">
-                            <div class="summary-icon" style="background: rgba(40,167,69,0.1);">
-                                <i class="fas fa-check-circle" style="color: #28A745;"></i>
-                            </div>
-                            <div class="summary-content">
-                                <div class="summary-number">5</div>
-                                <div class="summary-label">Coaches Activos</div>
-                                <div class="summary-detail">Carlos, Ana, Marco, Sofia, Luis</div>
-                            </div>
-                        </div>
-
-                        <div class="summary-card">
-                            <div class="summary-icon" style="background: rgba(255,193,7,0.1);">
-                                <i class="fas fa-exclamation-circle" style="color: #FFC107;"></i>
-                            </div>
-                            <div class="summary-content">
-                                <div class="summary-number">2</div>
-                                <div class="summary-label">Clases con Waitlist</div>
-                                <div class="summary-detail">WOD Competidores (10:00), Técnica Envión (17:00)</div>
-                            </div>
-                        </div>
-                    </div>
+        <!-- Clases de hoy -->
+        <div class="sec" style="grid-column:1/-1">
+            <div class="sec-header">
+                <div class="sec-title"><i class="fas fa-calendar-day"></i> Clases de Hoy</div>
+                <div style="display:flex;align-items:center;gap:.75rem">
+                    <button class="btn btn-outline btn-sm" id="prevDayBtn"><i class="fas fa-chevron-left"></i></button>
+                    <span id="todayLabel" style="font-weight:700;color:#2D3047;min-width:160px;text-align:center">—</span>
+                    <button class="btn btn-outline btn-sm" id="nextDayBtn"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
-
-            <!-- Reservations Tab -->
-            <div class="admin-tab-content" id="reservationsTab">
-                <div class="admin-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-calendar-check"></i> Gestión de Reservas</h2>
-                        <div class="header-actions">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Nueva Reserva Manual
-                            </button>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-download"></i> Exportar CSV
-                            </button>
-                        </div>
-                    </div>
-                    <div class="placeholder-content">
-                        <i class="fas fa-calendar-check"></i>
-                        <h3>Gestión de Reservas</h3>
-                        <p>Ver, editar y cancelar reservas de todos los miembros.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Members Tab -->
-            <div class="admin-tab-content" id="membersTab">
-                <div class="admin-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-user-friends"></i> Gestión de Miembros</h2>
-                        <div class="header-actions">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-user-plus"></i> Agregar Miembro
-                            </button>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-file-export"></i> Exportar Lista
-                            </button>
-                        </div>
-                    </div>
-                    <div class="placeholder-content">
-                        <i class="fas fa-user-friends"></i>
-                        <h3>Gestión de Miembros</h3>
-                        <p>Administrar miembros, planes, y estado de cuentas.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Classes Tab -->
-            <div class="admin-tab-content" id="classesTab">
-                <div class="admin-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-dumbbell"></i> Gestión de Clases</h2>
-                        <div class="header-actions">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Crear Clase
-                            </button>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-copy"></i> Duplicar Horario
-                            </button>
-                        </div>
-                    </div>
-                    <div class="placeholder-content">
-                        <i class="fas fa-dumbbell"></i>
-                        <h3>Gestión de Clases</h3>
-                        <p>Crear, editar y programar clases y horarios.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Payments Tab -->
-            <div class="admin-tab-content" id="paymentsTab">
-                <div class="admin-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-credit-card"></i> Gestión de Pagos</h2>
-                        <div class="header-actions">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-money-bill-wave"></i> Registrar Pago
-                            </button>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-file-invoice-dollar"></i> Ver Reportes
-                            </button>
-                        </div>
-                    </div>
-                    <div class="placeholder-content">
-                        <i class="fas fa-credit-card"></i>
-                        <h3>Gestión de Pagos</h3>
-                        <p>Registrar pagos, ver historial y generar facturas.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reports Tab -->
-            <div class="admin-tab-content" id="reportsTab">
-                <div class="admin-section">
-                    <div class="section-header">
-                        <h2><i class="fas fa-chart-bar"></i> Reportes y Análisis</h2>
-                        <div class="header-actions">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-chart-line"></i> Generar Reporte
-                            </button>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-calendar-alt"></i> Comparar Períodos
-                            </button>
-                        </div>
-                    </div>
-                    <div class="placeholder-content">
-                        <i class="fas fa-chart-bar"></i>
-                        <h3>Reportes y Análisis</h3>
-                        <p>Ver estadísticas, ocupación, ingresos y tendencias.</p>
-                    </div>
-                </div>
+            <div class="tbl-wrap">
+                <table>
+                    <thead><tr><th>Hora</th><th>Clase</th><th>Tipo</th><th>Coach</th><th>Ocupaci&oacute;n</th><th>Estado</th></tr></thead>
+                    <tbody id="todayClassesBody"><tr><td colspan="6" style="text-align:center;padding:2rem;color:#9aa0a6"><i class="fas fa-spinner fa-spin"></i> Cargando...</td></tr></tbody>
+                </table>
             </div>
         </div>
-    </main>
 
-    <!-- Footer -->
-    <footer class="admin-footer">
-        <div class="container">
-            <p>Barrabox Admin &copy; 2026 | <a href="index.html">Volver al sitio principal</a> | <a href="user-dashboard.html">Ver como usuario</a></p>
-            <p class="footer-note">Panel de administración - Acceso restringido</p>
+        <!-- Últimas reservas -->
+        <div class="sec">
+            <div class="sec-title" style="margin-bottom:1rem"><i class="fas fa-clock"></i> &Uacute;ltimas Reservas</div>
+            <div id="recentBookingsList" style="display:flex;flex-direction:column;gap:.5rem"></div>
         </div>
-    </footer>
 
-    <!-- Admin Modals -->
-    <div class="admin-modal" id="addClassModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-plus-circle"></i> Nueva Clase</h3>
-                <button class="close-modal">&times;</button>
+        <!-- Miembros recientes -->
+        <div class="sec">
+            <div class="sec-title" style="margin-bottom:1rem"><i class="fas fa-user-plus"></i> Miembros Recientes</div>
+            <div id="recentMembersList" style="display:flex;flex-direction:column;gap:.5rem"></div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MEMBERS TAB -->
+<div class="tab-panel" id="tab-members">
+    <div class="sec" style="margin-top:1.5rem">
+        <div class="sec-header">
+            <div class="sec-title"><i class="fas fa-users"></i> Gesti&oacute;n de Miembros <span id="memberCount" style="font-size:.8rem;background:#f0f0f0;padding:.2rem .6rem;border-radius:10px;font-weight:600;color:#6C757D;margin-left:.5rem"></span></div>
+            <div class="sec-actions">
+                <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="memberSearch" placeholder="Buscar miembro..."></div>
+                <button class="btn btn-primary" id="addMemberBtn"><i class="fas fa-user-plus"></i> Agregar</button>
+                <button class="btn btn-outline" id="exportMembersBtn"><i class="fas fa-download"></i> CSV</button>
             </div>
-            <div class="modal-body">
-                <!-- Add class form will be here -->
-                <p>Formulario para agregar nueva clase en desarrollo...</p>
+        </div>
+        <div class="tbl-wrap">
+            <table>
+                <thead><tr><th>Miembro</th><th>Email</th><th>Plan</th><th>Reservas</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="membersBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- CLASSES TAB -->
+<div class="tab-panel" id="tab-classes">
+    <div class="sec" style="margin-top:1.5rem">
+        <div class="sec-header">
+            <div class="sec-title"><i class="fas fa-dumbbell"></i> Gesti&oacute;n de Clases <span id="classCount" style="font-size:.8rem;background:#f0f0f0;padding:.2rem .6rem;border-radius:10px;font-weight:600;color:#6C757D;margin-left:.5rem"></span></div>
+            <div class="sec-actions">
+                <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="classSearch" placeholder="Buscar clase..."></div>
+                <select id="classTypeFilter" style="padding:.45rem .8rem;border:1.5px solid #dee2e6;border-radius:8px;font-size:.88rem;font-family:inherit;outline:none">
+                    <option value="">Todos los tipos</option>
+                    <option value="crossfit">CrossFit</option>
+                    <option value="halterofilia">Halterofilia</option>
+                    <option value="gap">GAP</option>
+                </select>
+                <button class="btn btn-primary" id="addClassBtn"><i class="fas fa-plus"></i> Agregar Clase</button>
+            </div>
+        </div>
+        <div class="tbl-wrap">
+            <table>
+                <thead><tr><th>Clase</th><th>Tipo</th><th>Coach</th><th>Horario</th><th>Ocupaci&oacute;n</th><th>Fecha</th><th>Acciones</th></tr></thead>
+                <tbody id="classesBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- BOOKINGS TAB -->
+<div class="tab-panel" id="tab-bookings">
+    <div class="sec" style="margin-top:1.5rem">
+        <div class="sec-header">
+            <div class="sec-title"><i class="fas fa-calendar-check"></i> Todas las Reservas <span id="bookingCount" style="font-size:.8rem;background:#f0f0f0;padding:.2rem .6rem;border-radius:10px;font-weight:600;color:#6C757D;margin-left:.5rem"></span></div>
+            <div class="sec-actions">
+                <div class="search-bar"><i class="fas fa-search"></i><input type="text" id="bookingSearch" placeholder="Buscar por usuario o clase..."></div>
+                <select id="bookingStatusFilter" style="padding:.45rem .8rem;border:1.5px solid #dee2e6;border-radius:8px;font-size:.88rem;font-family:inherit;outline:none">
+                    <option value="">Todos los estados</option>
+                    <option value="confirmed">Confirmadas</option>
+                    <option value="cancelled">Canceladas</option>
+                </select>
+                <button class="btn btn-outline" id="exportBookingsBtn"><i class="fas fa-download"></i> CSV</button>
+            </div>
+        </div>
+        <div class="tbl-wrap">
+            <table>
+                <thead><tr><th>Miembro</th><th>Clase</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="bookingsBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- REPORTS TAB -->
+<div class="tab-panel" id="tab-reports">
+    <div style="margin-top:1.5rem">
+        <div class="sec">
+            <div class="sec-title" style="margin-bottom:1.25rem"><i class="fas fa-chart-bar"></i> KPIs Generales</div>
+            <div class="report-grid" id="reportGrid"></div>
+        </div>
+        <div class="sec">
+            <div class="sec-title" style="margin-bottom:1.25rem"><i class="fas fa-trophy"></i> Clases m&aacute;s populares</div>
+            <div id="topClassesList"></div>
+        </div>
+        <div class="sec">
+            <div class="sec-header">
+                <div class="sec-title"><i class="fas fa-database"></i> Exportar datos</div>
+            </div>
+            <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+                <button class="btn btn-secondary" id="exportJsonBtn"><i class="fas fa-file-code"></i> Exportar JSON completo</button>
+                <button class="btn btn-outline" id="resetDataBtn" style="color:#DC3545;border-color:#DC3545"><i class="fas fa-trash-alt"></i> Resetear datos demo</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="admin-modal" id="notificationModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-bell"></i> Notificaciones (3)</h3>
-                <button class="close-modal">&times;</button>
+</div><!-- /container -->
+</main>
+
+<footer style="text-align:center;padding:1.5rem;color:#9aa0a6;font-size:.82rem;border-top:1px solid #e9ecef;background:white">
+    Barrabox Admin &copy; 2026 &mdash; <a href="index.html" style="color:#FF6B35">Sitio principal</a> &mdash; <a href="user-dashboard.html" style="color:#FF6B35">Dashboard usuario</a>
+</footer>
+
+</div><!-- /adminApp -->
+
+<!-- Modal: Add/Edit Member -->
+<div class="modal-overlay" id="memberModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3 id="memberModalTitle">Agregar Miembro</h3>
+            <button class="modal-close" data-close="memberModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="mEditId">
+            <div class="form-row"><label>Nombre completo</label><input type="text" id="mName" placeholder="Juan Pérez"></div>
+            <div class="form-row"><label>Email</label><input type="email" id="mEmail" placeholder="juan@email.com"></div>
+            <div class="form-row"><label>Tel&eacute;fono</label><input type="text" id="mPhone" placeholder="+56 9 1234 5678"></div>
+            <div class="form-row"><label>Plan</label>
+                <select id="mPlan"><option value="basic">B&aacute;sico</option><option value="premium">Premium</option></select>
             </div>
-            <div class="modal-body">
-                <!-- Notifications will be here -->
-                <p>Lista de notificaciones en desarrollo...</p>
+            <div class="form-row"><label>Estado</label>
+                <select id="mStatus"><option value="active">Activo</option><option value="inactive">Inactivo</option><option value="suspended">Suspendido</option></select>
             </div>
         </div>
+        <div class="form-actions">
+            <button class="btn btn-outline" data-close="memberModal">Cancelar</button>
+            <button class="btn btn-primary" id="saveMemberBtn"><i class="fas fa-save"></i> Guardar</button>
+        </div>
     </div>
+</div>
 
-    <!-- Core Sistema -->
-    <script src="js/data-manager.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/admin-system.js"></script>
-    <script src="js/admin-utils.js"></script>
-    <script src="js/admin-integration.js"></script>
-    <script src="js/admin-functions.js"></script>
+<!-- Modal: Add/Edit Class -->
+<div class="modal-overlay" id="classModal">
+    <div class="modal-box">
+        <div class="modal-head">
+            <h3 id="classModalTitle">Agregar Clase</h3>
+            <button class="modal-close" data-close="classModal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="cEditId">
+            <div class="form-row"><label>Título</label><input type="text" id="cTitle" placeholder="Ej. WOD Avanzado"></div>
+            <div class="form-row"><label>Tipo</label>
+                <select id="cType"><option value="crossfit">CrossFit</option><option value="halterofilia">Halterofilia</option><option value="gap">GAP</option></select>
+            </div>
+            <div class="form-row"><label>Coach</label><input type="text" id="cCoach" placeholder="Marco"></div>
+            <div class="form-row"><label>Fecha</label><input type="date" id="cDate"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div class="form-row"><label>Hora</label><input type="time" id="cTime"></div>
+                <div class="form-row"><label>Duración (min)</label><input type="number" id="cDuration" value="60"></div>
+            </div>
+            <div class="form-row"><label>Capacidad</label><input type="number" id="cCapacity" value="15"></div>
+        </div>
+        <div class="form-actions">
+            <button class="btn btn-outline" data-close="classModal">Cancelar</button>
+            <button class="btn btn-primary" id="saveClassBtn"><i class="fas fa-save"></i> Guardar Clase</button>
+        </div>
+    </div>
+</div>
 
-    <!-- UX & Theme -->
-    <script src="js/theme-system.js"></script>
-    <script src="js/waitlist-system.js"></script>
-    <script src="js/fase6-integration.js"></script>
+<!-- Scripts -->
+<script src="js/data-manager.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/theme-system.js"></script>
+
+<script>
+(function(){
+// ── State ──────────────────────────────────────────────────────
+const S = { dm:null, admin:null, dayOffset:0, editingMemberId:null };
+
+// ── Toast ──────────────────────────────────────────────────────
+function toast(msg, type='info'){
+    const w=document.getElementById('toast-wrap');
+    const t=document.createElement('div');
+    const icons={success:'fa-check-circle',error:'fa-exclamation-circle',info:'fa-info-circle'};
+    t.className=`toast ${type}`;
+    t.innerHTML=`<i class="fas ${icons[type]}"></i> ${msg}`;
+    w.appendChild(t);
+    setTimeout(()=>t.remove(),3500);
+}
+
+// ── Format helpers ─────────────────────────────────────────────
+function fmtDate(ds){
+    return new Date(ds+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'short',year:'numeric'});
+}
+function fmtDateDay(ds){
+    return new Date(ds+'T12:00:00').toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+}
+function todayStr(){ return new Date().toISOString().split('T')[0]; }
+function offsetDate(off){
+    const d=new Date(); d.setDate(d.getDate()+off);
+    return d.toISOString().split('T')[0];
+}
+function initials(name){ return (name||'?').split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase(); }
+function avatarDiv(name,color){
+    const c=color||'#6C757D';
+    return `<div style="width:34px;height:34px;border-radius:50%;background:${c};display:inline-flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:.78rem;flex-shrink:0">${initials(name)}</div>`;
+}
+
+// ── Init ───────────────────────────────────────────────────────
+function init(){
+    let attempts=0;
+    const iv=setInterval(()=>{
+        attempts++;
+        if(window.barraboxDataManager && window.barraboxAuth){
+            clearInterval(iv);
+            onReady();
+        } else if(attempts>40){ clearInterval(iv); showDenied(); }
+    },150);
+}
+
+function onReady(){
+    S.dm=window.barraboxDataManager;
+    const auth=window.barraboxAuth;
+    let aa=0;
+    const iv=setInterval(()=>{
+        aa++;
+        const user=(auth.getCurrentUser&&auth.getCurrentUser())||auth.currentUser;
+        const authed=auth.isAuthenticated===true||(auth.isLoggedIn&&auth.isLoggedIn());
+        if(user&&user.id&&authed){
+            clearInterval(iv);
+            if(user.role!=='admin'){
+                // Not admin — try localStorage fallback for admin
+                const sess=JSON.parse(localStorage.getItem('barrabox_gym_session')||'null');
+                if(sess&&sess.userId){
+                    const u=S.dm.getUserById(sess.userId);
+                    if(u&&u.role==='admin'){ S.admin=u; showDashboard(); return; }
+                }
+                window.location.href='user-dashboard.html'; return;
+            }
+            S.admin=user; showDashboard();
+        } else if(aa>30){
+            clearInterval(iv);
+            // Last resort: check localStorage directly
+            try{
+                const sess=JSON.parse(localStorage.getItem('barrabox_gym_session')||'null');
+                if(sess&&sess.userId){
+                    const u=S.dm.getUserById(sess.userId);
+                    if(u&&u.status==='active'&&u.role==='admin'){ S.admin=u; showDashboard(); return; }
+                }
+            }catch(e){}
+            showDenied();
+        }
+    },150);
+}
+
+function showDenied(){
+    document.getElementById('accessDenied').style.display='flex';
+}
+
+function showDashboard(){
+    document.getElementById('adminApp').style.display='block';
+    // Header
+    document.getElementById('adminName').textContent=S.admin.name;
+    document.getElementById('adminAvatar').textContent=initials(S.admin.name);
+    document.getElementById('adminAvatar').style.background=S.admin.avatarColor||'#FF6B35';
+    renderKPIs();
+    renderOverview();
+    setupEvents();
+}
+
+// ── KPIs ───────────────────────────────────────────────────────
+function renderKPIs(){
+    const dm=S.dm;
+    const users=dm.getUsers().filter(u=>u.status==='active'&&u.role==='member');
+    const bookings=dm.getBookings();
+    const confirmed=bookings.filter(b=>b.status==='confirmed');
+    const classes=dm.getClasses().filter(c=>c.status==='active');
+    const avgOcc=classes.length?Math.round(classes.reduce((sum,c)=>sum+(c.booked||0)/c.capacity,0)/classes.length*100):0;
+
+    document.getElementById('kpiUsers').textContent=users.length;
+    document.getElementById('kpiUsersSub').textContent=`${dm.getUsers().filter(u=>u.role==='member').length} registrados total`;
+    document.getElementById('kpiBookings').textContent=confirmed.length;
+    document.getElementById('kpiBookingsSub').textContent=`${bookings.filter(b=>b.status==='cancelled').length} canceladas`;
+    document.getElementById('kpiClasses').textContent=classes.length;
+    document.getElementById('kpiClassesSub').textContent=`${dm.getClasses().length} total`;
+    document.getElementById('kpiOcc').textContent=avgOcc+'%';
+    document.getElementById('kpiOccSub').textContent=avgOcc>70?'Alta demanda':'Normal';
+    document.getElementById('kpiOccSub').className=`kpi-sub ${avgOcc>70?'up':''}`;
+}
+
+// ── Overview ───────────────────────────────────────────────────
+function renderOverview(){
+    renderTodayClasses();
+    renderRecentBookings();
+    renderRecentMembers();
+}
+
+function renderTodayClasses(){
+    const date=offsetDate(S.dayOffset);
+    document.getElementById('todayLabel').textContent=fmtDateDay(date);
+    const classes=S.dm.getClassesByDate(date)||[];
+    const tbody=document.getElementById('todayClassesBody');
+    if(!classes.length){
+        tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:2rem;color:#9aa0a6">Sin clases programadas para este día</td></tr>';
+        return;
+    }
+    tbody.innerHTML=classes.sort((a,b)=>a.time.localeCompare(b.time)).map(c=>{
+        const booked=S.dm.getClassBookings(c.id).filter(b=>b.status==='confirmed'&&b.date===date).length;
+        const pct=Math.round(booked/c.capacity*100);
+        const fillCls=pct<50?'low':pct<80?'med':'hi';
+        return `<tr>
+            <td><strong>${c.time}</strong></td>
+            <td>${c.title}</td>
+            <td><span class="badge badge-${c.type}">${c.type}</span></td>
+            <td>${c.coach}</td>
+            <td>
+                <div style="display:flex;align-items:center;gap:.5rem">
+                    <span style="font-size:.82rem;color:#495057">${booked}/${c.capacity}</span>
+                    <div class="occ-bar" style="flex:1"><div class="occ-fill ${fillCls}" style="width:${pct}%"></div></div>
+                    <span style="font-size:.78rem;color:#9aa0a6">${pct}%</span>
+                </div>
+            </td>
+            <td><span class="badge ${pct>=100?'badge-inactive':booked>0?'badge-confirmed':'badge-basic'}">${pct>=100?'Llena':booked>0?'Con reservas':'Disponible'}</span></td>
+        </tr>`;
+    }).join('');
+}
+
+function renderRecentBookings(){
+    const bookings=S.dm.getBookings().filter(b=>b.status==='confirmed')
+        .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
+    const el=document.getElementById('recentBookingsList');
+    el.innerHTML=bookings.map(b=>{
+        const user=S.dm.getUserById(b.userId);
+        const cls=S.dm.getClassById(b.classId);
+        return `<div style="display:flex;align-items:center;gap:.75rem;padding:.6rem;border-radius:8px;background:#f8f9fa">
+            ${avatarDiv(user?.name,user?.avatarColor)}
+            <div style="flex:1;min-width:0">
+                <div style="font-weight:600;font-size:.84rem;color:#2D3047;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${user?.name||'—'}</div>
+                <div style="font-size:.78rem;color:#6C757D">${cls?.title||'—'} &mdash; ${b.date}</div>
+            </div>
+            <span class="badge badge-confirmed" style="font-size:.7rem">OK</span>
+        </div>`;
+    }).join('')||'<p style="color:#9aa0a6;font-size:.88rem;text-align:center;padding:1rem">Sin reservas aún</p>';
+}
+
+function renderRecentMembers(){
+    const members=S.dm.getUsers().filter(u=>u.role==='member')
+        .sort((a,b)=>new Date(b.joinDate||0)-new Date(a.joinDate||0)).slice(0,6);
+    const el=document.getElementById('recentMembersList');
+    el.innerHTML=members.map(u=>`
+        <div style="display:flex;align-items:center;gap:.75rem;padding:.6rem;border-radius:8px;background:#f8f9fa">
+            ${avatarDiv(u.name,u.avatarColor)}
+            <div style="flex:1;min-width:0">
+                <div style="font-weight:600;font-size:.84rem;color:#2D3047">${u.name}</div>
+                <div style="font-size:.78rem;color:#6C757D">${u.email}</div>
+            </div>
+            <span class="badge badge-${u.plan}">${u.plan}</span>
+        </div>`).join('')||'<p style="color:#9aa0a6;font-size:.88rem;text-align:center;padding:1rem">Sin miembros aún</p>';
+}
+
+// ── Members ────────────────────────────────────────────────────
+function renderMembers(filter=''){
+    const members=S.dm.getUsers().filter(u=>u.role==='member');
+    const filtered=filter?members.filter(u=>
+        u.name.toLowerCase().includes(filter.toLowerCase())||
+        u.email.toLowerCase().includes(filter.toLowerCase())
+    ):members;
+
+    document.getElementById('memberCount').textContent=`${filtered.length} de ${members.length}`;
+    const tbody=document.getElementById('membersBody');
+    if(!filtered.length){
+        tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:2rem;color:#9aa0a6">No se encontraron miembros</td></tr>';
+        return;
+    }
+    tbody.innerHTML=filtered.map(u=>{
+        const bookings=S.dm.getUserBookings(u.id).filter(b=>b.status==='confirmed').length;
+        return `<tr>
+            <td><div style="display:flex;align-items:center;gap:.75rem">
+                ${avatarDiv(u.name,u.avatarColor)}
+                <div><div style="font-weight:600;font-size:.88rem">${u.name}</div><div style="font-size:.78rem;color:#9aa0a6">${u.joinDate||'—'}</div></div>
+            </div></td>
+            <td style="font-size:.85rem;color:#6C757D">${u.email}</td>
+            <td><span class="badge badge-${u.plan}">${u.plan}</span></td>
+            <td><span style="font-weight:700;color:#2D3047">${bookings}</span> reservas</td>
+            <td><span class="badge badge-${u.status}">${u.status}</span></td>
+            <td><div class="td-actions">
+                <button class="btn btn-outline btn-sm" data-edit-member="${u.id}"><i class="fas fa-edit"></i></button>
+                <button class="btn btn-danger btn-sm" data-delete-member="${u.id}"><i class="fas fa-trash"></i></button>
+            </div></td>
+        </tr>`;
+    }).join('');
+}
+
+// ── Classes ────────────────────────────────────────────────────
+function renderClasses(filter='',typeFilter=''){
+    let classes=S.dm.getClasses();
+    if(typeFilter) classes=classes.filter(c=>c.type===typeFilter);
+    if(filter) classes=classes.filter(c=>
+        c.title.toLowerCase().includes(filter.toLowerCase())||
+        c.coach.toLowerCase().includes(filter.toLowerCase())
+    );
+    document.getElementById('classCount').textContent=`${classes.length} clases`;
+    const tbody=document.getElementById('classesBody');
+    if(!classes.length){
+        tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:2rem;color:#9aa0a6">No se encontraron clases</td></tr>';
+        return;
+    }
+    tbody.innerHTML=classes.sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time)).map(c=>{
+        const booked=c.booked||0;
+        const pct=Math.round(booked/c.capacity*100);
+        const fillCls=pct<50?'low':pct<80?'med':'hi';
+        return `<tr>
+            <td style="font-weight:600">${c.title}</td>
+            <td><span class="badge badge-${c.type}">${c.type}</span></td>
+            <td>${c.coach}</td>
+            <td><strong>${c.time}</strong> &mdash; ${c.duration}min</td>
+            <td><div style="display:flex;align-items:center;gap:.5rem;min-width:120px">
+                <span style="font-size:.8rem">${booked}/${c.capacity}</span>
+                <div class="occ-bar" style="flex:1"><div class="occ-fill ${fillCls}" style="width:${pct}%"></div></div>
+            </div></td>
+            <td style="font-size:.82rem;color:#6C757D">${c.date}</td>
+            <td><div class="td-actions">
+                <button class="btn btn-danger btn-sm" data-delete-class="${c.id}" title="Eliminar"><i class="fas fa-trash"></i></button>
+            </div></td>
+        </tr>`;
+    }).join('');
+}
+
+// ── Bookings ───────────────────────────────────────────────────
+function renderBookings(filter='',statusFilter=''){
+    let bookings=S.dm.getBookings();
+    if(statusFilter) bookings=bookings.filter(b=>b.status===statusFilter);
+    if(filter) bookings=bookings.filter(b=>{
+        const user=S.dm.getUserById(b.userId);
+        const cls=S.dm.getClassById(b.classId);
+        const q=filter.toLowerCase();
+        return (user?.name||'').toLowerCase().includes(q)||(cls?.title||'').toLowerCase().includes(q);
+    });
+    bookings=bookings.sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
+    document.getElementById('bookingCount').textContent=`${bookings.length} reservas`;
+    const tbody=document.getElementById('bookingsBody');
+    if(!bookings.length){
+        tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:2rem;color:#9aa0a6">No se encontraron reservas</td></tr>';
+        return;
+    }
+    tbody.innerHTML=bookings.map(b=>{
+        const user=S.dm.getUserById(b.userId);
+        const cls=S.dm.getClassById(b.classId);
+        return `<tr>
+            <td><div style="display:flex;align-items:center;gap:.6rem">
+                ${avatarDiv(user?.name,user?.avatarColor)}
+                <span style="font-size:.86rem;font-weight:600">${user?.name||'—'}</span>
+            </div></td>
+            <td>${cls?.title||'—'} <span class="badge badge-${cls?.type}" style="margin-left:.3rem">${cls?.type||''}</span></td>
+            <td>${b.date}</td>
+            <td>${b.time||cls?.time||'—'}</td>
+            <td><span class="badge badge-${b.status}">${b.status}</span></td>
+            <td><div class="td-actions">
+                ${b.status==='confirmed'?`<button class="btn btn-danger btn-sm" data-cancel-booking="${b.id}"><i class="fas fa-times"></i> Cancelar</button>`:'<span style="color:#9aa0a6;font-size:.8rem">—</span>'}
+            </div></td>
+        </tr>`;
+    }).join('');
+}
+
+// ── Reports ────────────────────────────────────────────────────
+function renderReports(){
+    const dm=S.dm;
+    const users=dm.getUsers();
+    const members=users.filter(u=>u.role==='member');
+    const bookings=dm.getBookings();
+    const confirmed=bookings.filter(b=>b.status==='confirmed');
+    const cancelled=bookings.filter(b=>b.status==='cancelled');
+    const classes=dm.getClasses();
+    const premiums=members.filter(u=>u.plan==='premium');
+    const cancRate=bookings.length?Math.round(cancelled.length/bookings.length*100):0;
+
+    document.getElementById('reportGrid').innerHTML=[
+        {color:'orange',num:members.length,lbl:'Total miembros',sub:`${premiums.length} premium / ${members.length-premiums.length} básico`},
+        {color:'teal',num:confirmed.length,lbl:'Reservas confirmadas',sub:`${cancRate}% tasa de cancelación`},
+        {color:'navy',num:classes.length,lbl:'Clases en sistema',sub:`${classes.filter(c=>c.status==='active').length} activas`},
+        {color:'green',num:Math.round(confirmed.length/(members.length||1)*10)/10,lbl:'Reservas por miembro',sub:'promedio general'},
+    ].map(r=>`<div class="report-card ${r.color}">
+        <div class="report-num">${r.num}</div>
+        <div class="report-lbl">${r.lbl}</div>
+        <div class="report-sub" style="color:#6C757D">${r.sub}</div>
+    </div>`).join('');
+
+    // Top classes by bookings
+    const classCounts={};
+    confirmed.forEach(b=>{classCounts[b.classId]=(classCounts[b.classId]||0)+1;});
+    const top=Object.entries(classCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    document.getElementById('topClassesList').innerHTML=top.length?top.map(([cid,cnt])=>{
+        const cls=dm.getClassById(cid);
+        const pct=Math.min(100,Math.round(cnt/Math.max(...Object.values(classCounts))*100));
+        return `<div style="display:flex;align-items:center;gap:1rem;margin-bottom:.75rem">
+            <div style="min-width:150px;font-size:.88rem;font-weight:600;color:#2D3047">${cls?.title||cid}</div>
+            <span class="badge badge-${cls?.type||'basic'}" style="min-width:80px;text-align:center">${cls?.type||'—'}</span>
+            <div style="flex:1"><div class="occ-bar"><div class="occ-fill low" style="width:${pct}%"></div></div></div>
+            <span style="font-size:.88rem;font-weight:700;color:#FF6B35;min-width:40px;text-align:right">${cnt}</span>
+        </div>`;
+    }).join(''):'<p style="color:#9aa0a6;font-size:.88rem">Sin datos de reservas aún</p>';
+}
+
+// ── Events ─────────────────────────────────────────────────────
+function setupEvents(){
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn=>{
+        btn.addEventListener('click',()=>{
+            document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+            btn.classList.add('active');
+            const panel=document.getElementById('tab-'+btn.dataset.tab);
+            if(panel) panel.classList.add('active');
+            // Lazy render
+            if(btn.dataset.tab==='members') renderMembers();
+            if(btn.dataset.tab==='classes') renderClasses();
+            if(btn.dataset.tab==='bookings') renderBookings();
+            if(btn.dataset.tab==='reports') renderReports();
+        });
+    });
+
+    // Day navigation
+    document.getElementById('prevDayBtn').addEventListener('click',()=>{S.dayOffset--;renderTodayClasses();});
+    document.getElementById('nextDayBtn').addEventListener('click',()=>{S.dayOffset++;renderTodayClasses();});
+
+    // Search members
+    document.getElementById('memberSearch').addEventListener('input',e=>renderMembers(e.target.value));
+    document.getElementById('classSearch').addEventListener('input',()=>renderClasses(
+        document.getElementById('classSearch').value,
+        document.getElementById('classTypeFilter').value
+    ));
+    document.getElementById('classTypeFilter').addEventListener('change',()=>renderClasses(
+        document.getElementById('classSearch').value,
+        document.getElementById('classTypeFilter').value
+    ));
+    document.getElementById('bookingSearch').addEventListener('input',()=>renderBookings(
+        document.getElementById('bookingSearch').value,
+        document.getElementById('bookingStatusFilter').value
+    ));
+    document.getElementById('bookingStatusFilter').addEventListener('change',()=>renderBookings(
+        document.getElementById('bookingSearch').value,
+        document.getElementById('bookingStatusFilter').value
+    ));
+
+    // Add member button
+    document.getElementById('addMemberBtn').addEventListener('click',()=>{
+        S.editingMemberId=null;
+        document.getElementById('memberModalTitle').textContent='Agregar Miembro';
+        ['mEditId','mName','mEmail','mPhone'].forEach(id=>document.getElementById(id).value='');
+        document.getElementById('mPlan').value='basic';
+        document.getElementById('mStatus').value='active';
+        document.getElementById('memberModal').classList.add('open');
+    });
+
+    // Save member
+    document.getElementById('saveMemberBtn').addEventListener('click',()=>{
+        const id=document.getElementById('mEditId').value;
+        const name=document.getElementById('mName').value.trim();
+        const email=document.getElementById('mEmail').value.trim();
+        if(!name||!email){toast('Nombre y email son requeridos','error');return;}
+        const userData={
+            name, email, phone:document.getElementById('mPhone').value.trim(),
+            plan:document.getElementById('mPlan').value,
+            status:document.getElementById('mStatus').value,
+            role:'member',
+            joinDate:new Date().toISOString().split('T')[0],
+            avatarColor:['#FF6B35','#00A8A8','#2D3047','#28A745','#17A2B8'][Math.floor(Math.random()*5)]
+        };
+        if(id) userData.id=id;
+        S.dm.saveUser(userData);
+        document.getElementById('memberModal').classList.remove('open');
+        toast(id?'Miembro actualizado':'Miembro creado exitosamente','success');
+        renderMembers(document.getElementById('memberSearch').value);
+        renderKPIs();
+    });
+
+    // Add class button
+    document.getElementById('addClassBtn').addEventListener('click',()=>{
+        document.getElementById('classModalTitle').textContent='Agregar Clase';
+        ['cEditId','cTitle','cCoach','cDate','cTime'].forEach(id=>document.getElementById(id).value='');
+        document.getElementById('cType').value='crossfit';
+        document.getElementById('cDuration').value='60';
+        document.getElementById('cCapacity').value='15';
+        document.getElementById('classModal').classList.add('open');
+    });
+
+    // Save class
+    document.getElementById('saveClassBtn').addEventListener('click',()=>{
+        const id=document.getElementById('cEditId').value;
+        const title=document.getElementById('cTitle').value.trim();
+        const type=document.getElementById('cType').value;
+        const coach=document.getElementById('cCoach').value.trim();
+        const date=document.getElementById('cDate').value;
+        const time=document.getElementById('cTime').value;
+        const duration=parseInt(document.getElementById('cDuration').value, 10);
+        const capacity=parseInt(document.getElementById('cCapacity').value, 10);
+
+        if(!title || !coach || !date || !time || !duration || !capacity) {
+            toast('Todos los campos son requeridos para la clase', 'error');
+            return;
+        }
+
+        const classData = {
+            title, type, coach, date, time, duration, capacity,
+            status: 'active',
+            booked: 0,
+            room: 'Sala Central'
+        };
+        if(id) classData.id=id; // Para futura edición; por ahora es sólo Agregar
+        
+        // Asignar el atributo day basado en date para coherencia del frontend
+        const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+        classData.day = days[new Date(date + 'T12:00:00').getDay()];
+
+        S.dm.saveClass(classData);
+        document.getElementById('classModal').classList.remove('open');
+        toast('Clase guardada exitosamente', 'success');
+        renderClasses(document.getElementById('classSearch').value, document.getElementById('classTypeFilter').value);
+        renderKPIs();
+        renderOverview();
+    });
+
+    // Delegate events: edit/delete member, cancel booking, delete class
+    document.addEventListener('click',e=>{
+        // Edit member
+        const editBtn=e.target.closest('[data-edit-member]');
+        if(editBtn){
+            const u=S.dm.getUserById(editBtn.dataset.editMember);
+            if(u){
+                S.editingMemberId=u.id;
+                document.getElementById('memberModalTitle').textContent='Editar Miembro';
+                document.getElementById('mEditId').value=u.id;
+                document.getElementById('mName').value=u.name;
+                document.getElementById('mEmail').value=u.email;
+                document.getElementById('mPhone').value=u.phone||'';
+                document.getElementById('mPlan').value=u.plan;
+                document.getElementById('mStatus').value=u.status;
+                document.getElementById('memberModal').classList.add('open');
+            }
+        }
+        // Delete member
+        const delMember=e.target.closest('[data-delete-member]');
+        if(delMember){
+            if(confirm('¿Eliminar este miembro? Se perderán sus datos.')){
+                S.dm.deleteUser(delMember.dataset.deleteMember);
+                toast('Miembro eliminado','info');
+                renderMembers(document.getElementById('memberSearch').value);
+                renderKPIs();
+            }
+        }
+        // Cancel booking
+        const cancelBk=e.target.closest('[data-cancel-booking]');
+        if(cancelBk){
+            if(confirm('¿Cancelar esta reserva?')){
+                try{
+                    S.dm.cancelBooking(cancelBk.dataset.cancelBooking);
+                    toast('Reserva cancelada','info');
+                    renderBookings(document.getElementById('bookingSearch').value,document.getElementById('bookingStatusFilter').value);
+                    renderKPIs();
+                    renderOverview();
+                }catch(err){toast(err.message||'Error al cancelar','error');}
+            }
+        }
+        // Delete class
+        const delClass=e.target.closest('[data-delete-class]');
+        if(delClass){
+            if(confirm('¿Eliminar esta clase? No se puede deshacer.')){
+                S.dm.deleteClass(delClass.dataset.deleteClass);
+                toast('Clase eliminada','info');
+                renderClasses(document.getElementById('classSearch').value,document.getElementById('classTypeFilter').value);
+                renderKPIs();
+            }
+        }
+        // Modal close
+        const closeBtn=e.target.closest('[data-close]');
+        if(closeBtn) document.getElementById(closeBtn.dataset.close).classList.remove('open');
+        if(e.target.classList.contains('modal-overlay')) e.target.classList.remove('open');
+    });
+
+    // Export CSV members
+    document.getElementById('exportMembersBtn').addEventListener('click',()=>{
+        const members=S.dm.getUsers().filter(u=>u.role==='member');
+        const csv=['ID,Nombre,Email,Plan,Estado,Fecha ingreso'].concat(
+            members.map(u=>`${u.id},"${u.name}",${u.email},${u.plan},${u.status},${u.joinDate||''}`)
+        ).join('\n');
+        downloadFile(csv,'miembros-barrabox.csv','text/csv');
+        toast('CSV descargado','success');
+    });
+
+    // Export CSV bookings
+    document.getElementById('exportBookingsBtn').addEventListener('click',()=>{
+        const bookings=S.dm.getBookings();
+        const csv=['ID,Usuario,Clase,Fecha,Hora,Estado'].concat(
+            bookings.map(b=>{
+                const u=S.dm.getUserById(b.userId);
+                const c=S.dm.getClassById(b.classId);
+                return `${b.id},"${u?.name||b.userId}","${c?.title||b.classId}",${b.date},${b.time||''},${b.status}`;
+            })
+        ).join('\n');
+        downloadFile(csv,'reservas-barrabox.csv','text/csv');
+        toast('CSV descargado','success');
+    });
+
+    // Export JSON
+    document.getElementById('exportJsonBtn').addEventListener('click',()=>{
+        downloadFile(S.dm.exportData(),'barrabox-data.json','application/json');
+        toast('JSON exportado','success');
+    });
+
+    // Reset data
+    document.getElementById('resetDataBtn').addEventListener('click',()=>{
+        if(confirm('¿Resetear TODOS los datos a los valores de demo? Esta acción no se puede deshacer.')){
+            localStorage.removeItem('barrabox_gym_data');
+            localStorage.removeItem('barrabox_gym_session');
+            localStorage.removeItem('barrabox_gym_current_user');
+            toast('Datos reseteados. Redirigiendo...','info');
+            setTimeout(()=>window.location.href='index.html',1500);
+        }
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click',()=>{
+        if(confirm('¿Cerrar sesión?')){
+            if(window.barraboxAuth&&window.barraboxAuth.logout) window.barraboxAuth.logout();
+            localStorage.removeItem('barrabox_gym_session');
+            localStorage.removeItem('barrabox_gym_current_user');
+            toast('Hasta pronto!','info');
+            setTimeout(()=>window.location.href='index.html',1000);
+        }
+    });
+}
+
+function downloadFile(content,filename,mime){
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([content],{type:mime}));
+    a.download=filename; a.click();
+}
+
+document.addEventListener('DOMContentLoaded',init);
+})();
+</script>
 </body>
 </html>

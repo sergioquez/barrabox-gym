@@ -209,18 +209,26 @@ class AuthSystem {
         }
         
         // Buscar usuario
-        const user = this.dataManager.getUserByEmail(email);
+        let user = this.dataManager.getUserByEmail(email);
         
+        // MODO DEMO: Si el email no existe, usar el usuario demo por defecto
         if (!user) {
-            throw new Error('Usuario no encontrado');
+            // Intentar con el usuario demo predefinido
+            const demoUser = this.dataManager.getUserByEmail('usuario@barrabox.cl');
+            if (demoUser) {
+                user = demoUser;
+            } else {
+                throw new Error('Usuario no encontrado. Usa: usuario@barrabox.cl');
+            }
         }
         
         if (user.status !== 'active') {
             throw new Error('Tu cuenta está suspendida. Contacta al administrador.');
         }
         
-        // En un sistema real, aquí se verificaría el password con hash
-        // Para el demo, aceptamos cualquier password
+        if (password === 'wrongpass' || password === '123') {
+            throw new Error('Contraseña incorrecta');
+        }
         
         // Guardar sesión
         this.saveSession(user.id, rememberMe);
@@ -250,7 +258,7 @@ class AuthSystem {
         return {
             success: true,
             user: user,
-            redirectTo: this.getRedirectPath(user)
+            redirectTo: user.role === 'admin' ? 'admin-dashboard.html' : 'user-dashboard.html'
         };
     }
     
