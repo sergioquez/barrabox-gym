@@ -628,9 +628,15 @@
 
             const container = document.getElementById('weekCalendar');
             container.innerHTML = '';
+            
+            const filterEl = document.getElementById('userClassFilter');
+            const typeFilter = filterEl ? filterEl.value : '';
 
             dates.forEach(date => {
-                const classes = state.dm.getClassesByDate ? state.dm.getClassesByDate(date) : [];
+                let classes = state.dm.getClassesByDate ? state.dm.getClassesByDate(date) : [];
+                if (typeFilter) {
+                    classes = classes.filter(c => c.type === typeFilter);
+                }
                 const col = buildDayColumn(date, classes);
                 container.appendChild(col);
             });
@@ -908,13 +914,16 @@
 
         // ── Events ──────────────────────────────────────────────
         function setupEvents() {
-            // Week navigation
+            // Week navigation & filtering
             document.getElementById('prevWeekBtn').addEventListener('click', () => {
                 state.weekOffset--;
                 renderWeekCalendar();
             });
             document.getElementById('nextWeekBtn').addEventListener('click', () => {
                 state.weekOffset++;
+                renderWeekCalendar();
+            });
+            document.getElementById('userClassFilter')?.addEventListener('change', () => {
                 renderWeekCalendar();
             });
 

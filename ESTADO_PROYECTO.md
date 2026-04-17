@@ -33,6 +33,8 @@
 ## 📝 Registro de Modificaciones Recientes
 | Fecha | Archivos Modificados | Descripción del Cambio |
 |---|---|---|
-| 2026-04-16 | `playwright_tests/test_dashboard.py` | Implementación de script de pruebas integradas (E2E) con Playwright en Python para flujos User y Admin. |
+| 2026-04-16 | `playwright_tests/test_dashboard.py` (Eliminado) | Reducción de flakiness eliminando el archivo redundante. |
+| 2026-04-16 | `admin-dashboard.html`, `test_admin_flows.py` | Implementada sección para la Creación de Clases (Modal). Añadida Prueba Automatizada UC-A3. |
+| 2026-04-16 | `user-dashboard.html`, `test_user_flows.py` | Implementado Filtro Visual de Tipos de Clase en el Calendario. Solucionado Bug del Badge de Notificaciones. Añadida Prueba Automatizada UC-U4. |
 | 2026-04-16 | `playwright_tests/test_user_flows.py`, `playwright_tests/test_admin_flows.py` | Desarrollo y automatización de casos de uso completos para reserva/cancelación de usuario y CRUD de administrador en Playwright. |
 | 2026-04-16 | `ESTADO_PROYECTO.md`, `AGENTS.md`, `PROYECTO_COMPLETO.md` | Creación del archivo de estado y adición de la regla de actualización obligatoria. |

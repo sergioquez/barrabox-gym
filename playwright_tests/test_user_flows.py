@@ -131,3 +131,29 @@ def test_user_uc3_read_notifications(page: Page, app_url: str):
     
     # Feedback visual para el usuario: la burbuja roja se va
     expect(badge).not_to_be_visible()
+
+def test_user_uc4_filter_classes(page: Page, app_url: str):
+    """UC-U4: Mejora de UX - Filtrado del calendario por tipo de clase."""
+    clear_session_and_go(page, app_url)
+    
+    # Login Exitoso
+    page.get_by_role("link", name="Iniciar Sesión").click()
+    page.locator("#loginModal").wait_for(state="visible")
+    page.get_by_label("Email").first.fill("usuario@barrabox.cl")
+    page.locator("#userPassword").fill("demopass")
+    page.get_by_role("button", name="Ingresar", exact=True).click()
+    
+    # Esperar Dashboard
+    page.wait_for_url("**/user-dashboard.html")
+    
+    # Seleccionar filtro "CrossFit"
+    filter_dropdown = page.locator("#userClassFilter")
+    expect(filter_dropdown).to_be_visible()
+    
+    filter_dropdown.select_option(value="crossfit")
+    time.sleep(0.5) # Wait for render
+    
+    # Después de filtrar por crossfit, no debería haber clases de gap visibles
+    expect(page.locator(".class-type.gap").first).not_to_be_visible()
+    # Las clases visibles deben ser de tipo crossfit
+    expect(page.locator(".class-type.crossfit").first).to_be_visible()
